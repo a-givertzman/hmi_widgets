@@ -1,4 +1,44 @@
-include: package:flutter_lints/flutter.yaml
+# include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+
+analyser:
+  # strong-mode:
+    # implicit-casts: false
+  errors:
+    missing_required_param: error
+    # missing_return: error
+    # must_be_imutable: error
+    # sort_unnamed_constructors_first: ignore
+  plugins:
+    - dart_colde_metrics
+
+dart_code_metrics:
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+  metrics:
+    cyclomatic-complexity: 20
+    maximum-nesting-level: 10
+    number-of-parameters: 4
+    source-lines-of-code: 50
+    technical-debt:
+      threshold: 1
+      todo-cost: 4
+      ignore-cost: 8
+      ignore-for-file-cost: 16
+      as-dynamic-cost: 16
+      depricated-annotations: 2
+      file-nullsafety-migration: 2
+      unit-type: "hour"
+  metrics-exclude:
+    - test/**
+  rules:
+    # - newline-before-return
+    - no-boolean-literal-compare
+    - no-empty-block
+    - prefer-trailing-comma
+    # - prefer-conditional-expressions
+    - no-equal-then-else
