@@ -4,8 +4,8 @@ wich was build for indastrial application.
 
 ## Features
 ### - State indicators
-    Simple color state indicator
-    Icon color state indicator
+    - Simple color state indicator
+    - Icon color state indicator
 ### - Progress indicators
     - Linear
     - Circular
