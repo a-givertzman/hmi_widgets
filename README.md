@@ -1,6 +1,6 @@
 # HMI Widgets
 This project started on the small collection of flutter widgets 
-wich was build for indastrial application. 
+which was build for industrial HMI application.
 
 ## Features
 ### - State indicators
