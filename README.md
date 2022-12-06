@@ -24,30 +24,30 @@ TODO: Include short and useful examples for package users. Add longer examples
 to `/example` folder.
 
 ```dart
-                Column(
-                  children: [
-                    StatusIndicatorWidget(
-                      width: 150.0,
-                      indicator: BoolColorIndicator(
-                        // iconData: Icons.account_tree_outlined,
-                        stream: Stream<DsDataPoint<bool>>,
-                      ), 
-                      caption: const Text('Constant tension')),
-                    ),
-                    TextIndicatorWidget(
-                      width: 150.0 - 22.0,
-                      indicator: TextIndicator(
-                        stream: Stream<DsDataPoint<int>>,
-                        valueUnit: '%',
-                      ),
-                      caption: Text(
-                        'Tension factor',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      alignment: Alignment.topRight, 
-                    ),
-                  ]
-                )
+    Column(
+        children: [
+            StatusIndicatorWidget(
+                width: 150.0,
+                indicator: BoolColorIndicator(
+                    // iconData: Icons.account_tree_outlined,
+                    stream: Stream<DsDataPoint<bool>>,
+                ), 
+                caption: const Text('Constant tension')),
+            ),
+            TextIndicatorWidget(
+                width: 150.0 - 22.0,
+                indicator: TextIndicator(
+                    stream: Stream<DsDataPoint<int>>,
+                    valueUnit: '%',
+                ),
+                caption: Text(
+                    'Tension factor',
+                    style: Theme.of(context).textTheme.bodySmall,
+                ),
+                alignment: Alignment.topRight, 
+            ),
+        ],
+    )
 ```
 
 ## Additional information
