@@ -1,7 +1,6 @@
-import 'package:crane_monitoring_app/presentation/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-
+import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Simple text field, indicates state of streamed [DsDataPoint] value, 
 class TextValueIndicator extends StatefulWidget {
@@ -36,7 +35,6 @@ class TextValueIndicator extends StatefulWidget {
       low: _low,
   );
 }
-
 ///
 class _TextValueIndicatorState extends State<TextValueIndicator> {
   static const _debug = true;

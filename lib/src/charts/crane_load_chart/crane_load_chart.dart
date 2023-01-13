@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:crane_monitoring_app/domain/core/entities/ds_data_point.dart';
-import 'package:crane_monitoring_app/domain/core/entities/ds_status.dart';
-import 'package:crane_monitoring_app/domain/core/log/log.dart';
-import 'package:crane_monitoring_app/domain/swl/swl_data.dart';
-import 'package:crane_monitoring_app/presentation/core/widgets/crane_load_chart/crane_load_point_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core.dart';
+
+import 'crane_load_point_painter.dart';
 
 /// диаграмма нагрузки крана
 /// загружает координаты x, y, положения крана

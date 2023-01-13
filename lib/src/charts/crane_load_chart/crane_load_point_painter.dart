@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:crane_monitoring_app/domain/core/log/log.dart';
 import 'package:flutter/material.dart';
-
+import 'package:hmi_core/hmi_core_log.dart';
 ///
 class CraneLoadPointPainter extends CustomPainter {
   static const _debug = false;

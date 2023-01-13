@@ -1,11 +1,8 @@
-import 'package:crane_monitoring_app/domain/core/entities/ds_data_point.dart';
-import 'package:crane_monitoring_app/presentation/core/dialogs/ds_data_stream_extract.dart';
-import 'package:crane_monitoring_app/domain/core/entities/state_constatnts.dart';
-import 'package:crane_monitoring_app/domain/core/log/log.dart';
-import 'package:crane_monitoring_app/presentation/core/theme/app_theme.dart';
-import 'package:crane_monitoring_app/presentation/core/widgets/invalid_status_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/theme/app_theme.dart';
 
+import 'invalid_status_indicator.dart';
 ///
 /// Double Point status indicator.
 /// Simple icon, indicates state of streamed int:

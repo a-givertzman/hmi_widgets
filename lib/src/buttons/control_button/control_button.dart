@@ -1,7 +1,7 @@
-
-import 'package:crane_monitoring_app/presentation/core/widgets/button/control_button/control_button_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+
+import 'control_button_indicator.dart';
 
 class ControlButton extends StatelessWidget {
   final Stream<DsDataPoint<num>>? _stream;

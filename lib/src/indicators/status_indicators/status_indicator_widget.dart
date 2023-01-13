@@ -1,4 +1,3 @@
-import 'package:crane_monitoring_app/settings/common_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 
