@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:crane_monitoring_app/domain/core/log/log.dart';
-import 'package:crane_monitoring_app/presentation/core/widgets/crane_position_chart/crane_position_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 
+import 'crane_position_chart.dart';
 ///
 class CranePositionPainter extends CustomPainter {
   static const _debug = false;

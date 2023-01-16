@@ -1,6 +1,3 @@
-
-import 'package:crane_monitoring_app/presentation/core/theme/dark_theme_config.dart';
-import 'package:crane_monitoring_app/presentation/core/theme/light_theme_config.dart';
 import "package:flutter/material.dart";
 
 final light_theme = LightThemeConfig();

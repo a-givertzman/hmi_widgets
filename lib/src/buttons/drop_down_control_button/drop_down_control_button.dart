@@ -1,18 +1,11 @@
 import 'dart:async';
 
-import 'package:crane_monitoring_app/domain/core/entities/double_container.dart';
-import 'package:crane_monitoring_app/presentation/core/dialogs/ds_data_stream_extract.dart';
-import 'package:crane_monitoring_app/domain/core/entities/network_operation_state.dart';
-import 'package:hmi_networking/hmi_networking.dart';
-import 'package:crane_monitoring_app/infrastructure/stream/ds_send.dart';
-import 'package:crane_monitoring_app/presentation/core/theme/app_theme.dart';
-import 'package:crane_monitoring_app/presentation/core/widgets/button/pupup_menu_button/popup_menu_button_custom.dart';
-import 'package:crane_monitoring_app/settings/common_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
-
+import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
