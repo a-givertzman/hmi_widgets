@@ -21,7 +21,7 @@ dev_dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: master
+      ref: internal_v0.0.5 # master
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
