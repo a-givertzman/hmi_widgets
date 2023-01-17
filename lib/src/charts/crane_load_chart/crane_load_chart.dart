@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
 
 import 'crane_load_point_painter.dart';
 
@@ -21,7 +20,7 @@ class CraneLoadChart extends StatefulWidget {
   final double _xAxisValue;
   final double _yAxisValue;
   final bool _showGrid;
-  final SwlData _swlData;
+  final SwlDataCache _swlDataCache;
   final List<double> _swlLimitSet;
   final List<Color> _swlColorSet;
   final Color backgroundColor;
@@ -39,12 +38,12 @@ class CraneLoadChart extends StatefulWidget {
     required double xAxisValue,
     required double yAxisValue,
     bool showGrid = false,
-    required SwlData swlData,
     required List<double> swlLimitSet,
     required List<Color> swlColorSet,
     required this.backgroundColor,
     double pointSize = 1.0,
-    Color? axisColor,
+    Color? axisColor, 
+    required SwlDataCache swlDataCache,
   }) : 
     _swlIndexStream = swlIndexStream,
     _width = width,
@@ -54,7 +53,7 @@ class CraneLoadChart extends StatefulWidget {
     _xAxisValue = xAxisValue,
     _yAxisValue = yAxisValue,
     _showGrid = showGrid,
-    _swlData = swlData,
+    _swlDataCache = swlDataCache,
     _swlLimitSet = swlLimitSet,
     _swlColorSet = swlColorSet,   
     _axisColor = axisColor, 
@@ -76,12 +75,13 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final Map<int, String> _xAxis = {};
   final Map<int, String> _yAxis = {};
   final List<Offset> _points = [];
-  final List<Color> _colors = [];
+  final List<List<Color>> _colors = [];
   final double _pointSize;
   final Color? _axisColor;
   late List<double> _swlLimitSet;
   late List<Color> _swlColorSet;
   late bool _showGrid;
+  int _swlIndex = 0;
   // late Image? _background;
   ///
   _CraneLoadChartState({
@@ -102,35 +102,35 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
     log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
     Future.wait([
-      widget._swlData.x,
-      widget._swlData.y,
-      widget._swlData.swl,
+      widget._swlDataCache.points,
+      widget._swlDataCache.swlColors,
     ]).then((value) {
+      _points.addAll(value[0] as List<Offset>);
+      _colors.addAll(value[1] as List<List<Color>>);
+
       final swlIndexStream = _swlIndexStream;
       if (swlIndexStream != null) {
-        _rebuildChart(0, value);
+        _rebuildChart(0);
         swlIndexStream.listen((event) {
           log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
           log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
-          if (event.status.name == DsStatus.ok) {
-            final index = event.value;
-            _rebuildChart(index, value);
+          if (event.status.name == DsStatus.ok) {            
+            _rebuildChart(event.value);
           }
         });
       } else {
-        _rebuildChart(0, value);
+        _rebuildChart(0);
       }
     });
     super.initState();
   }
   ///
-  void _rebuildChart(int index, List<List<Object>> value) {
+  void _rebuildChart(int index) {
     log(_debug, '_CraneLoadChartState._rebuildChart] index: ', index);
-    final x = value[0] as List<double>;
-    final y = value[1] as List<double>;
-    final swl = value[2][index] as List<double>;
-    _renderPoints(x, y, swl);
-    if (mounted) setState(() => fillAxis());
+    if (mounted) setState(() {
+      _swlIndex = index;
+       fillAxis();
+    });
   }
   ///
   @override
@@ -158,7 +158,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                 yAxis: _yAxis,
                 showGrid: _showGrid,
                 points: _points,
-                colors: _colors,
+                colors: _colors[_swlIndex],
                 size: size,
                 axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
                 backgroundColor: widget.backgroundColor,
@@ -198,24 +198,5 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
       final dy = (rawDy / widget._yScale).round();
       _yAxis[dy] = '${rawDy.round()}';
     }
-  }
-  ///
-  void _renderPoints(List<double> x, List<double> y, List<double> swl) {
-    final count = max(max(x.length, y.length), swl.length);
-    _colors.clear();
-    _points.clear();
-    for (int i = 0; i < count; i++) {
-      final dx = x[i] / widget._xScale;
-      final dy = widget._height - y[i] / widget._yScale;
-      final swlColor = _swlColor(swl[i]);
-      _colors.add(swlColor);
-      _points.add(Offset(dx, dy));
-    }
-  }
-  Color _swlColor(double swl) {
-    final colorIndex = _swlLimitSet.lastIndexWhere((swlElement) {
-      return swlElement <= swl;
-    });
-    return _swlColorSet[colorIndex < 0 ? 0 : colorIndex];
   }
 }
