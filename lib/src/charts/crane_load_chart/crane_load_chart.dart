@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
-
 import 'crane_load_point_painter.dart';
 
 /// диаграмма нагрузки крана

@@ -1,0 +1,84 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build release
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # permissions: read-all|write-all
+    # permissions:
+    #   contents: read|write
+    #   deployments: read|write
+    #   repository-projects: read|write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          channel: 'stable'
+          version: 3.3.10
+        
+      - name: Clearing project
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub upgrade
+
+      - name: Analyze project
+        run: flutter analyze
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests
+        run: flutter test
+
+      - name: Update version number in the pubspec.yaml
+        run: |
+          echo "old version: "
+          echo "new version: ${{ github.run_number }}"
+          sed -i -r "s/^(version:\s+[0-9]+\.[0-9]+\.)[0-9]+\s*$/\1${{ github.run_number }}/g" ./pubspec.yaml
+
+      - name: Commit new version (0.0.${{ github.run_number }})
+        run: |
+          echo "on repositiry: ${{ github.repository }}"
+          git config --global user.name 'anton.lobanov'
+          git config --global user.email 'lobanov.anton@gmail.com'
+          git remote set-url origin https://a-givertzman:${{ secrets.RELEASES_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Automated version update to 0.0.${{ github.run_number }}"
+          # git push
+
+      - name: Push to protected branch "master"
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.RELEASES_TOKEN }}
+          branch: master
+          unprotect_reviews: true
+
+      # - name: Zip artifact for deployment
+      #   run: zip ./build/linux/x64/release/bundle/release.zip ./build/linux/x64/release/bundle/* -r
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          # artifacts: "./build/linux/x64/release/bundle/release.zip"
+          tag: internal_v0.0.${{ github.run_number }}
+          token: ${{ secrets.RELEASES_TOKEN }}
+
+      # - name: Show downloads
+      #   uses: actions/upload-artifact@v3
+      #   id: download
+      #   with:
+      #     name: build-for-linux
+      #     path: "./build/linux/x64/release/bundle"
+
+      # - name: Display structure of downloaded files
+      #   run: ls -R
+      #   working-directory: "./build/linux/x64/release/bundle"

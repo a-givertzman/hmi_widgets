@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 
+import 'dark_theme_config.dart';
+import 'light_theme_config.dart';
+
 final light_theme = LightThemeConfig();
 final dark_theme = DarkThemeConfig();
 

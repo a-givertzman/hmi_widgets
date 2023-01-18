@@ -1,7 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/core/relative_value.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 
 ///
@@ -44,7 +44,6 @@ class LinearValueIndicator extends StatelessWidget {
     double? alarmLow,
     double? high,
     double? alarmHigh,
-    required AppUserSingle user,
     required Stream<DsDataPoint<double>> stream,
     required double indicatorLength,
     required double strokeWidth,
