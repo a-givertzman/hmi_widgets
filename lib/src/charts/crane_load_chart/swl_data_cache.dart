@@ -29,23 +29,23 @@ class SwlDataCache {
   _swlLimitSet = swlLimitSet,
   _swlColorSet = swlColorSet;
 
-  Future<List<Offset>> get points => 
-    _points.isNotEmpty ? 
-      Future.value(_points) : 
-      Future.wait([_swlData.x, _swlData.y])
-      .then((point) {
-        _points.addAll(_convertPoints(point[0], point[1]));
-        return _points;
-      });
+  Future<List<Offset>> get points async { 
+    if (_points.isNotEmpty) { 
+      return Future.value(_points);
+    } 
+    final points = await Future.wait([_swlData.x, _swlData.y]);
+    _points.addAll(_convertPoints(points[0], points[1]));
+    return _points;
+  }
 
-  Future<List<List<Color>>> get swlColors =>
-    _swlColors.isNotEmpty ?
-    Future.value(_swlColors) :
-    _swlData.swl
-    .then((swlColorValues) {
-      _swlColors.addAll(_convertSwlColors(swlColorValues));
-      return _swlColors;
-    });
+  Future<List<List<Color>>> get swlColors async {
+    if (_swlColors.isNotEmpty) {
+      return Future.value(_swlColors);
+    }
+    final swlColorValues = await _swlData.swl;
+    _swlColors.addAll(_convertSwlColors(swlColorValues));
+    return _swlColors;
+  }
 
   List<Offset> _convertPoints(List<double> x, List<double> y) {
     final List<Offset> points = [];
