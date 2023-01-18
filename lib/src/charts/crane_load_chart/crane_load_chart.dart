@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 
 import 'crane_load_point_painter.dart';
+import 'swl_data.dart';
 
 /// диаграмма нагрузки крана
 /// загружает координаты x, y, положения крана
