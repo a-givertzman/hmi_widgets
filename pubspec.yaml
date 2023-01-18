@@ -25,7 +25,7 @@ dev_dependencies:
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: Dependencies-resolve-missing-classes
+      ref: master
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
