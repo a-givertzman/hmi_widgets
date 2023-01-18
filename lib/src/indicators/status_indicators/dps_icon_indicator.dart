@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
-
+import 'package:hmi_networking/hmi_networking.dart';
 import 'invalid_status_indicator.dart';
 ///
 /// Double Point status indicator.

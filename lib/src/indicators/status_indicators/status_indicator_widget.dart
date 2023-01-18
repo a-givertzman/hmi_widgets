@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/core/color_filters.dart';
 
 ///
 /// Показывает прямоугольник с индикатором и надпись
@@ -35,7 +36,7 @@ class StatusIndicatorWidget extends StatelessWidget {
       width: _width,
       height: _height,
       child: ColorFiltered(
-        colorFilter: AppUiSettings.colorFilterDisabled(context, _disabled),
+        colorFilter: ColorFilters.disabled(context, _disabled),
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(7.0),
