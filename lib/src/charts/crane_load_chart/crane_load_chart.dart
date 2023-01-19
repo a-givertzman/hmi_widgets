@@ -73,11 +73,9 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   static const _debug = true;
   final Map<int, String> _xAxis = {};
   final Map<int, String> _yAxis = {};
-  final List<Offset> _points = [];
-  final List<List<Color>> _colors = [];
   final double _pointSize;
   final Color? _axisColor;
-  late final Future<void> _cacheSwlData;
+  late final Future<List<List<Object>>> _cacheSwlDataFuture;
   late List<double> _swlLimitSet;
   late List<Color> _swlColorSet;
   late bool _showGrid;
@@ -101,13 +99,10 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     _showGrid = widget._showGrid;
     log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
     log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
-    _cacheSwlData = Future.wait([
+    _cacheSwlDataFuture = Future.wait([
       widget._swlDataCache.points,
       widget._swlDataCache.swlColors,
     ]).then((value) {
-      _points.addAll(value[0] as List<Offset>);
-      _colors.addAll(value[1] as List<List<Color>>);
-
       final swlIndexStream = _swlIndexStream;
       if (swlIndexStream != null) {
         _rebuildChart(0);
@@ -121,6 +116,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
       } else {
         _rebuildChart(0);
       }
+      return value;
     });
     super.initState();
   }
@@ -150,24 +146,32 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
           RepaintBoundary(
             key: UniqueKey(),
             child: FutureBuilder(
-              future: _cacheSwlData,
+              future: _cacheSwlDataFuture,
               builder: (context, snapshot) {
-                return CustomPaint(
-                  isComplex: true,
-                  // willChange: false,
-                  size: size,
-                  foregroundPainter: CraneLoadPointPainter(
-                    xAxis: _xAxis,
-                    yAxis: _yAxis,
-                    showGrid: _showGrid,
-                    points: _points,
-                    colors: _colors[_swlIndex],
+                if (snapshot.hasData) {
+                  final points = snapshot.data![0] as List<Offset>;
+                  final colors = snapshot.data![1] as List<List<Color>>;
+                  return CustomPaint(
+                    isComplex: true,
+                    // willChange: false,
                     size: size,
-                    axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                    backgroundColor: widget.backgroundColor,
-                    pointSize: _pointSize,
-                  ),
-                );
+                    foregroundPainter: CraneLoadPointPainter(
+                      xAxis: _xAxis,
+                      yAxis: _yAxis,
+                      showGrid: _showGrid,
+                      points: points,
+                      colors: colors[_swlIndex],
+                      size: size,
+                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                      backgroundColor: widget.backgroundColor,
+                      pointSize: _pointSize,
+                    ),
+                  );
+                } else {
+                  return Container(
+                    color: widget.backgroundColor,
+                  );
+                }
               }
             ),
           ),
