@@ -152,28 +152,22 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
             child: FutureBuilder(
               future: _cacheSwlData,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return CustomPaint(
-                    isComplex: true,
-                    // willChange: false,
+                return CustomPaint(
+                  isComplex: true,
+                  // willChange: false,
+                  size: size,
+                  foregroundPainter: CraneLoadPointPainter(
+                    xAxis: _xAxis,
+                    yAxis: _yAxis,
+                    showGrid: _showGrid,
+                    points: _points,
+                    colors: _colors[_swlIndex],
                     size: size,
-                    foregroundPainter: CraneLoadPointPainter(
-                      xAxis: _xAxis,
-                      yAxis: _yAxis,
-                      showGrid: _showGrid,
-                      points: _points,
-                      colors: _colors[_swlIndex],
-                      size: size,
-                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                      backgroundColor: widget.backgroundColor,
-                      pointSize: _pointSize,
-                    ),
-                  );
-                } else {
-                  return Container(
-                    color: widget.backgroundColor,
-                  );
-                }
+                    axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                    backgroundColor: widget.backgroundColor,
+                    pointSize: _pointSize,
+                  ),
+                );
               }
             ),
           ),
