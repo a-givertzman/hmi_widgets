@@ -77,6 +77,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final List<List<Color>> _colors = [];
   final double _pointSize;
   final Color? _axisColor;
+  late final Future<void> _cacheSwlData;
   late List<double> _swlLimitSet;
   late List<Color> _swlColorSet;
   late bool _showGrid;
@@ -100,7 +101,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     _showGrid = widget._showGrid;
     log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
     log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
-    Future.wait([
+    _cacheSwlData = Future.wait([
       widget._swlDataCache.points,
       widget._swlDataCache.swlColors,
     ]).then((value) {
@@ -148,21 +149,32 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
         children: [
           RepaintBoundary(
             key: UniqueKey(),
-            child: CustomPaint(
-              isComplex: true,
-              // willChange: false,
-              size: size,
-              foregroundPainter: CraneLoadPointPainter(
-                xAxis: _xAxis,
-                yAxis: _yAxis,
-                showGrid: _showGrid,
-                points: _points,
-                colors: _colors[_swlIndex],
-                size: size,
-                axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                backgroundColor: widget.backgroundColor,
-                pointSize: _pointSize,
-              ),
+            child: FutureBuilder(
+              future: _cacheSwlData,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CustomPaint(
+                    isComplex: true,
+                    // willChange: false,
+                    size: size,
+                    foregroundPainter: CraneLoadPointPainter(
+                      xAxis: _xAxis,
+                      yAxis: _yAxis,
+                      showGrid: _showGrid,
+                      points: _points,
+                      colors: _colors[_swlIndex],
+                      size: size,
+                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                      backgroundColor: widget.backgroundColor,
+                      pointSize: _pointSize,
+                    ),
+                  );
+                } else {
+                  return Container(
+                    color: widget.backgroundColor,
+                  );
+                }
+              }
             ),
           ),
           for (int i = 0; i < widget._swlLimitSet.length; i++) Positioned(
