@@ -90,7 +90,14 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
       _streamIsCreated = true;
       _extractDsDataStream = DsDataStreamExtract(
         stream: _inputStream, 
-        stateColors: _stateColors,
+        statusColors: StatusColors(
+          on: _stateColors.on,
+          off: _stateColors.off,
+          error: _stateColors.error,
+          obsolete: _stateColors.obsolete,
+          invalid: _stateColors.invalid,
+          timeInvalid: _stateColors.timeInvalid,
+        ),
       );
     }
     if (_showInvalidStatusIndicator) {

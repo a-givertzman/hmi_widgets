@@ -128,11 +128,19 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     SchedulerBinding.instance.addPostFrameCallback((_) {
       final dsClient = _dsClient;
       final responseTagName = _buildResponseTagName(_responseTagName,  _writeTagName);
+      final stateColors = Theme.of(context).stateColors;
       DsDataStreamExtract<int>(
         stream: (dsClient != null && responseTagName != null) 
           ? dsClient.streamInt(responseTagName) 
           : null,
-        stateColors: Theme.of(context).stateColors,
+        statusColors: StatusColors(
+          on: stateColors.on,
+          off: stateColors.off,
+          error: stateColors.error,
+          obsolete: stateColors.obsolete,
+          invalid: stateColors.invalid,
+          timeInvalid: stateColors.timeInvalid,
+        ),
       ).stream.listen((pointExtracted) {
         _streamController.add(
           DoubleContainer<DsDataPointExtracted<int>, bool>(value1: pointExtracted),
