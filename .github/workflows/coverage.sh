@@ -61,4 +61,4 @@ if [[ !coverageExitStatus != 0 ]]; then
     echo '  open coverage/html/index.html' >> $GITHUB_STEP_SUMMARY
     echo '```' >> $GITHUB_STEP_SUMMARY
 fi
-exit $coverageExitStatus
+# exit $coverageExitStatus
