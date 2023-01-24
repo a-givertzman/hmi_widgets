@@ -1,0 +1,55 @@
+# This is a basic workflow to help get unit test coverage factor for each file
+
+name: Analyze test coverage
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ "master" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    outputs:
+      output1: ${{ steps.coverage.outputs.results }}
+      # output2: ${{ steps.step2.outputs.test }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
+      # - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          version: 3.3.10
+      # - run: |
+          # sudo apt-get update -y
+          # sudo apt-get install -y ninja-build libgtk-3-dev
+        
+      - name: Clearing project
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub upgrade
+
+      - name: Analyze test coverage
+        id: coverage
+        run: |
+          chmod +x ./.github/workflows/coverage.sh
+          ./.github/workflows/coverage.sh
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      # - name: Run tests
+      #   run: flutter test
+
+      # - name: Configure linux desctop
+      #   run: flutter config --enable-linux-desktop
+
+      # - name: Build linux
+      #   run: flutter build linux
+
