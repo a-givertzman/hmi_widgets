@@ -5,6 +5,7 @@
 
 
 analyzer:
+  exclude: [example/**]
   # strong-mode:
     # implicit-casts: false
   errors:
@@ -35,6 +36,7 @@ dart_code_metrics:
       unit-type: "hour"
   metrics-exclude:
     - test/**
+    - example/**
   rules:
     # - newline-before-return
     - no-boolean-literal-compare

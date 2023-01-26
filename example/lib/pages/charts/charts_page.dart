@@ -20,7 +20,6 @@ class ChartsPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CraneLoadChart(
               swlIndexStream: getRandomDataPointStream(
@@ -36,17 +35,19 @@ class ChartsPage extends StatelessWidget {
               swlColorSet: _swlColorSet, 
               backgroundColor: Theme.of(context).colorScheme.background, 
               swlDataCache: SwlDataCache(
-                width: _width, 
-                height: _height, 
-                rawWidth: _rawWidth, 
-                rawHeight: _rawHeight, 
-                swlLimitSet: _swlLimitSet, 
-                swlColorSet:_swlColorSet,
-                swlData: FakeSwlData(
+                swlDataConverter: SwlDataConverter(
+                  height: _height, 
+                  width: _width,
                   rawWidth: _rawWidth, 
-                  rawHeight: _rawHeight,
-                  swlIndexesCount: 5, 
-                  pointsCount: 500,
+                  rawHeight: _rawHeight, 
+                  swlLimitSet: _swlLimitSet, 
+                  swlColorSet:_swlColorSet,
+                  swlData: FakeSwlData(
+                    rawWidth: _rawWidth, 
+                    rawHeight: _rawHeight,
+                    swlIndexesCount: 5, 
+                    pointsCount: 500,
+                  ),
                 ),
               ),
               pointSize: 5.0,
