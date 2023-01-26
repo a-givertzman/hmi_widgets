@@ -211,7 +211,9 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   void dispose() {
-    _swlIndexStreamSubscription.cancel();
+    if (_swlIndexStream != null) {
+      _swlIndexStreamSubscription.cancel();
+    }
     super.dispose();
   }
 }
