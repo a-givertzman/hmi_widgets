@@ -4,7 +4,7 @@ version: 1.0.0+1
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=2.18.2 <3.0.0'
 
 dependencies:
   flutter:
@@ -15,12 +15,12 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: internal_v0.0.5
+      ref: internal_v0.0.5 
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
       ref: master
-  fl_chart: any
+  fl_chart: ^0.55.1
 
 dev_dependencies:
   flutter_test:
