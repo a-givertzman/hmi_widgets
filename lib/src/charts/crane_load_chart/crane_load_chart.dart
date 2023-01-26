@@ -12,8 +12,8 @@ class CraneLoadChart extends StatefulWidget {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   final double _width;
   final double _height;
-  final double rawWidth;
-  final double rawHeight;
+  final double _rawWidth;
+  final double _rawHeight;
   final double _xScale;
   final double _yScale;
   final double _xAxisValue;
@@ -32,8 +32,8 @@ class CraneLoadChart extends StatefulWidget {
     Stream<DsDataPoint<int>>? swlIndexStream,
     required double width,
     required double height,
-    required this.rawWidth,
-    required this.rawHeight,
+    required double rawWidth,
+    required double rawHeight,
     required double xAxisValue,
     required double yAxisValue,
     bool showGrid = false,
@@ -47,6 +47,8 @@ class CraneLoadChart extends StatefulWidget {
     _swlIndexStream = swlIndexStream,
     _width = width,
     _height = height,
+    _rawWidth = rawWidth,
+    _rawHeight = rawHeight,
     _xScale = rawWidth / width,
     _yScale = rawHeight / height,
     _xAxisValue = xAxisValue,
@@ -65,14 +67,21 @@ class CraneLoadChart extends StatefulWidget {
     swlIndexStream: _swlIndexStream,
     axisColor: _axisColor,
     pointSize: _pointSize,
+    rawWidth: _rawWidth,
+    rawHeight: _rawHeight,
+    xAxisValue: _xAxisValue,
+    yAxisValue: _yAxisValue,
+    xScale: _xScale,
+    yScale: _yScale,
   );
 }
 
+///
 class _CraneLoadChartState extends State<CraneLoadChart> {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   static const _debug = true;
-  final Map<int, String> _xAxis = {};
-  final Map<int, String> _yAxis = {};
+  final Map<int, String> _xAxis;
+  final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
   late final Future<List<List<Object>>> _cacheSwlDataFuture;
@@ -86,10 +95,18 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required Stream<DsDataPoint<int>>? swlIndexStream,
     required Color? axisColor,
     required double pointSize,
+    required double rawWidth,
+    required double rawHeight,
+    required double xAxisValue,
+    required double yAxisValue,
+    required double xScale,
+    required double yScale,
   }) :
   _swlIndexStream = swlIndexStream,
   _axisColor = axisColor,
   _pointSize = pointSize,
+  _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
+  _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
   super();
   ///
   @override
@@ -105,29 +122,19 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     ]).then((value) {
       final swlIndexStream = _swlIndexStream;
       if (swlIndexStream != null) {
-        _rebuildChart(0);
         swlIndexStream.listen((event) {
           log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
           log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
           if (event.status.name == DsStatus.ok) {            
-            _rebuildChart(event.value);
+            if (mounted) setState(() => _swlIndex = event.value);
           }
         });
-      } else {
-        _rebuildChart(0);
       }
       return value;
     });
     super.initState();
   }
   ///
-  void _rebuildChart(int index) {
-    log(_debug, '_CraneLoadChartState._rebuildChart] index: ', index);
-    if (mounted) setState(() {
-      _swlIndex = index;
-       fillAxis();
-    });
-  }
   ///
   @override
   Widget build(BuildContext context) {
@@ -168,9 +175,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     ),
                   );
                 } else {
-                  return Container(
-                    color: widget.backgroundColor,
-                  );
+                  return CircularProgressIndicator();
                 }
               }
             ),
@@ -194,18 +199,15 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     );
   }
   ///
-  void fillAxis() {
-    final xCount = (widget.rawWidth / widget._xAxisValue).round();
-    final yCount = (widget.rawHeight / widget._yAxisValue).round();
-    for (int i = 0; i < xCount; i++) {
-      final rawDx = i * widget._xAxisValue;
-      final dx = (rawDx / widget._xScale).round();
-      _xAxis[dx] = '${rawDx.round()}';
+  /// Creates names of grid axis anchors  
+  static Map<int, String> _buildAxisLabelTexts(double rawSize, double axisValue, double scale) {
+    final axis = <int, String>{};
+    final count = (rawSize / axisValue).round();
+    for (int i = 0; i < count; i++) {
+      final rawDx = i * axisValue;
+      final dx = (rawDx / scale).round();
+      axis[dx] = '${rawDx.round()}';
     }
-    for (int i = 0; i < yCount; i++) {
-      final rawDy = i * widget._yAxisValue;
-      final dy = (rawDy / widget._yScale).round();
-      _yAxis[dy] = '${rawDy.round()}';
-    }
+    return axis;
   }
 }
