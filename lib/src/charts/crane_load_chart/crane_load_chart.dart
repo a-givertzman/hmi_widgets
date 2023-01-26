@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
@@ -84,7 +85,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
-  late final Future<List<List<Object>>> _cacheSwlDataFuture;
+  late StreamSubscription _swlIndexStreamSubscription;
   late List<double> _swlLimitSet;
   late List<Color> _swlColorSet;
   late bool _showGrid;
@@ -116,22 +117,16 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     _showGrid = widget._showGrid;
     log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
     log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
-    _cacheSwlDataFuture = Future.wait([
-      widget._swlDataCache.points,
-      widget._swlDataCache.swlColors,
-    ]).then((value) {
-      final swlIndexStream = _swlIndexStream;
-      if (swlIndexStream != null) {
-        swlIndexStream.listen((event) {
-          log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
-          log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
-          if (event.status.name == DsStatus.ok) {            
-            if (mounted) setState(() => _swlIndex = event.value);
-          }
-        });
-      }
-      return value;
-    });
+    final swlIndexStream = _swlIndexStream;
+    if (swlIndexStream != null) {
+      _swlIndexStreamSubscription = swlIndexStream.listen((event) {
+        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
+        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
+        if (event.status == DsStatus.ok) {            
+          if (mounted) setState(() => _swlIndex = event.value);
+        }
+      });
+    }
     super.initState();
   }
   ///
@@ -153,7 +148,10 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
           RepaintBoundary(
             key: UniqueKey(),
             child: FutureBuilder(
-              future: _cacheSwlDataFuture,
+              future: Future.wait([
+                widget._swlDataCache.points,
+                widget._swlDataCache.swlColors,
+              ]),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final points = snapshot.data![0] as List<Offset>;
@@ -209,5 +207,11 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
       axis[dx] = '${rawDx.round()}';
     }
     return axis;
+  }
+  ///
+  @override
+  void dispose() {
+    _swlIndexStreamSubscription.cancel();
+    super.dispose();
   }
 }
