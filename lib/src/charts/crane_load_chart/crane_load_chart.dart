@@ -76,7 +76,6 @@ class CraneLoadChart extends StatefulWidget {
     yScale: _yScale,
   );
 }
-
 ///
 class _CraneLoadChartState extends State<CraneLoadChart> {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
