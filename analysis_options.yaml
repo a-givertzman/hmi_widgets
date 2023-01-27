@@ -4,7 +4,8 @@
 # https://dart.dev/guides/language/analysis-options
 
 
-analyser:
+analyzer:
+  exclude: [example/**]
   # strong-mode:
     # implicit-casts: false
   errors:
@@ -13,7 +14,7 @@ analyser:
     # must_be_imutable: error
     # sort_unnamed_constructors_first: ignore
   plugins:
-    - dart_colde_metrics
+    - dart_code_metrics
 
 dart_code_metrics:
   anti-patterns:
@@ -35,6 +36,7 @@ dart_code_metrics:
       unit-type: "hour"
   metrics-exclude:
     - test/**
+    - example/**
   rules:
     # - newline-before-return
     - no-boolean-literal-compare

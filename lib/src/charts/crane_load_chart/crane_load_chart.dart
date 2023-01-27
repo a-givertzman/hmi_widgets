@@ -1,10 +1,8 @@
-import 'dart:math';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-
+import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
 import 'crane_load_point_painter.dart';
-import 'swl_data.dart';
 
 /// диаграмма нагрузки крана
 /// загружает координаты x, y, положения крана
@@ -15,14 +13,14 @@ class CraneLoadChart extends StatefulWidget {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   final double _width;
   final double _height;
-  final double rawWidth;
-  final double rawHeight;
+  final double _rawWidth;
+  final double _rawHeight;
   final double _xScale;
   final double _yScale;
   final double _xAxisValue;
   final double _yAxisValue;
   final bool _showGrid;
-  final SwlData _swlData;
+  final SwlDataCache _swlDataCache;
   final List<double> _swlLimitSet;
   final List<Color> _swlColorSet;
   final Color backgroundColor;
@@ -35,27 +33,29 @@ class CraneLoadChart extends StatefulWidget {
     Stream<DsDataPoint<int>>? swlIndexStream,
     required double width,
     required double height,
-    required this.rawWidth,
-    required this.rawHeight,
+    required double rawWidth,
+    required double rawHeight,
     required double xAxisValue,
     required double yAxisValue,
     bool showGrid = false,
-    required SwlData swlData,
     required List<double> swlLimitSet,
     required List<Color> swlColorSet,
     required this.backgroundColor,
     double pointSize = 1.0,
-    Color? axisColor,
+    Color? axisColor, 
+    required SwlDataCache swlDataCache,
   }) : 
     _swlIndexStream = swlIndexStream,
     _width = width,
     _height = height,
+    _rawWidth = rawWidth,
+    _rawHeight = rawHeight,
     _xScale = rawWidth / width,
     _yScale = rawHeight / height,
     _xAxisValue = xAxisValue,
     _yAxisValue = yAxisValue,
     _showGrid = showGrid,
-    _swlData = swlData,
+    _swlDataCache = swlDataCache,
     _swlLimitSet = swlLimitSet,
     _swlColorSet = swlColorSet,   
     _axisColor = axisColor, 
@@ -68,31 +68,45 @@ class CraneLoadChart extends StatefulWidget {
     swlIndexStream: _swlIndexStream,
     axisColor: _axisColor,
     pointSize: _pointSize,
+    rawWidth: _rawWidth,
+    rawHeight: _rawHeight,
+    xAxisValue: _xAxisValue,
+    yAxisValue: _yAxisValue,
+    xScale: _xScale,
+    yScale: _yScale,
   );
 }
-
+///
 class _CraneLoadChartState extends State<CraneLoadChart> {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   static const _debug = true;
-  final Map<int, String> _xAxis = {};
-  final Map<int, String> _yAxis = {};
-  final List<Offset> _points = [];
-  final List<Color> _colors = [];
+  final Map<int, String> _xAxis;
+  final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
+  late StreamSubscription _swlIndexStreamSubscription;
   late List<double> _swlLimitSet;
   late List<Color> _swlColorSet;
   late bool _showGrid;
+  int _swlIndex = 0;
   // late Image? _background;
   ///
   _CraneLoadChartState({
     required Stream<DsDataPoint<int>>? swlIndexStream,
     required Color? axisColor,
     required double pointSize,
+    required double rawWidth,
+    required double rawHeight,
+    required double xAxisValue,
+    required double yAxisValue,
+    required double xScale,
+    required double yScale,
   }) :
   _swlIndexStream = swlIndexStream,
   _axisColor = axisColor,
   _pointSize = pointSize,
+  _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
+  _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
   super();
   ///
   @override
@@ -102,37 +116,19 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     _showGrid = widget._showGrid;
     log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
     log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
-    Future.wait([
-      widget._swlData.x,
-      widget._swlData.y,
-      widget._swlData.swl,
-    ]).then((value) {
-      final swlIndexStream = _swlIndexStream;
-      if (swlIndexStream != null) {
-        _rebuildChart(0, value);
-        swlIndexStream.listen((event) {
-          log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
-          log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
-          if (event.status.name == DsStatus.ok) {
-            final index = event.value;
-            _rebuildChart(index, value);
-          }
-        });
-      } else {
-        _rebuildChart(0, value);
-      }
-    });
+    final swlIndexStream = _swlIndexStream;
+    if (swlIndexStream != null) {
+      _swlIndexStreamSubscription = swlIndexStream.listen((event) {
+        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
+        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
+        if (event.status == DsStatus.ok) {            
+          if (mounted) setState(() => _swlIndex = event.value);
+        }
+      });
+    }
     super.initState();
   }
   ///
-  void _rebuildChart(int index, List<List<Object>> value) {
-    log(_debug, '_CraneLoadChartState._rebuildChart] index: ', index);
-    final x = value[0] as List<double>;
-    final y = value[1] as List<double>;
-    final swl = value[2][index] as List<double>;
-    _renderPoints(x, y, swl);
-    if (mounted) setState(() => fillAxis());
-  }
   ///
   @override
   Widget build(BuildContext context) {
@@ -150,21 +146,35 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
         children: [
           RepaintBoundary(
             key: UniqueKey(),
-            child: CustomPaint(
-              isComplex: true,
-              // willChange: false,
-              size: size,
-              foregroundPainter: CraneLoadPointPainter(
-                xAxis: _xAxis,
-                yAxis: _yAxis,
-                showGrid: _showGrid,
-                points: _points,
-                colors: _colors,
-                size: size,
-                axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                backgroundColor: widget.backgroundColor,
-                pointSize: _pointSize,
-              ),
+            child: FutureBuilder(
+              future: Future.wait([
+                widget._swlDataCache.points,
+                widget._swlDataCache.swlColors,
+              ]),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final points = snapshot.data![0] as List<Offset>;
+                  final colors = snapshot.data![1] as List<List<Color>>;
+                  return CustomPaint(
+                    isComplex: true,
+                    // willChange: false,
+                    size: size,
+                    foregroundPainter: CraneLoadPointPainter(
+                      xAxis: _xAxis,
+                      yAxis: _yAxis,
+                      showGrid: _showGrid,
+                      points: points,
+                      colors: colors[_swlIndex],
+                      size: size,
+                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                      backgroundColor: widget.backgroundColor,
+                      pointSize: _pointSize,
+                    ),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }
             ),
           ),
           for (int i = 0; i < widget._swlLimitSet.length; i++) Positioned(
@@ -186,37 +196,23 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     );
   }
   ///
-  void fillAxis() {
-    final xCount = (widget.rawWidth / widget._xAxisValue).round();
-    final yCount = (widget.rawHeight / widget._yAxisValue).round();
-    for (int i = 0; i < xCount; i++) {
-      final rawDx = i * widget._xAxisValue;
-      final dx = (rawDx / widget._xScale).round();
-      _xAxis[dx] = '${rawDx.round()}';
+  /// Creates names of grid axis anchors  
+  static Map<int, String> _buildAxisLabelTexts(double rawSize, double axisValue, double scale) {
+    final axis = <int, String>{};
+    final count = (rawSize / axisValue).round();
+    for (int i = 0; i < count; i++) {
+      final rawDx = i * axisValue;
+      final dx = (rawDx / scale).round();
+      axis[dx] = '${rawDx.round()}';
     }
-    for (int i = 0; i < yCount; i++) {
-      final rawDy = i * widget._yAxisValue;
-      final dy = (rawDy / widget._yScale).round();
-      _yAxis[dy] = '${rawDy.round()}';
-    }
+    return axis;
   }
   ///
-  void _renderPoints(List<double> x, List<double> y, List<double> swl) {
-    final count = max(max(x.length, y.length), swl.length);
-    _colors.clear();
-    _points.clear();
-    for (int i = 0; i < count; i++) {
-      final dx = x[i] / widget._xScale;
-      final dy = widget._height - y[i] / widget._yScale;
-      final swlColor = _swlColor(swl[i]);
-      _colors.add(swlColor);
-      _points.add(Offset(dx, dy));
+  @override
+  void dispose() {
+    if (_swlIndexStream != null) {
+      _swlIndexStreamSubscription.cancel();
     }
-  }
-  Color _swlColor(double swl) {
-    final colorIndex = _swlLimitSet.lastIndexWhere((swlElement) {
-      return swlElement <= swl;
-    });
-    return _swlColorSet[colorIndex < 0 ? 0 : colorIndex];
+    super.dispose();
   }
 }
