@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// маленький круглый цветовой индикатор 
 /// размером по умолчанию 8px

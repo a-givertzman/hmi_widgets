@@ -49,7 +49,7 @@ class DpsIconIndicator extends StatefulWidget {
   );
 }
 
-
+///
 class _DpsIconIndicatorState extends State<DpsIconIndicator> {
   static const _debug = true;
   late DsDataStreamExtract<int> _extractDsDataStream;
@@ -59,13 +59,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
   final Widget? _posOnIcon;
   final Widget? _posTransientIcon;
   final bool _showInvalidStatusIndicator;
-  late StateColors _stateColors;
   bool _streamIsCreated = false;
-  // late Color _okOffValueColor;
-  // late Color _okOnValueColor;
-  // late Color _obsoleteValueColor;
-  // late Color _invalidValueColor;
-  // late Color _timeInvalidValueColor;
   ///
   _DpsIconIndicatorState({
       required Stream<DsDataPoint<int>>? stream,
@@ -85,25 +79,18 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
   ///
   @override
   Widget build(BuildContext context) {
-    _stateColors = Theme.of(context).stateColors;
+    final stateColors = Theme.of(context).stateColors;
     if (!_streamIsCreated) {
       _streamIsCreated = true;
       _extractDsDataStream = DsDataStreamExtract(
         stream: _inputStream, 
-        statusColors: StatusColors(
-          on: _stateColors.on,
-          off: _stateColors.off,
-          error: _stateColors.error,
-          obsolete: _stateColors.obsolete,
-          invalid: _stateColors.invalid,
-          timeInvalid: _stateColors.timeInvalid,
-        ),
+        stateColors: stateColors
       );
     }
     if (_showInvalidStatusIndicator) {
       return InvalidStatusIndicator(
         stream: _inputStream,
-        stateColors: _stateColors,
+        stateColors: stateColors,
         child: StreamBuilder<DsDataPointExtracted<int>>(
           stream: _extractDsDataStream.stream,
           builder: (context, snapshot) {
@@ -114,6 +101,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
               _posOffIcon,
               _posOnIcon,
               _posTransientIcon,
+              stateColors,
             );
           },
         ),
@@ -129,6 +117,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
             _posOffIcon,
             _posOnIcon,
             _posTransientIcon,
+            stateColors
           );
         },
       );
@@ -142,8 +131,9 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
     Widget? posOffIcon,
     Widget? posOnIcon, 
     Widget? posTransientIcon,
+    StateColors stateColors,
   ) {
-    Color color = _stateColors.invalid;
+    Color color = stateColors.invalid;
     Widget? invalidIndicator;
     if (snapshot.hasError) {
       color = Theme.of(context).errorColor;
