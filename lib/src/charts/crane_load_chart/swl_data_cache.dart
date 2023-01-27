@@ -3,19 +3,19 @@ import 'package:hmi_widgets/src/core/lazy_loadable.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_converter.dart';
 ///
 class SwlDataCache {
-  final LazyLoadable<List<Offset>> _pointsLoadable;
-  final LazyLoadable<List<List<Color>>> _swlColorsLoadable;
+  final LazyLoadable<List<Offset>> _pointsLazy;
+  final LazyLoadable<List<List<Color>>> _swlColorsLazy;
   ///
   SwlDataCache({
     required SwlDataConverter swlDataConverter,
-  }) : _pointsLoadable = LazyLoadable(
+  }) : _pointsLazy = LazyLoadable(
       load: () => swlDataConverter.points,
     ),
-    _swlColorsLoadable = LazyLoadable(
+    _swlColorsLazy = LazyLoadable(
       load: () => swlDataConverter.swlColors,
     );
   ///
-  Future<List<Offset>> get points  => _pointsLoadable.value;
+  Future<List<Offset>> get points  => _pointsLazy.value;
   ///
-  Future<List<List<Color>>> get swlColors => _swlColorsLoadable.value;
+  Future<List<List<Color>>> get swlColors => _swlColorsLazy.value;
 }
