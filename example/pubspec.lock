@@ -85,8 +85,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "internal_v0.0.5"
-      resolved-ref: "9e8f850a66bcdb9c5a102ebd9bf70481f2ec2e0c"
+      ref: master
+      resolved-ref: "6665c0eed3a5d7556b675058367dcbe73133219e"
       url: "https://github.com/a-givertzman/hmi_core.git"
     source: git
     version: "0.0.5"
@@ -95,7 +95,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "950453ad8c24d85006083a53759e9c0b0fd93461"
+      resolved-ref: "2f71479430891538d7112e53fc9f88a5bd76e038"
       url: "https://github.com/a-givertzman/hmi_networking.git"
     source: git
     version: "0.0.1"
