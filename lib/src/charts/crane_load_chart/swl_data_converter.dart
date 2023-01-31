@@ -18,7 +18,7 @@ class SwlDataConverter implements CraneLoadChartData {
   ///
   /// comment to the all input parameters
   /// 
-  SwlDataConverter({
+  const SwlDataConverter({
     required SwlData swlData,
     required double rawHeight,
     required double rawWidth,
@@ -58,36 +58,53 @@ class SwlDataConverter implements CraneLoadChartData {
   }
   ///
   List<List<Color>> _convertSwlColors(List<List<double>> swl) {
+    final segments = _getSegments(_legendData.limits);
     return swl.map((swlLayer) {
       return swlLayer.map((swlLayerValue) {
-        return _swlColor(swlLayerValue);
+        return _pickSwlColor(swlLayerValue, segments);
       }).toList();
     }).toList();
   }  
   ///
-  Color _swlColor(double swl) {
-    double minLimit = 0.0;
-    for(int i = 0; i < _legendData.limits.length; i++) {
-      if(swl <= minLimit) {
-        return _legendData.colors.elementAt(i);
-      }
-      minLimit = _legendData.limits.elementAt(i);
-    }
-    return _legendData.colors.last;
+  Color _pickSwlColor(double swl, List<_Gap> segments) {
+    final colorIndex = segments.indexWhere(
+      (segment) => segment.contains(swl),
+    );
+    return _legendData.colors.elementAt(colorIndex);
   }
-  
+  ///
+  List<_Gap> _getSegments(Iterable<double> limits) {
+    final segments = <_Gap>[
+      _Gap(0.0, limits.first),
+    ];
+    for(int i = 0; i < limits.length-1; i++) {
+      segments.add(_Gap(limits.elementAt(i), limits.elementAt(i+1)));
+    }
+    segments.add(_Gap(limits.last, double.infinity));
+    return segments;
+  }
+  //
   @override
   double get height => _height;
-  
+  //
   @override
   double get width => _width;
-  
+  //
   @override
   double get rawHeight => _rawHeight;
-  
+  //
   @override
   double get rawWidth => _rawWidth;
-  
+  //
   @override
   CraneLoadChartLegendData get legendData => _legendData;
+}
+///
+class _Gap {
+  final double leftBorder;
+  final double rightBorder;
+  ///
+  const _Gap(this.leftBorder, this.rightBorder);
+  ///
+  bool contains(double value) => value >= leftBorder && value < rightBorder;
 }
