@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 ///
 ///              SWL COLORING (FAKE VALUES)
 /// 
-///     0.0   4631.56   11,387.42  18,555.321  20,000.0
+///     0.0   4631.56   11,387.42  18,555.321  
 /// 
-///      |-------|---------|-----------|----------|
+///      |-------|---------|-----------|----------
 /// 
-///      | GREEN | YELLOW  |   ORANGE  |    RED   |
-const limitSet = [4631.56, 11387.42, 18555.321, 20000.0];
-const first = Color(0x000001);
-const second = Color(0x000002);
-const third = Color(0x000002);
-const forth = Color(0x000002);
+///      | GREEN | YELLOW  |   ORANGE  |    RED   
+const limitSet = [4631.56, 11387.42, 18555.321];
+const first = Color(0x00000001);
+const second = Color(0x00000002);
+const third = Color(0x00000003);
+const forth = Color(0x00000004);
 const colorSet = [first, second, third, forth];
+const nameSet = ['Gap1', 'Gap2', 'Gap3', 'Gap4'];
 const height = 500.0;
 const width = 500.0;
 const converterData = [
@@ -32,13 +33,13 @@ const converterData = [
   {
     'input_point': Offset(1, 0),
     'output_point': Offset(1, 500),
-    'swl': [4631.56, 18555.321],
+    'swl': [4631.55, 18555.321],
     'color': [first, forth],
   },
   {
     'input_point': Offset(234.85, 154.4),
     'output_point': Offset(234.85, 345.6),
-    'swl': [4631.57, 18555.32],
+    'swl': [4631.56, 18555.32],
     'color': [second, third],
   },
   {
