@@ -318,7 +318,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       if (mounted) setState(() => _state.setSaving());
       DsSend<int>(
         dsClient: dsClient, 
-        pointPath: writeTagName, 
+        pointName: writeTagName, 
         response: responseTagName,
       )
         .exec(value)

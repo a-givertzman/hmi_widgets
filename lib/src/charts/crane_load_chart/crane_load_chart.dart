@@ -57,13 +57,13 @@ class CraneLoadChart extends StatefulWidget {
 }
 ///
 class _CraneLoadChartState extends State<CraneLoadChart> {
-  final Stream<DsDataPoint<int>>? _swlIndexStream;
   static const _debug = true;
+  final Stream<DsDataPoint<int>>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
-  late final SwlDataCache _swlDataCache;
+  final SwlDataCache _swlDataCache;
   late StreamSubscription _swlIndexStreamSubscription;
   late bool _showGrid;
   int _swlIndex = 0;
