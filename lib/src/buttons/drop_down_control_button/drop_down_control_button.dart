@@ -16,7 +16,7 @@ class DropDownControlButton extends StatefulWidget {
   final double? _width;
   final double? _height;
   final DsClient? _dsClient;
-  final DsPointPath? _writeTagName;
+  final DsPointName? _writeTagName;
   final String? _responseTagName;
   final Map<int, String> _items;
   final String? _tooltip;
@@ -29,7 +29,7 @@ class DropDownControlButton extends StatefulWidget {
     double? width,
     double? height,
     DsClient? dsClient,
-    DsPointPath? writeTagName,
+    DsPointName? writeTagName,
     String? responseTagName,
     required Map<int, String> items,
     String? tooltip,
@@ -70,7 +70,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final double? _width;
   final double? _height;
   final DsClient? _dsClient;
-  final DsPointPath? _writeTagName;
+  final DsPointName? _writeTagName;
   final String? _responseTagName;
   final Map<int, String> _items;
   final String? _tooltip;
@@ -89,7 +89,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required double? width,
     required double? height,
     required DsClient? dsClient,
-    required DsPointPath? writeTagName,
+    required DsPointName? writeTagName,
     required String? responseTagName,
     required Map<int, String> items,
     required String? tooltip,
@@ -302,7 +302,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     // );
   }
   ///
-  String? _buildResponseTagName(String? responseTagName, DsPointPath? writeTagName) {
+  String? _buildResponseTagName(String? responseTagName, DsPointName? writeTagName) {
     if (responseTagName != null) {
       return responseTagName;
     }
@@ -312,7 +312,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     return null;
   }
   ///
-  void _sendValue(DsClient? dsClient, DsPointPath? writeTagName, String? responseTagName, int? newValue) {
+  void _sendValue(DsClient? dsClient, DsPointName? writeTagName, String? responseTagName, int? newValue) {
     final value = newValue;
     if (dsClient != null && writeTagName != null && value != null) {
       if (mounted) setState(() => _state.setSaving());

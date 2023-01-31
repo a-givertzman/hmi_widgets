@@ -86,7 +86,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "6665c0eed3a5d7556b675058367dcbe73133219e"
+      resolved-ref: cd502b0477a0d3a3004bdec33332ffca2e031772
       url: "https://github.com/a-givertzman/hmi_core.git"
     source: git
     version: "0.0.5"
