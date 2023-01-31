@@ -152,7 +152,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     ),
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               }
             ),

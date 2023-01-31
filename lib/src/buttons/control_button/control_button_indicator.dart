@@ -10,7 +10,7 @@ class ControlButtonIndicator extends StatefulWidget {
   final Color? _stateColor;
   final Color? _captionColor;
   ///
-  ControlButtonIndicator({
+  const ControlButtonIndicator({
     Key? key,
       Stream<DsDataPoint<num>>? stream,
       required List<String> stateValues,

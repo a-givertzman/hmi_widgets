@@ -84,7 +84,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
     const limitCount = 2000;
     _timer = Timer.periodic(const Duration(milliseconds: 40), (timer) {
       if (mounted) {
-        setState(() {;});
+        setState(() {});
       }
     });
 

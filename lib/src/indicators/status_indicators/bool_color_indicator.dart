@@ -42,7 +42,7 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
   final Color? _falseColor;
   final IconData? _iconData;
   late Color _invalidValueColor;
-  late AsyncSnapshot<DsDataPoint<bool>> _snapshot = AsyncSnapshot<DsDataPoint<bool>>.nothing();
+  late AsyncSnapshot<DsDataPoint<bool>> _snapshot = const AsyncSnapshot<DsDataPoint<bool>>.nothing();
   ///
   _BoolColorIndicatorState({
       required Stream<DsDataPoint<bool>>? stream,

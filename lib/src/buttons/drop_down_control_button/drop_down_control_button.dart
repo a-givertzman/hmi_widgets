@@ -138,7 +138,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
           DoubleContainer<DsDataPointExtracted<int>, bool>(value1: pointExtracted),
         );
       });
-      final isDisabledStream = _isDisabledStream ?? Stream.empty();
+      final isDisabledStream = _isDisabledStream ?? const Stream.empty();
       isDisabledStream.listen((event) {
         _streamController.add(
           DoubleContainer<DsDataPointExtracted<int>, bool>(value2: event),
@@ -156,26 +156,28 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     return StreamBuilder<DoubleContainer<DsDataPointExtracted<int>, bool>>(
       stream: _streamController.stream,
       builder: (context, snapshots) {
-        int? value = null;
+        int? value;
         bool isDisabled = false;
         if (snapshots.hasData) {
           final point = snapshots.data?.value1;
           if (point != null) {
             value = point.value;
             _lastSelectedValue = value;
-            if (_state.isLoading) Future.delayed(
+            if (_state.isLoading) {
+              Future.delayed(
               Duration.zero,
               () {
                 if (mounted) setState(() => _state.setLoaded());
               },
             );
+            }
           }
           isDisabled = snapshots.data?.value2 ?? false;
         }
         log(_debug, '$_DropDownControlButtonState.build isDisabled: ', isDisabled);
         return PopupMenuButtonCustom<int>(
           // color: backgroundColor,
-          offset: Offset(width != null ? width * 0.7 : 100, height != null ? height : 0),
+          offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
           enabled: !isDisabled,
           tooltip: _tooltip,
           child: Stack(
@@ -330,9 +332,9 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   ///
   @override
   void dispose() {
-    _itemDisabledSuscriptions.forEach((suscription) {
+    for (var suscription in _itemDisabledSuscriptions) {
       suscription.cancel();
-    });
+    }
     super.dispose();
   }
 }
