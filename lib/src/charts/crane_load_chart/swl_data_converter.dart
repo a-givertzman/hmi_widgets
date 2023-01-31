@@ -5,7 +5,7 @@ import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_
 import 'swl_data.dart';
 
 ///
-/// common comment to the class purpose
+/// Converts swl data from three separated arrays
 class SwlDataConverter implements CraneLoadChartData {
   final double _xScale;
   final double _yScale;
@@ -16,8 +16,12 @@ class SwlDataConverter implements CraneLoadChartData {
   final SwlData _swlData;
   final CraneLoadChartLegendData _legendData;
   ///
-  /// comment to the all input parameters
-  /// 
+  /// - swlData - separated arrays coming from csv files
+  /// - rawHeight - real height of the Crane load area, m
+  /// - rawWidth - real width of the Crane load area, m
+  /// - height - height of the CraneLoadChart widget canvas, px
+  /// - width - width of the CraneLoadChart widget canvas, px
+  /// - legendData - data (limits, colors, names) for CraneLoadChart legend
   const SwlDataConverter({
     required SwlData swlData,
     required double rawHeight,
@@ -80,7 +84,6 @@ class SwlDataConverter implements CraneLoadChartData {
     for(int i = 0; i < limits.length-1; i++) {
       segments.add(_Gap(limits.elementAt(i), limits.elementAt(i+1)));
     }
-    segments.add(_Gap(limits.last, double.infinity));
     return segments;
   }
   //

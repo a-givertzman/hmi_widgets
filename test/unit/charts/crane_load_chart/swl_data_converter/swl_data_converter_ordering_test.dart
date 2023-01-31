@@ -13,7 +13,6 @@ void main() {
       final inputSwls = converterData[i]['swl'] as List<double>;
       final expectedPoint = converterData[i]['output_point'] as Offset;
       final expectedColors = converterData[i]['color'] as List<Color>;
-
       final swlDataConverter = SwlDataConverter(
         swlData: FakeSwlData(
           x: [inputPoint.dx],

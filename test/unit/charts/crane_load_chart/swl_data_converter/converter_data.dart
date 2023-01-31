@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 ///      |-------|---------|-----------|----------
 /// 
 ///      | GREEN | YELLOW  |   ORANGE  |    RED   
-const limitSet = [4631.56, 11387.42, 18555.321];
+const limitSet = [4631.56, 11387.42, 18555.321, 23000.23];
 const first = Color(0x00000001);
 const second = Color(0x00000002);
 const third = Color(0x00000003);

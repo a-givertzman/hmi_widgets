@@ -7,25 +7,40 @@ void main() {
     const validData = [
       {
         'limits': [0.0],
+        'colors': [Colors.blue],
+        'names': ['Gap1'],
+      },
+      {
+        'limits': [0.0, 1.3],
         'colors': [Colors.blue, Colors.black],
         'names': ['Gap1', 'Gap2'],
       },
       {
-        'limits': [0.0, 1.3],
+        'limits': [0.0, 1.3, 10.1],
         'colors': [Colors.blue, Colors.black, Colors.lime],
         'names': ['Gap1', 'Gap2', 'Gap3'],
       },
       {
-        'limits': [13.6, 15.2, 20.1],
+        'limits': [13.6, 15.2, 20.1, 40.5],
         'colors': [Colors.blue, Colors.black, Colors.lime, Colors.orange],
         'names': ['Gap1', 'Gap2', 'Gap3', 'Gap4'],
       },
     ];
     const invalidData = [
       {
-        'limits': [0.0],
+        'limits': <double>[],
         'colors': [Colors.blue],
         'names': ['Gap1'],
+      },
+      {
+        'limits': [0.0],
+        'colors': <Color>[],
+        'names': ['Gap1'],
+      },
+      {
+        'limits': [0.0],
+        'colors': [Colors.blue],
+        'names': <String>[],
       },
       {
         'limits': [0.0, 1.3],
