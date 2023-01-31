@@ -163,10 +163,10 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
               right: 0,
               child: Container(
                 width: 64,
-                color: _swlDataCache.legendData.colors[i],
+                color: _swlDataCache.legendData.colors.elementAt(i),
                 padding: const EdgeInsets.all(2.0),
                 child: Text(
-                  '${_swlDataCache.legendData.limits[i]}',
+                  '${_swlDataCache.legendData.limits.elementAt(i)}',
                   textAlign: TextAlign.center,
                   // textScaleFactor: 1.0,
                 ),

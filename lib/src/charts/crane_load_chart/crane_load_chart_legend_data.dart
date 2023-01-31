@@ -13,9 +13,9 @@ class CraneLoadChartLegendData {
   _colors = colors,
   _names = names;
   ///
-  List<double> get limits => _limits.toList(growable: false);
+  Iterable<double> get limits => _limits;
   ///
-  List<Color> get colors => _colors.toList(growable: false);
+  Iterable<Color> get colors => _colors;
   ///
-  List<String> get names => _names.toList(growable: false);
+  Iterable<String> get names => _names;
 }

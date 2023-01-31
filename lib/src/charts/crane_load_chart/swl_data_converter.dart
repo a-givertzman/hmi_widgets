@@ -66,10 +66,14 @@ class SwlDataConverter implements CraneLoadChartData {
   }  
   ///
   Color _swlColor(double swl) {
-    final colorIndex = _legendData.limits.lastIndexWhere((swlElement) {
-      return swlElement <= swl;
-    });
-    return _legendData.colors[colorIndex < 0 ? 0 : colorIndex];
+    double minLimit = 0.0;
+    for(int i = 0; i < _legendData.limits.length; i++) {
+      if(swl <= minLimit) {
+        return _legendData.colors.elementAt(i);
+      }
+      minLimit = _legendData.limits.elementAt(i);
+    }
+    return _legendData.colors.last;
   }
   
   @override

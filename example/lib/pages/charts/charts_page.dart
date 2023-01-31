@@ -6,6 +6,7 @@ import 'package:hmi_widgets/hmi_widgets.dart';
 class ChartsPage extends StatelessWidget {
   final _swlLimitSet = const [0.3, 0.5, 0.7];
   final _swlColorSet = const [Colors.green, Colors.blue, Colors.red];
+  final _swlNameSet = const ['Limit1', 'Limit2', 'Limit3'];
   final _width = 450.0; 
   final _height = 450.0;
   final _rawWidth = 20.0;
@@ -25,14 +26,8 @@ class ChartsPage extends StatelessWidget {
               swlIndexStream: getRandomDataPointStream(
                 (random) => random.nextInt(4),
               ),
-              width: _width, 
-              height: _height, 
-              rawWidth: _rawWidth, 
-              rawHeight: _rawHeight, 
               xAxisValue: 5.0, 
               yAxisValue: 5.0,
-              swlLimitSet: _swlLimitSet, 
-              swlColorSet: _swlColorSet, 
               backgroundColor: Theme.of(context).colorScheme.background, 
               swlDataCache: SwlDataCache(
                 swlDataConverter: SwlDataConverter(
@@ -40,8 +35,11 @@ class ChartsPage extends StatelessWidget {
                   width: _width,
                   rawWidth: _rawWidth, 
                   rawHeight: _rawHeight, 
-                  swlLimitSet: _swlLimitSet, 
-                  swlColorSet:_swlColorSet,
+                  legendData: CraneLoadChartLegendData(
+                    limits: _swlLimitSet, 
+                    colors: _swlColorSet, 
+                    names: _swlNameSet,
+                  ),
                   swlData: FakeSwlData(
                     rawWidth: _rawWidth, 
                     rawHeight: _rawHeight,
