@@ -42,7 +42,7 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
   final Color? _falseColor;
   final IconData? _iconData;
   late Color _invalidValueColor;
-  late AsyncSnapshot<DsDataPoint<bool>> _snapshot = AsyncSnapshot<DsDataPoint<bool>>.nothing();
+  late AsyncSnapshot<DsDataPoint<bool>> _snapshot = const AsyncSnapshot<DsDataPoint<bool>>.nothing();
   ///
   _BoolColorIndicatorState({
       required Stream<DsDataPoint<bool>>? stream,
@@ -61,7 +61,7 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
     _invalidValueColor = Theme.of(context).stateColors.invalid;
     return StreamBuilder<DsDataPoint<bool>>(
       initialData: DsDataPoint<bool>(
-        type: DsDataType.bool, path: '', name: '', value: false, status: DsStatus.obsolete, timestamp: '',
+        type: DsDataType.bool, name: DsPointName(fullPath: '/test'), value: false, status: DsStatus.obsolete, timestamp: '',
       ),
       stream: _stream,
       builder: (context, snapshot) {

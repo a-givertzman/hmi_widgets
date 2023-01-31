@@ -118,9 +118,9 @@ class LinearValueIndicator extends StatelessWidget {
               final dataPoint = snapshot.data;
               // log(LinearBarIndicatorV1._debug, '[$LinearBarIndicatorV1.build] dataPoint: $dataPoint');
               if (dataPoint != null) {
-                final _nValue = dataPoint.value; 
-                value = _relativeValue.relative(_nValue);  // _k * _nValue + _b;
-                valueText = _nValue.toStringAsFixed(_fractionDigits);
+                final nValue = dataPoint.value; 
+                value = _relativeValue.relative(nValue);  // _k * _nValue + _b;
+                valueText = nValue.toStringAsFixed(_fractionDigits);
               }
             }
             return Stack(
@@ -130,13 +130,13 @@ class LinearValueIndicator extends StatelessWidget {
                   // alignment: Alignment.topCenter,
                   width: width,
                   height: height,
-                  child: (_onTheCard ?? false) ? Card() : null,
+                  child: (_onTheCard ?? false) ? const Card() : null,
                 ),
                 _buildIndicatorWidget(
                   value: _valueBasis, 
                   strokeWidth: _strokeWidth,
                   angle: _angle,
-                  color: Theme.of(context).backgroundColor, 
+                  color: Theme.of(context).colorScheme.background, 
                 ),
                 ..._buildValueWidgets(
                   context, 
@@ -177,11 +177,11 @@ class LinearValueIndicator extends StatelessWidget {
         // _buildLowDiscreteIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         _buildLowIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         if (_alarmLow != null)
-          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).backgroundColor, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildLowIndicatorWidget(context, value, _alarmLow, _strokeWidth, alarmLowColor),
         _buildHighIndicatorWidget(context, value, _high, _strokeWidth, highColor),
         if (_alarmHigh != null)
-          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).backgroundColor, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildHighIndicatorWidget(context, value, _alarmHigh, _strokeWidth, alarmHighColor),
         _buildIndicatorWidget(
           value: value, 
@@ -215,7 +215,7 @@ class LinearValueIndicator extends StatelessWidget {
         ),
       );
     } else {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
   }
   ///

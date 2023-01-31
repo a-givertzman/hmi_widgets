@@ -16,7 +16,7 @@ class DropDownControlButton extends StatefulWidget {
   final double? _width;
   final double? _height;
   final DsClient? _dsClient;
-  final DsPointPath? _writeTagName;
+  final DsPointName? _writeTagName;
   final String? _responseTagName;
   final Map<int, String> _items;
   final String? _tooltip;
@@ -29,7 +29,7 @@ class DropDownControlButton extends StatefulWidget {
     double? width,
     double? height,
     DsClient? dsClient,
-    DsPointPath? writeTagName,
+    DsPointName? writeTagName,
     String? responseTagName,
     required Map<int, String> items,
     String? tooltip,
@@ -70,7 +70,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final double? _width;
   final double? _height;
   final DsClient? _dsClient;
-  final DsPointPath? _writeTagName;
+  final DsPointName? _writeTagName;
   final String? _responseTagName;
   final Map<int, String> _items;
   final String? _tooltip;
@@ -89,7 +89,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required double? width,
     required double? height,
     required DsClient? dsClient,
-    required DsPointPath? writeTagName,
+    required DsPointName? writeTagName,
     required String? responseTagName,
     required Map<int, String> items,
     required String? tooltip,
@@ -138,7 +138,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
           DoubleContainer<DsDataPointExtracted<int>, bool>(value1: pointExtracted),
         );
       });
-      final isDisabledStream = _isDisabledStream ?? Stream.empty();
+      final isDisabledStream = _isDisabledStream ?? const Stream.empty();
       isDisabledStream.listen((event) {
         _streamController.add(
           DoubleContainer<DsDataPointExtracted<int>, bool>(value2: event),
@@ -156,26 +156,28 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     return StreamBuilder<DoubleContainer<DsDataPointExtracted<int>, bool>>(
       stream: _streamController.stream,
       builder: (context, snapshots) {
-        int? value = null;
+        int? value;
         bool isDisabled = false;
         if (snapshots.hasData) {
           final point = snapshots.data?.value1;
           if (point != null) {
             value = point.value;
             _lastSelectedValue = value;
-            if (_state.isLoading) Future.delayed(
+            if (_state.isLoading) {
+              Future.delayed(
               Duration.zero,
               () {
                 if (mounted) setState(() => _state.setLoaded());
               },
             );
+            }
           }
           isDisabled = snapshots.data?.value2 ?? false;
         }
         log(_debug, '$_DropDownControlButtonState.build isDisabled: ', isDisabled);
         return PopupMenuButtonCustom<int>(
           // color: backgroundColor,
-          offset: Offset(width != null ? width * 0.7 : 100, height != null ? height : 0),
+          offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
           enabled: !isDisabled,
           tooltip: _tooltip,
           child: Stack(
@@ -200,7 +202,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
               ),
               if (_state.isLoading || _state.isSaving) Positioned.fill(
                 child: Container(
-                  color: Theme.of(context).backgroundColor.withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.background.withOpacity(0.7),
                   alignment: Alignment.center,
                   child: CupertinoActivityIndicator(
                     color: Theme.of(context).colorScheme.onBackground,
@@ -302,7 +304,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     // );
   }
   ///
-  String? _buildResponseTagName(String? responseTagName, DsPointPath? writeTagName) {
+  String? _buildResponseTagName(String? responseTagName, DsPointName? writeTagName) {
     if (responseTagName != null) {
       return responseTagName;
     }
@@ -312,13 +314,13 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     return null;
   }
   ///
-  void _sendValue(DsClient? dsClient, DsPointPath? writeTagName, String? responseTagName, int? newValue) {
+  void _sendValue(DsClient? dsClient, DsPointName? writeTagName, String? responseTagName, int? newValue) {
     final value = newValue;
     if (dsClient != null && writeTagName != null && value != null) {
       if (mounted) setState(() => _state.setSaving());
       DsSend<int>(
         dsClient: dsClient, 
-        pointPath: writeTagName, 
+        pointName: writeTagName, 
         response: responseTagName,
       )
         .exec(value)
@@ -330,9 +332,9 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   ///
   @override
   void dispose() {
-    _itemDisabledSuscriptions.forEach((suscription) {
+    for (var suscription in _itemDisabledSuscriptions) {
       suscription.cancel();
-    });
+    }
     super.dispose();
   }
 }

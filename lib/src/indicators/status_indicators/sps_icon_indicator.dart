@@ -76,7 +76,7 @@ class _SpsIconIndicatorState extends State<SpsIconIndicator> {
   ) {
     Color color = _stateColors.invalid; //Theme.of(context).backgroundColor;
     if (snapshot.hasError) {
-      color = Theme.of(context).errorColor;
+      color = Theme.of(context).colorScheme.error;
     } else if (snapshot.hasData) {
       final point = snapshot.data;
       if (point != null) {

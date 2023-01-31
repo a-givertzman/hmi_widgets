@@ -5,7 +5,6 @@
 
 
 analyzer:
-  exclude: [example/**]
   # strong-mode:
     # implicit-casts: false
   errors:

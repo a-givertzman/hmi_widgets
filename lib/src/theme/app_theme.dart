@@ -80,7 +80,6 @@ final Map<AppTheme, ThemeData> appThemes = {
     primaryColorDark: light_theme.primaryColorDark,
     canvasColor: light_theme.canvasColor,
     cardColor: light_theme.cardColor,
-    backgroundColor: light_theme.backgroundColor,
     colorScheme: ColorScheme(
       brightness: Brightness.light,
       primary: light_theme.primaryColor,
@@ -126,7 +125,6 @@ final Map<AppTheme, ThemeData> appThemes = {
     primaryColorDark: dark_theme.primaryColorDark,
     canvasColor: dark_theme.canvasColor,
     cardColor: dark_theme.cardColor,
-    backgroundColor: dark_theme.backgroundColor,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: dark_theme.primaryColor,

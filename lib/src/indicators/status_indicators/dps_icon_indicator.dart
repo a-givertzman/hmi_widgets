@@ -136,7 +136,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
     Color color = stateColors.invalid;
     Widget? invalidIndicator;
     if (snapshot.hasError) {
-      color = Theme.of(context).errorColor;
+      color = Theme.of(context).colorScheme.error;
     } else if (snapshot.hasData) {
       final point = snapshot.data;
       if (point != null) {
