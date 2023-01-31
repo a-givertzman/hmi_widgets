@@ -11,18 +11,10 @@ import 'crane_load_point_painter.dart';
 /// rawWidth, rawHeight - размеры диаграммы в метрах
 class CraneLoadChart extends StatefulWidget {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
-  final double _width;
-  final double _height;
-  final double _rawWidth;
-  final double _rawHeight;
-  final double _xScale;
-  final double _yScale;
   final double _xAxisValue;
   final double _yAxisValue;
   final bool _showGrid;
   final SwlDataCache _swlDataCache;
-  final List<double> _swlLimitSet;
-  final List<Color> _swlColorSet;
   final Color backgroundColor;
   final Color? _axisColor;
   final double _pointSize;
@@ -31,33 +23,19 @@ class CraneLoadChart extends StatefulWidget {
   const CraneLoadChart({
     Key? key,
     Stream<DsDataPoint<int>>? swlIndexStream,
-    required double width,
-    required double height,
-    required double rawWidth,
-    required double rawHeight,
     required double xAxisValue,
     required double yAxisValue,
     bool showGrid = false,
-    required List<double> swlLimitSet,
-    required List<Color> swlColorSet,
     required this.backgroundColor,
     double pointSize = 1.0,
     Color? axisColor, 
     required SwlDataCache swlDataCache,
   }) : 
     _swlIndexStream = swlIndexStream,
-    _width = width,
-    _height = height,
-    _rawWidth = rawWidth,
-    _rawHeight = rawHeight,
-    _xScale = rawWidth / width,
-    _yScale = rawHeight / height,
     _xAxisValue = xAxisValue,
     _yAxisValue = yAxisValue,
     _showGrid = showGrid,
-    _swlDataCache = swlDataCache,
-    _swlLimitSet = swlLimitSet,
-    _swlColorSet = swlColorSet,   
+    _swlDataCache = swlDataCache,  
     _axisColor = axisColor, 
     _pointSize = pointSize,
     super(key: key);
@@ -65,33 +43,34 @@ class CraneLoadChart extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<CraneLoadChart> createState() => _CraneLoadChartState(
+    swlDataCache: _swlDataCache,
     swlIndexStream: _swlIndexStream,
     axisColor: _axisColor,
     pointSize: _pointSize,
-    rawWidth: _rawWidth,
-    rawHeight: _rawHeight,
+    rawWidth: _swlDataCache.rawWidth,
+    rawHeight: _swlDataCache.rawHeight,
     xAxisValue: _xAxisValue,
     yAxisValue: _yAxisValue,
-    xScale: _xScale,
-    yScale: _yScale,
+    xScale: _swlDataCache.rawWidth / _swlDataCache.width,
+    yScale: _swlDataCache.rawHeight / _swlDataCache.height,
   );
 }
 ///
 class _CraneLoadChartState extends State<CraneLoadChart> {
-  final Stream<DsDataPoint<int>>? _swlIndexStream;
   static const _debug = true;
+  final Stream<DsDataPoint<int>>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
+  final SwlDataCache _swlDataCache;
   late StreamSubscription _swlIndexStreamSubscription;
-  late List<double> _swlLimitSet;
-  late List<Color> _swlColorSet;
   late bool _showGrid;
   int _swlIndex = 0;
   // late Image? _background;
   ///
   _CraneLoadChartState({
+    required SwlDataCache swlDataCache,
     required Stream<DsDataPoint<int>>? swlIndexStream,
     required Color? axisColor,
     required double pointSize,
@@ -102,6 +81,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double xScale,
     required double yScale,
   }) :
+  _swlDataCache = swlDataCache,
   _swlIndexStream = swlIndexStream,
   _axisColor = axisColor,
   _pointSize = pointSize,
@@ -111,11 +91,11 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   void initState() {
-    _swlLimitSet = widget._swlLimitSet;
-    _swlColorSet = widget._swlColorSet;
     _showGrid = widget._showGrid;
-    log(_debug, '[_CraneLoadChartState.initState] _swlLimitSet: ', _swlLimitSet);
-    log(_debug, '[_CraneLoadChartState.initState] _swlColorSet: ', _swlColorSet);
+    log(_debug, '[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
+    log(_debug, '[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
+    log(_debug, '[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
+
     final swlIndexStream = _swlIndexStream;
     if (swlIndexStream != null) {
       _swlIndexStreamSubscription = swlIndexStream.listen((event) {
@@ -138,18 +118,18 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     // log(_debug, '_CraneLoadChartState.build] _y.length:', _y.length);
     // log(_debug, '_CraneLoadChartState.build] _swl.length:', _swl.length);
     // log(_debug, 'points:', _points);
-    final size = Size(widget._width, widget._height);
+    final size = Size(_swlDataCache.width, _swlDataCache.height);
     return SizedBox(
-      width: widget._width,
-      height: widget._height,
+      width: _swlDataCache.width,
+      height: _swlDataCache.height,
       child: Stack(
         children: [
           RepaintBoundary(
             key: UniqueKey(),
             child: FutureBuilder(
               future: Future.wait([
-                widget._swlDataCache.points,
-                widget._swlDataCache.swlColors,
+                _swlDataCache.points,
+                _swlDataCache.swlColors,
               ]),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -172,25 +152,26 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     ),
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               }
             ),
           ),
-          for (int i = 0; i < widget._swlLimitSet.length; i++) Positioned(
-            top: i * 24 + 8,
-            right: 0,
-            child: Container(
-              width: 64,
-              color: widget._swlColorSet[i],
-              padding: const EdgeInsets.all(2.0),
-              child: Text(
-                '${widget._swlLimitSet[i]}',
-                textAlign: TextAlign.center,
-                // textScaleFactor: 1.0,
+          for (int i = 0; i < _swlDataCache.legendData.limits.length; i++) 
+            Positioned(
+              top: i * 24 + 8,
+              right: 0,
+              child: Container(
+                width: 64,
+                color: _swlDataCache.legendData.colors.elementAt(i),
+                padding: const EdgeInsets.all(2.0),
+                child: Text(
+                  '${_swlDataCache.legendData.limits.elementAt(i)}',
+                  textAlign: TextAlign.center,
+                  // textScaleFactor: 1.0,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

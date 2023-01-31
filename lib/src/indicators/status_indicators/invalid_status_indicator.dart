@@ -49,7 +49,7 @@ class InvalidStatusIndicator extends StatelessWidget {
                 final point = snapshot.data;
                 if (point != null) {
                   if (point.status == DsStatus.ok) {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                   if (point.status == DsStatus.obsolete) {
                     color = _statusColors.obsolete;

@@ -1,34 +1,43 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_data.dart';
+import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_data.dart';
 import 'swl_data.dart';
 
 ///
-/// common comment to the class purpose
-class SwlDataConverter {
+/// Converts swl data from three separated arrays
+class SwlDataConverter implements CraneLoadChartData {
   final double _xScale;
   final double _yScale;
   final double _height;
+  final double _width;
+  final double _rawHeight;
+  final double _rawWidth;
   final SwlData _swlData;
-  final List<double> _swlLimitSet;
-  final List<Color> _swlColorSet;
+  final CraneLoadChartLegendData _legendData;
   ///
-  /// comment to the all input parameters
-  /// 
-  SwlDataConverter({
+  /// - swlData - separated arrays coming from csv files
+  /// - rawHeight - real height of the Crane load area, m
+  /// - rawWidth - real width of the Crane load area, m
+  /// - height - height of the CraneLoadChart widget canvas, px
+  /// - width - width of the CraneLoadChart widget canvas, px
+  /// - legendData - data (limits, colors, names) for CraneLoadChart legend
+  const SwlDataConverter({
     required SwlData swlData,
     required double rawHeight,
     required double rawWidth,
     required double height,
     required double width,
-    required List<double> swlLimitSet,
-    required List<Color> swlColorSet,
+    required CraneLoadChartLegendData legendData,
   }) : 
     _swlData = swlData,
     _height = height,
+    _width = width,
+    _rawHeight = rawHeight,
+    _rawWidth = rawWidth,
     _xScale = rawWidth / width,
     _yScale = rawHeight / height,
-    _swlColorSet = swlColorSet,
-    _swlLimitSet = swlLimitSet;
+    _legendData = legendData;
   ///
   Future<List<Offset>> get points async {
     final points = await Future.wait([_swlData.x, _swlData.y]);
@@ -53,17 +62,52 @@ class SwlDataConverter {
   }
   ///
   List<List<Color>> _convertSwlColors(List<List<double>> swl) {
+    final segments = _getSegments(_legendData.limits);
     return swl.map((swlLayer) {
       return swlLayer.map((swlLayerValue) {
-        return _swlColor(swlLayerValue);
+        return _pickSwlColor(swlLayerValue, segments);
       }).toList();
     }).toList();
   }  
   ///
-  Color _swlColor(double swl) {
-    final colorIndex = _swlLimitSet.lastIndexWhere((swlElement) {
-      return swlElement <= swl;
-    });
-    return _swlColorSet[colorIndex < 0 ? 0 : colorIndex];
+  Color _pickSwlColor(double swl, List<_Gap> segments) {
+    final colorIndex = segments.indexWhere(
+      (segment) => segment.contains(swl),
+    );
+    return _legendData.colors.elementAt(colorIndex);
   }
+  ///
+  List<_Gap> _getSegments(Iterable<double> limits) {
+    final segments = <_Gap>[
+      _Gap(0.0, limits.first),
+    ];
+    for(int i = 0; i < limits.length-1; i++) {
+      segments.add(_Gap(limits.elementAt(i), limits.elementAt(i+1)));
+    }
+    return segments;
+  }
+  //
+  @override
+  double get height => _height;
+  //
+  @override
+  double get width => _width;
+  //
+  @override
+  double get rawHeight => _rawHeight;
+  //
+  @override
+  double get rawWidth => _rawWidth;
+  //
+  @override
+  CraneLoadChartLegendData get legendData => _legendData;
+}
+///
+class _Gap {
+  final double leftBorder;
+  final double rightBorder;
+  ///
+  const _Gap(this.leftBorder, this.rightBorder);
+  ///
+  bool contains(double value) => value >= leftBorder && value < rightBorder;
 }

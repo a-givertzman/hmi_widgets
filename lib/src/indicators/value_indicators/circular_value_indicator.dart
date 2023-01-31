@@ -123,11 +123,11 @@ class CircularValueIndicator extends StatelessWidget {
           final dataPoint = snapshot.data;
           log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
           if (dataPoint != null) {
-            final _nValue = dataPoint.value;
-            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $_nValue');
-            value = _relativeValue.relative(_nValue.toDouble(), limit: true);
+            final nValue = dataPoint.value;
+            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $nValue');
+            value = _relativeValue.relative(nValue.toDouble(), limit: true);
             log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
-            valueText = _nValue.toStringAsFixed(_fractionDigits);
+            valueText = nValue.toStringAsFixed(_fractionDigits);
           }
         }
         return Stack(
@@ -175,7 +175,7 @@ class CircularValueIndicator extends StatelessWidget {
     String valueUnit,
   ) {
     if (_showValueText) {
-      final textStyle = Theme.of(context).textTheme.bodySmall ?? TextStyle();
+      final textStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
       return Positioned(
         bottom: 0.18 * _size,
         child: Text(valueUnit,
@@ -197,7 +197,7 @@ class CircularValueIndicator extends StatelessWidget {
     String valueText,
   ) {
     if (_showValueText) {
-      final textStyle = Theme.of(context).textTheme.bodySmall ?? TextStyle();
+      final textStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
       return Positioned(
         top: (_valueUnit.isNotEmpty ? 0.19 : 0.25) * _size,
         child: RepaintBoundary(

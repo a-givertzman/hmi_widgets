@@ -118,9 +118,9 @@ class LinearValueIndicator extends StatelessWidget {
               final dataPoint = snapshot.data;
               // log(LinearBarIndicatorV1._debug, '[$LinearBarIndicatorV1.build] dataPoint: $dataPoint');
               if (dataPoint != null) {
-                final _nValue = dataPoint.value; 
-                value = _relativeValue.relative(_nValue);  // _k * _nValue + _b;
-                valueText = _nValue.toStringAsFixed(_fractionDigits);
+                final nValue = dataPoint.value; 
+                value = _relativeValue.relative(nValue);  // _k * _nValue + _b;
+                valueText = nValue.toStringAsFixed(_fractionDigits);
               }
             }
             return Stack(
@@ -130,7 +130,7 @@ class LinearValueIndicator extends StatelessWidget {
                   // alignment: Alignment.topCenter,
                   width: width,
                   height: height,
-                  child: (_onTheCard ?? false) ? Card() : null,
+                  child: (_onTheCard ?? false) ? const Card() : null,
                 ),
                 _buildIndicatorWidget(
                   value: _valueBasis, 
@@ -215,7 +215,7 @@ class LinearValueIndicator extends StatelessWidget {
         ),
       );
     } else {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
   }
   ///

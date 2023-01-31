@@ -20,7 +20,7 @@ void main() {
   test('LazyLoadable delayed value', () async {
     final time = LazyLoadable(
       load: () => Future.delayed(
-        Duration(milliseconds: 100),
+        const Duration(milliseconds: 100),
         () => increment(),
       ),
     );
