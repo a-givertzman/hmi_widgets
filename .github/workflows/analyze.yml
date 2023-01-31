@@ -28,7 +28,7 @@ jobs:
       - name: Clearing project
         run: |
           flutter clean
-          rm ./pubspec.lock
+          rm -f ./pubspec.lock
           # flutter pub cache clean
 
       - name: Install dependencies
