@@ -9,7 +9,8 @@ class CraneLoadChartLegendData {
     required List<double> limits,
     required List<Color> colors,
     required List<String> names,
-  }) : _limits = limits,
+  }) : assert(limits.length == colors.length-1 && colors.length == names.length),
+  _limits = limits,
   _colors = colors,
   _names = names;
   ///
