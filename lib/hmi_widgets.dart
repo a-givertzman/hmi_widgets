@@ -43,3 +43,6 @@ export 'src/charts/live_chart/live_chart_widget.dart';
 //
 // Process
 export 'src/process/electrical/drive/ac_drive_widget.dart';
+//
+// Edit fields
+export 'src/edit_field/date_edit_field.dart';
