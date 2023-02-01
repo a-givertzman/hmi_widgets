@@ -45,4 +45,8 @@ export 'src/charts/live_chart/live_chart_widget.dart';
 export 'src/process/electrical/drive/ac_drive_widget.dart';
 //
 // Edit fields
-export 'src/edit_field/date_edit_field.dart';
+export 'src/edit_field/date_edit_field/date_edit_field.dart';
+export 'src/edit_field/netword_edit_field/network_edit_field.dart';
+export 'src/edit_field/network_dropdown_field/network_dropdown_field.dart';
+export 'src/edit_field/network_dropdown_field/oil_data.dart';
+export 'src/edit_field/network_field_authenticate.dart';
