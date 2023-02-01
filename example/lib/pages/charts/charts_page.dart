@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class ChartsPage extends StatelessWidget {
-  final _swlLimitSet = const [0.3, 0.5, 0.7];
+  final _swlLimitSet = const [0.3, 0.5, 0.7, 1.1];
   final _swlColorSet = const [Colors.grey, Colors.green, Colors.blue, Colors.red];
   final _swlNameSet = const ['Limit1', 'Limit2', 'Limit3', 'Limits4'];
   final _width = 450.0; 

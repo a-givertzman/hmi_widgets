@@ -1,6 +1,6 @@
 import 'package:example/pages/buttons/buttons_page.dart';
 import 'package:example/pages/charts/charts_page.dart';
-import 'package:example/pages/process/ac_drive_page.dart';
+import 'package:example/pages/process/process_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_menu_button.dart';
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
             text: 'Value Indicators',
           ),
           HomeMenuButton(
-            text: 'AC Drive Widget',
+            text: 'Process Widgets',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const ProccessPage(),
