@@ -7,6 +7,7 @@ export 'src/theme/app_theme.dart';
 export 'src/dialogs/complete_dialog.dart';
 export 'src/dialogs/delete_dialog.dart';
 export 'src/dialogs/failure_dialog.dart';
+export 'src/dialogs/auth_dialog.dart';
 //
 // Buttons
 export 'src/buttons/circular_fab_widget.dart';
