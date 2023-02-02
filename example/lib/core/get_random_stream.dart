@@ -1,7 +1,6 @@
 import 'dart:math';
-
 import 'package:hmi_core/hmi_core.dart';
-
+///
 Stream<DsDataPoint<T>> getRandomDataPointStream<T>(
   T Function(Random) randomDelegate, {
     Duration duration = const Duration(seconds: 1),
@@ -18,7 +17,7 @@ Stream<DsDataPoint<T>> getRandomDataPointStream<T>(
     duration: duration,
   );
 }
-
+///
 Stream<T> getRandomStream<T>(
   T Function(Random) randomDelegate, {
     Duration duration = const Duration(seconds: 1),

@@ -3,12 +3,11 @@ import 'package:example/pages/charts/charts_page.dart';
 import 'package:example/pages/edit_fields/edit_fields_page.dart';
 import 'package:example/pages/process/process_page.dart';
 import 'package:flutter/material.dart';
-
 import 'home_menu_button.dart';
-
+///
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
+  //
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +51,7 @@ class HomePage extends StatelessWidget {
             text: 'Edit fields',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const EditFieldsPage(),
+                builder: (_) => EditFieldsPage(),
               ),
             ),
           ),

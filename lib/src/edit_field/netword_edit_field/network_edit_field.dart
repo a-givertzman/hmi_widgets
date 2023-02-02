@@ -46,7 +46,6 @@ class NetworkEditField<T> extends StatefulWidget {
     String? unitText,
     double width = 230.0,
     showApplyButton = false,
-    String notPermittedMessage = 'Editing is not permitted for current user',
     Duration flushBarDuration = const Duration(milliseconds: 1000),
     required String passwordKey,
     required DataSource dataSource,
