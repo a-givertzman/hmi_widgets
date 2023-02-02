@@ -1,19 +1,29 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
   final String _passwordKey;
+  final translate.Localizations _localizations;
+  final Duration _flushBarDuration;
+  final DataSource _dataSource;
   ///
   const AuthDialog({
     Key? key,
     AppUserSingle? currentUser,
     required String passwordKey,
+    required translate.Localizations localizations,
+    Duration flushBarDuration = const Duration(milliseconds: 1000),
+    required DataSource dataSource,
   }) : 
     _currentUser = currentUser,
     _passwordKey = passwordKey,
+    _localizations = localizations,
+    _flushBarDuration = flushBarDuration,
+    _dataSource = dataSource,
     super(key: key);
   ///
   @override
@@ -21,6 +31,9 @@ class AuthDialog extends StatefulWidget {
   State<AuthDialog> createState() => _AuthDialogState(
     currentUser: _currentUser,
     passwordKey: _passwordKey,
+    localizations: _localizations,
+    flushbarDuration: _flushBarDuration,
+    dataSource: _dataSource,
   );
 }
 
@@ -29,15 +42,24 @@ class _AuthDialogState extends State<AuthDialog> {
   static const _debug = true;
   final AppUserSingle? _currentUser;
   final String _passwordKey;
+  final translate.Localizations _localizations;
+  final Duration _flushBarDuration;
+  final DataSource _dataSource;
   late Authenticate _auth;
   late UserLogin _userLogin;
   late UserPassword _userPass;
   _AuthDialogState({
     AppUserSingle? currentUser,
     required String passwordKey,
+    required translate.Localizations localizations,
+    Duration flushbarDuration = const Duration(milliseconds: 1000),
+    required DataSource dataSource,
   }) :
     _currentUser = currentUser,
-    _passwordKey = passwordKey;
+    _passwordKey = passwordKey,
+    _localizations = localizations,
+    _flushBarDuration = flushbarDuration,
+    _dataSource = dataSource;
 
   ///
   @override
@@ -46,10 +68,10 @@ class _AuthDialogState extends State<AuthDialog> {
     _userPass = UserPassword(value: '', key: _passwordKey);
     _auth = Authenticate(
       user: AppUserSingle(
-        remote: dataSource.dataSet('app-user'),
+        remote: _dataSource.dataSet('app-user'),
       ),
       passwordKey: _passwordKey,
-      authMessages: AuthMessages(),
+      localizations: _localizations,
     );
     super.initState();
   }
@@ -72,7 +94,7 @@ class _AuthDialogState extends State<AuthDialog> {
               // padding: const EdgeInsets.all(paddingValue * 2),
               children: [
                 Text(
-                  const AppText('Please authenticate to continue...').local,
+                  _localizations.tr('Please authenticate to continue...'),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: paddingValue),
@@ -92,7 +114,7 @@ class _AuthDialogState extends State<AuthDialog> {
                             Icons.account_circle,
                           ),
                           prefixStyle: Theme.of(context).textTheme.bodyMedium,
-                          labelText: const AppText('Your login').local,
+                          labelText: _localizations.tr('Your login'),
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           errorMaxLines: 3,
                         ),
@@ -124,7 +146,7 @@ class _AuthDialogState extends State<AuthDialog> {
                           autocorrect: false,
                           onChanged: (value) {
                             setState(() {
-                              _userPass = UserPassword(value: value);
+                              _userPass = UserPassword(value: value, key: _passwordKey);
                             });
                           },
                         ),
@@ -141,7 +163,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, true);
                       },
                       child: Text(
-                        const AppText('Cancel').local,
+                        _localizations.tr('Cancel'),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -153,7 +175,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, false);
                       },
                       child: Text(
-                        const AppText('Next').local,
+                        _localizations.tr('Next'),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -175,7 +197,7 @@ class _AuthDialogState extends State<AuthDialog> {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
           authenticated: false, 
-          message: const AppText('Canceled by user').local, 
+          message: _localizations.tr('Canceled by user'), 
           user: AppUserSingle(remote: DataSet.empty()),
         ),
       );
@@ -183,9 +205,9 @@ class _AuthDialogState extends State<AuthDialog> {
       final currentUser = _currentUser;
       if ((currentUser != null) && (_userLogin.value() == '${currentUser['login']}')) {
         FlushbarHelper.createError(
-          duration: AppUiSettings.flushBarDurationMedium,
-          title: const AppText('Authentication').local,
-          message: const AppText('User already authenticated').local,
+          duration: _flushBarDuration,
+          title: _localizations.tr('Authentication'),
+          message: _localizations.tr('User already authenticated'),
         ).show(context);
         return ;
       }
@@ -194,18 +216,18 @@ class _AuthDialogState extends State<AuthDialog> {
           .then((authResult) {
             if (authResult.authenticated) {
               FlushbarHelper.createSuccess(
-                duration: AppUiSettings.flushBarDurationMedium,
-                title: const AppText('Authentication').local,
+                duration: _flushBarDuration,
+                title: _localizations.tr('Authentication'),
                 message: authResult.message,
               ).show(context);
-              Future.delayed(AppUiSettings.flushBarDurationMedium)
+              Future.delayed(_flushBarDuration)
                 .then((_) {
                   Navigator.of(context).pop<AuthResult>(authResult);
                 });
             } else {
               FlushbarHelper.createError(
-                duration: AppUiSettings.flushBarDurationMedium,
-                title: const AppText('Authentication').local,
+                duration: _flushBarDuration,
+                title: _localizations.tr('Authentication'),
                 message: authResult.message,
               ).show(context);
             }
@@ -214,8 +236,8 @@ class _AuthDialogState extends State<AuthDialog> {
         final message = _buildWrongLoginPassMessage();
         log(_debug, '[_AuthDialogState._onComplete] message: $message');
         FlushbarHelper.createError(
-          duration: AppUiSettings.flushBarDurationMedium,
-          title: const AppText('Authentication').local,
+          duration: _flushBarDuration,
+          title: _localizations.tr('Authentication'),
           message: message,
         ).show(context);
       }
@@ -226,12 +248,12 @@ class _AuthDialogState extends State<AuthDialog> {
   String _buildWrongLoginPassMessage() {
     final wrongLoginMessage = _userLogin.validate().valid() 
       ? ''
-      : const AppText('Wrong login').local;
+      : _localizations.tr('Wrong login');
     final wrongPassMessage = _userPass.validate().valid() 
       ? ''
-      : const AppText('Wrong password').local;
+      : _localizations.tr('Wrong password');
     final andText = (wrongLoginMessage.isNotEmpty && wrongPassMessage.isNotEmpty)
-      ? ' ${const AppText('and').local} '
+      ? ' ${_localizations.tr('and')} '
       : '';
     return '$wrongLoginMessage$andText$wrongPassMessage';    
   }

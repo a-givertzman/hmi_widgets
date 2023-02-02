@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 
@@ -22,8 +23,10 @@ class NetworkEditField<T> extends StatefulWidget {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final String _notPermittedMessage;
   final Duration _flushBarDuration;
+  final translate.Localizations _localizations;
+  final DataSource _dataSource;
+  final String _passwordKey;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -45,6 +48,9 @@ class NetworkEditField<T> extends StatefulWidget {
     showApplyButton = false,
     String notPermittedMessage = 'Editing is not permitted for current user',
     Duration flushBarDuration = const Duration(milliseconds: 1000),
+    required String passwordKey,
+    required DataSource dataSource,
+    required translate.Localizations localizations,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -57,8 +63,10 @@ class NetworkEditField<T> extends StatefulWidget {
     _unitText = unitText,
     _width = width,
     _showApplyButton = showApplyButton,
-    _notPermittedMessage = notPermittedMessage,
     _flushBarDuration = flushBarDuration,
+    _passwordKey = passwordKey,
+    _dataSource = dataSource,
+    _localizations = localizations,
     super(key: key);
   ///
   @override
@@ -75,8 +83,10 @@ class NetworkEditField<T> extends StatefulWidget {
     unitText: _unitText,
     width: _width,
     showApplyButton: _showApplyButton,
-    notPermittedMessage: _notPermittedMessage,
     flushBarDuration: _flushBarDuration,
+    localizations: _localizations,
+    passwordKey: _passwordKey,
+    dataSource: _dataSource,
   );
 }
 
@@ -96,8 +106,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final String _notPermittedMessage;
   final Duration _flushBarDuration;
+  final DataSource _dataSource;
+  final String _passwordKey;
+  final translate.Localizations _localizations;
   // bool _accessAllowed = false;
   String _initValue = '';
   ///
@@ -113,8 +125,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required String? unitText,
     required double width,
     required bool showApplyButton,
-    required String notPermittedMessage,
     required Duration flushBarDuration,
+    required DataSource dataSource,
+    required String passwordKey,
+    required translate.Localizations localizations,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
     _allowedGroups = allowedGroups,
@@ -128,8 +142,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _unitText = unitText,
     _width = width,
     _showApplyButton = showApplyButton,
-    _notPermittedMessage = notPermittedMessage,
     _flushBarDuration = flushBarDuration,
+    _dataSource = dataSource,
+    _passwordKey = passwordKey,
+    _localizations = localizations,
     super();
   ///
   @override
@@ -343,7 +359,14 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
           return;
         }
       }
-      networkFieldAuthenticate(context, users).then((AuthResult authResult) {
+      networkFieldAuthenticate(
+        context, 
+        users, 
+        _passwordKey,
+        _localizations,
+        _dataSource,
+        flushbarDuration: _flushBarDuration,
+      ).then((AuthResult authResult) {
         if (authResult.authenticated) {
           setState(() {
             _state.setAuthenticated();
@@ -355,7 +378,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
     FlushbarHelper.createError(
       duration: _flushBarDuration,
-      message: _notPermittedMessage,
+      message: _localizations.tr('Editing is not permitted for current user'),
     ).show(context);
     _state.setAuthenticated(authenticated: false);
     // _accessAllowed = false;
