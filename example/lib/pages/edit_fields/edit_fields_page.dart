@@ -1,4 +1,3 @@
-import 'package:example/core/fake_localizations.dart';
 import 'package:example/pages/edit_fields/fake_oil_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
@@ -48,7 +47,6 @@ class EditFieldsPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: NetworkEditField<double>(
-                    localizations: const FakeLocalizations(),
                     dataSource: _dataSource,
                     passwordKey: 'passwordKey',
                     labelText: 'TestField',
@@ -63,7 +61,6 @@ class EditFieldsPage extends StatelessWidget {
               SizedBox(
                 width: 300,
                 child: NetworkDropdownFormField(
-                  localizations: const FakeLocalizations(),
                   dataSource: _dataSource,
                   passwordKey: 'passwordKey',
                   oilData: const FakeOilData(),

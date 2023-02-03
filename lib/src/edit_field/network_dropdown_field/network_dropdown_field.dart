@@ -2,7 +2,6 @@ import 'dart:core';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
@@ -19,7 +18,6 @@ class NetworkDropdownFormField extends StatefulWidget {
   final String? _labelText;
   final double _width;
   final Duration _flushBarDuration;
-  final translate.Localizations _localizations;
   final DataSource _dataSource;
   final String _passwordKey;
   final OilData _oilData;
@@ -35,7 +33,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     String? labelText,
     double width = 350.0,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
-    required translate.Localizations localizations,
     required DataSource dataSource,
     required String passwordKey,
     required OilData oilData,
@@ -49,7 +46,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     _labelText = labelText,
     _width = width,
     _flushBarDuration = flushBarDuration,
-    _localizations = localizations,
     _dataSource = dataSource,
     _passwordKey = passwordKey,
     _oilData = oilData,
@@ -66,7 +62,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     labelText: _labelText,
     width: _width,
     flushBarDuration: _flushBarDuration,
-    localizations: _localizations,
     dataSource: _dataSource,
     passwordKey: _passwordKey,
     oilData: _oilData,
@@ -87,7 +82,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _labelText;
   final double _width;
   final Duration _flushBarDuration;
-  final translate.Localizations _localizations;
   final DataSource _dataSource;
   final String _passwordKey;
   bool _accessAllowed = false;
@@ -105,7 +99,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required String? labelText,
     required double width,
     required Duration flushBarDuration,
-    required translate.Localizations localizations,
     required OilData oilData,
     required DataSource dataSource,
     required String passwordKey,
@@ -119,7 +112,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _labelText = labelText,
     _width = width,
     _flushBarDuration = flushBarDuration,
-    _localizations = localizations,
     _oilData = oilData,
     _dataSource = dataSource,
     _passwordKey = passwordKey,
@@ -280,7 +272,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
         context, 
         users,
         _passwordKey,
-        _localizations,
         _dataSource,
         flushbarDuration: _flushBarDuration
       ).then((AuthResult authResult) {
@@ -294,7 +285,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     }
     FlushbarHelper.createError(
       duration: _flushBarDuration,
-      message: _localizations.tr('Editing is not permitted for current user'),
+      message: Localized('Editing is not permitted for current user').toString(),
     ).show(context);
     _accessAllowed = false;
   }

@@ -1,13 +1,11 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
   final String _passwordKey;
-  final translate.Localizations _localizations;
   final Duration _flushBarDuration;
   final DataSource _dataSource;
   ///
@@ -15,13 +13,11 @@ class AuthDialog extends StatefulWidget {
     Key? key,
     AppUserSingle? currentUser,
     required String passwordKey,
-    required translate.Localizations localizations,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
     required DataSource dataSource,
   }) : 
     _currentUser = currentUser,
     _passwordKey = passwordKey,
-    _localizations = localizations,
     _flushBarDuration = flushBarDuration,
     _dataSource = dataSource,
     super(key: key);
@@ -31,7 +27,6 @@ class AuthDialog extends StatefulWidget {
   State<AuthDialog> createState() => _AuthDialogState(
     currentUser: _currentUser,
     passwordKey: _passwordKey,
-    localizations: _localizations,
     flushbarDuration: _flushBarDuration,
     dataSource: _dataSource,
   );
@@ -42,7 +37,6 @@ class _AuthDialogState extends State<AuthDialog> {
   static const _debug = true;
   final AppUserSingle? _currentUser;
   final String _passwordKey;
-  final translate.Localizations _localizations;
   final Duration _flushBarDuration;
   final DataSource _dataSource;
   late Authenticate _auth;
@@ -51,13 +45,11 @@ class _AuthDialogState extends State<AuthDialog> {
   _AuthDialogState({
     AppUserSingle? currentUser,
     required String passwordKey,
-    required translate.Localizations localizations,
     Duration flushbarDuration = const Duration(milliseconds: 1000),
     required DataSource dataSource,
   }) :
     _currentUser = currentUser,
     _passwordKey = passwordKey,
-    _localizations = localizations,
     _flushBarDuration = flushbarDuration,
     _dataSource = dataSource;
 
@@ -71,7 +63,6 @@ class _AuthDialogState extends State<AuthDialog> {
         remote: _dataSource.dataSet('app-user'),
       ),
       passwordKey: _passwordKey,
-      localizations: _localizations,
     );
     super.initState();
   }
@@ -94,7 +85,7 @@ class _AuthDialogState extends State<AuthDialog> {
               // padding: const EdgeInsets.all(paddingValue * 2),
               children: [
                 Text(
-                  _localizations.tr('Please authenticate to continue...'),
+                  Localized('Please authenticate to continue...').toString(),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: paddingValue),
@@ -114,7 +105,7 @@ class _AuthDialogState extends State<AuthDialog> {
                             Icons.account_circle,
                           ),
                           prefixStyle: Theme.of(context).textTheme.bodyMedium,
-                          labelText: _localizations.tr('Your login'),
+                          labelText: Localized('Your login').toString(),
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           errorMaxLines: 3,
                         ),
@@ -163,7 +154,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, true);
                       },
                       child: Text(
-                        _localizations.tr('Cancel'),
+                        Localized('Cancel').toString(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -175,7 +166,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, false);
                       },
                       child: Text(
-                        _localizations.tr('Next'),
+                        Localized('Next').toString(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -197,7 +188,7 @@ class _AuthDialogState extends State<AuthDialog> {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
           authenticated: false, 
-          message: _localizations.tr('Canceled by user'), 
+          message: Localized('Canceled by user').toString(), 
           user: AppUserSingle(remote: DataSet.empty()),
         ),
       );
@@ -206,8 +197,8 @@ class _AuthDialogState extends State<AuthDialog> {
       if ((currentUser != null) && (_userLogin.value() == '${currentUser['login']}')) {
         FlushbarHelper.createError(
           duration: _flushBarDuration,
-          title: _localizations.tr('Authentication'),
-          message: _localizations.tr('User already authenticated'),
+          title: Localized('Authentication').toString(),
+          message: Localized('User already authenticated').toString(),
         ).show(context);
         return ;
       }
@@ -217,7 +208,7 @@ class _AuthDialogState extends State<AuthDialog> {
             if (authResult.authenticated) {
               FlushbarHelper.createSuccess(
                 duration: _flushBarDuration,
-                title: _localizations.tr('Authentication'),
+                title: Localized('Authentication').toString(),
                 message: authResult.message,
               ).show(context);
               Future.delayed(_flushBarDuration)
@@ -227,7 +218,7 @@ class _AuthDialogState extends State<AuthDialog> {
             } else {
               FlushbarHelper.createError(
                 duration: _flushBarDuration,
-                title: _localizations.tr('Authentication'),
+                title: Localized('Authentication').toString(),
                 message: authResult.message,
               ).show(context);
             }
@@ -237,7 +228,7 @@ class _AuthDialogState extends State<AuthDialog> {
         log(_debug, '[_AuthDialogState._onComplete] message: $message');
         FlushbarHelper.createError(
           duration: _flushBarDuration,
-          title: _localizations.tr('Authentication'),
+          title: Localized('Authentication').toString(),
           message: message,
         ).show(context);
       }
@@ -248,12 +239,12 @@ class _AuthDialogState extends State<AuthDialog> {
   String _buildWrongLoginPassMessage() {
     final wrongLoginMessage = _userLogin.validate().valid() 
       ? ''
-      : _localizations.tr('Wrong login');
+      : Localized('Wrong login').toString();
     final wrongPassMessage = _userPass.validate().valid() 
       ? ''
-      : _localizations.tr('Wrong password');
+      : Localized('Wrong password').toString();
     final andText = (wrongLoginMessage.isNotEmpty && wrongPassMessage.isNotEmpty)
-      ? ' ${_localizations.tr('and')} '
+      ? ' ${Localized('and')} '
       : '';
     return '$wrongLoginMessage$andText$wrongPassMessage';    
   }
