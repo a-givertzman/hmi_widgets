@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
             text: 'Edit fields',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => EditFieldsPage(),
+                builder: (_) => const EditFieldsPage(),
               ),
             ),
           ),

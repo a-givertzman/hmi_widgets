@@ -65,7 +65,7 @@ class _DateEditFieldState extends State<DateEditField> {
         label: _label != null ? Text(_label!) : null,
         errorStyle: TextStyle(height: 0),
         errorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2.0),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2.0),
         ),
         suffix: Row(
       mainAxisSize: MainAxisSize.min,
