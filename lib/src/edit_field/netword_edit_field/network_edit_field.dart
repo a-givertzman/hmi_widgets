@@ -23,7 +23,6 @@ class NetworkEditField<T> extends StatefulWidget {
   final double _width;
   final bool _showApplyButton;
   final Duration _flushBarDuration;
-  final DataSource _dataSource;
   final String _passwordKey;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
@@ -46,7 +45,6 @@ class NetworkEditField<T> extends StatefulWidget {
     showApplyButton = false,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
     required String passwordKey,
-    required DataSource dataSource,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -61,7 +59,6 @@ class NetworkEditField<T> extends StatefulWidget {
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
     _passwordKey = passwordKey,
-    _dataSource = dataSource,
     super(key: key);
   ///
   @override
@@ -80,7 +77,6 @@ class NetworkEditField<T> extends StatefulWidget {
     showApplyButton: _showApplyButton,
     flushBarDuration: _flushBarDuration,
     passwordKey: _passwordKey,
-    dataSource: _dataSource,
   );
 }
 
@@ -101,7 +97,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final double _width;
   final bool _showApplyButton;
   final Duration _flushBarDuration;
-  final DataSource _dataSource;
   final String _passwordKey;
   // bool _accessAllowed = false;
   String _initValue = '';
@@ -119,7 +114,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required double width,
     required bool showApplyButton,
     required Duration flushBarDuration,
-    required DataSource dataSource,
     required String passwordKey,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
@@ -135,7 +129,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
-    _dataSource = dataSource,
     _passwordKey = passwordKey,
     super();
   ///
@@ -354,7 +347,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         context, 
         users, 
         _passwordKey,
-        _dataSource,
         flushbarDuration: _flushBarDuration,
       ).then((AuthResult authResult) {
         if (authResult.authenticated) {

@@ -18,7 +18,6 @@ class NetworkDropdownFormField extends StatefulWidget {
   final String? _labelText;
   final double _width;
   final Duration _flushBarDuration;
-  final DataSource _dataSource;
   final String _passwordKey;
   final OilData _oilData;
   ///
@@ -33,7 +32,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     String? labelText,
     double width = 350.0,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
-    required DataSource dataSource,
     required String passwordKey,
     required OilData oilData,
   }) : 
@@ -46,7 +44,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     _labelText = labelText,
     _width = width,
     _flushBarDuration = flushBarDuration,
-    _dataSource = dataSource,
     _passwordKey = passwordKey,
     _oilData = oilData,
     super(key: key);
@@ -62,7 +59,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     labelText: _labelText,
     width: _width,
     flushBarDuration: _flushBarDuration,
-    dataSource: _dataSource,
     passwordKey: _passwordKey,
     oilData: _oilData,
   );
@@ -82,7 +78,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _labelText;
   final double _width;
   final Duration _flushBarDuration;
-  final DataSource _dataSource;
   final String _passwordKey;
   bool _accessAllowed = false;
   int? _dropdownValue;
@@ -100,7 +95,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required double width,
     required Duration flushBarDuration,
     required OilData oilData,
-    required DataSource dataSource,
     required String passwordKey,
   }) :
     // _onAuthRequested = onAuthRequested,
@@ -113,7 +107,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _width = width,
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
-    _dataSource = dataSource,
     _passwordKey = passwordKey,
     super();
   ///
@@ -176,7 +169,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
               ),
               suffixIcon: _buildSufixIcon(),
               filled: true,
-              fillColor: Theme.of(context).backgroundColor,
+              fillColor: Theme.of(context).colorScheme.background,
             ),
             alignment: AlignmentDirectional.centerEnd,
             items: _buildDropdownMenuItems(context, _oilNames, _dropMenuItemWidth), 
@@ -272,7 +265,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
         context, 
         users,
         _passwordKey,
-        _dataSource,
         flushbarDuration: _flushBarDuration
       ).then((AuthResult authResult) {
         if (authResult.authenticated) {

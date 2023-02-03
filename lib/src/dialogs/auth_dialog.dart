@@ -13,7 +13,6 @@ class AuthDialog extends StatefulWidget {
     AppUserSingle? currentUser,
     required String passwordKey,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
-    required DataSource dataSource,
   }) : 
     _currentUser = currentUser,
     _passwordKey = passwordKey,

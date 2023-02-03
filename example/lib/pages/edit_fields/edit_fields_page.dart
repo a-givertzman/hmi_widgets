@@ -4,19 +4,6 @@ import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class EditFieldsPage extends StatelessWidget {
-  final _dataSource = DataSource({
-    'app-user': DataSet<Map<String, String>>(
-      params: ApiParams( <String, dynamic>{
-        'api-sql': 'select',
-        'tableName': 'app_user',
-      }),
-      apiRequest: const ApiRequest(
-        url: '127.0.0.1',
-        api: '/get-app-user',
-        port: 8080,
-      ),
-    ),
-  });
   EditFieldsPage({super.key});
   //
   @override
@@ -42,12 +29,11 @@ class EditFieldsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [
-                const Text('Network Edit Field'),
+              children: const [
+                Text('Network Edit Field'),
                 SizedBox(
                   width: 300,
                   child: NetworkEditField<double>(
-                    dataSource: _dataSource,
                     passwordKey: 'passwordKey',
                     labelText: 'TestField',
                   ),
@@ -56,14 +42,13 @@ class EditFieldsPage extends StatelessWidget {
             ),
           ),
           Column(
-            children: [
-              const Text('Date Dropdown Form Field'),
+            children: const [
+              Text('Date Dropdown Form Field'),
               SizedBox(
                 width: 300,
                 child: NetworkDropdownFormField(
-                  dataSource: _dataSource,
                   passwordKey: 'passwordKey',
-                  oilData: const FakeOilData(),
+                  oilData: FakeOilData(),
                 ),
               ),
             ],
