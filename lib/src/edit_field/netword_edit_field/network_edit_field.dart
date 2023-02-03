@@ -377,7 +377,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
     FlushbarHelper.createError(
       duration: _flushBarDuration,
-      message: _localizations.tr('Editing is not permitted for current user'),
+      message: const Localized('Editing is not permitted for current user').toString(),
     ).show(context);
     _state.setAuthenticated(authenticated: false);
     // _accessAllowed = false;

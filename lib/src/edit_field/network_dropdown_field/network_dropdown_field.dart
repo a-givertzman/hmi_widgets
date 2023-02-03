@@ -294,7 +294,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     }
     FlushbarHelper.createError(
       duration: _flushBarDuration,
-      message: _localizations.tr('Editing is not permitted for current user'),
+      message: Localized('Editing is not permitted for current user').toString(),
     ).show(context);
     _accessAllowed = false;
   }
