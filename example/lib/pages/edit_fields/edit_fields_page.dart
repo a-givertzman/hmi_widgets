@@ -1,10 +1,10 @@
 import 'package:example/pages/edit_fields/fake_oil_data.dart';
 import 'package:flutter/material.dart';
-import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class EditFieldsPage extends StatelessWidget {
-  EditFieldsPage({super.key});
+  ///
+  const EditFieldsPage({super.key});
   //
   @override
   Widget build(BuildContext context) {

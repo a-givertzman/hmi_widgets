@@ -1,7 +1,21 @@
 import 'package:example/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_networking/hmi_networking.dart';
 ///
 void main() {
+  DataSource.initialize({
+    'app-user': DataSet<Map<String, String>>(
+      params: ApiParams( <String, dynamic>{
+        'api-sql': 'select',
+        'tableName': 'app_user',
+      }),
+      apiRequest: const ApiRequest(
+        url: '127.0.0.1',
+        api: '/get-app-user',
+        port: 8080,
+      ),
+    ),
+  });
   runApp(const MyApp());
 }
 ///
