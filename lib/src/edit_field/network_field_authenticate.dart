@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
 ///
@@ -8,7 +7,6 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
     BuildContext context, 
     AppUserStacked users,
     String passwordKey,
-    translate.Localizations localizations,
     DataSource dataSource, {
       Duration flushbarDuration = const Duration(milliseconds: 1000),
     }
@@ -20,7 +18,6 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
           key: UniqueKey(),
           currentUser: users.peek,
           passwordKey: passwordKey,
-          localizations: localizations,
           dataSource: dataSource,
           flushBarDuration: flushbarDuration,
         ),

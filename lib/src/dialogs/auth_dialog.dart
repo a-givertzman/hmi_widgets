@@ -1,7 +1,6 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_translate.dart' as translate;
 import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
@@ -13,7 +12,6 @@ class AuthDialog extends StatefulWidget {
     Key? key,
     AppUserSingle? currentUser,
     required String passwordKey,
-    required translate.Localizations localizations,
     Duration flushBarDuration = const Duration(milliseconds: 1000),
     required DataSource dataSource,
   }) : 
