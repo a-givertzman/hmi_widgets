@@ -5,8 +5,6 @@ class SwlData {
   final TextFile _xCsvFile;
   final TextFile _yCsvFile;
   final List<TextFile> _swlCsvFiles;
-  final String _assetPath;
-  final int _count;
   ///
   /// [xCsvFile] load from '$_assetPath/x.csv'
   /// [yCsvFile] load from '$_assetPath/y.csv'
@@ -15,14 +13,11 @@ class SwlData {
     required TextFile xCsvFile,
     required TextFile yCsvFile,
     required List<TextFile> swlCsvFiles,
-    required String assetPath,
     required int count,
   }) :
     _xCsvFile = xCsvFile,
     _yCsvFile = yCsvFile,
-    _swlCsvFiles = swlCsvFiles,
-    _assetPath = assetPath,
-    _count = count;
+    _swlCsvFiles = swlCsvFiles;
   ///
   List<double> _parseStringList(List<String> strings) {
     return strings.map((e) {
@@ -56,11 +51,9 @@ class SwlData {
   ///
   Future<List<double>> get y => _loadAsset(_yCsvFile);
   ///
-  Future<List<List<double>>> get swl async {
+  Future<List<List<double>>> get swl {
     return Future.wait(
-      List.generate(_count, (i) {
-        return _loadAsset(_swlCsvFiles[i]);
-      })
+      _swlCsvFiles.map((swlFile) => _loadAsset(swlFile)),
     );
   }
 }
