@@ -9,13 +9,13 @@ class AcDriveWidget extends StatelessWidget {
   final Stream<DsDataPoint<int>>? _stream;
   final String? _caption;
   final bool _disabled;
-  final Widget _acMotorIcon;
-  final Widget _acMotorFailureIcon;
+  final Widget? _acMotorIcon;
+  final Widget? _acMotorFailureIcon;
   ///
   const AcDriveWidget({
     Key? key,
-    required Widget acMotorIcon,
-    required Widget acMotorFailureIcon,
+    Widget? acMotorIcon,
+    Widget? acMotorFailureIcon,
     Stream<DsDataPoint<int>>? stream,
     String? caption,
     bool disabled = false,
@@ -29,6 +29,8 @@ class AcDriveWidget extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
+    final acMotorIcon = _acMotorIcon ?? Image.asset('default asset from lib');
+    final acMotorFailureIcon = _acMotorFailureIcon ?? Image.asset('default asset from lib');
     final caption = _caption;
     final stateColors = Theme.of(context).stateColors;
     return InvalidStatusIndicator(

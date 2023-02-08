@@ -15,11 +15,11 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: Localized-refactoring
+      ref: master
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: Add-to-hmi_networking
+      ref: master
   fl_chart: ^0.55.1
   another_flushbar: ^1.12.29
 

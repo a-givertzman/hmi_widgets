@@ -22,11 +22,11 @@ dev_dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: Localized-refactoring
+      ref: master
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: Add-to-hmi_networking
+      ref: master
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
