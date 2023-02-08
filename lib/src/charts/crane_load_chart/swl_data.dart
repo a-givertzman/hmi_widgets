@@ -3,13 +3,24 @@ import 'package:hmi_core/hmi_core.dart';
 
 class SwlData {
   static const _debug = true;
+  final TextFile _xCsvFile;
+  final TextFile _yCsvFile;
+  final List<TextFile> _swlCsvFiles;
   final String _assetPath;
   final int _count;
   ///
+  /// xCsvFile load from '$_assetPath/x.csv'
+  /// yCsvFile load from '$_assetPath/y.csv'
   SwlData({
+    required TextFile xCsvFile,
+    required TextFile yCsvFile,
+    required List<TextFile> swlCsvFiles,
     required String assetPath,
     required int count,
   }) :
+    _xCsvFile = xCsvFile,
+    _yCsvFile = yCsvFile,
+    _swlCsvFiles = swlCsvFiles,
     _assetPath = assetPath,
     _count = count;
   ///
@@ -25,8 +36,8 @@ class SwlData {
     }).toList();
   }
   ///
-  Future<List<double>> _loadAsset(String assetName) {
-    return rootBundle.loadString(assetName)
+  Future<List<double>> _loadAsset(TextFile textFile) {
+    return textFile.content
       .then((value) {
         final doubleList = _parseStringList(
           value.replaceAll('\n', ';').replaceAll(',', '.').trim().split(';'),
@@ -41,9 +52,9 @@ class SwlData {
       });
   }
   ///
-  Future<List<double>> get x => _loadAsset('$_assetPath/x.csv');
+  Future<List<double>> get x => _loadAsset(_xCsvFile);
   ///
-  Future<List<double>> get y => _loadAsset('$_assetPath/y.csv');
+  Future<List<double>> get y => _loadAsset(_yCsvFile);
   ///
   Future<List<List<double>>> get swl async {
     return Future.wait(
