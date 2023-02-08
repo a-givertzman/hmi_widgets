@@ -19,8 +19,6 @@ class ProccessPage extends StatelessWidget {
                 stream: getRandomDataPointStream(
                   (random) => random.nextInt(4),
                 ).asBroadcastStream(),
-                acMotorIcon: Image.asset('assets/icons/ac_motor.png'),
-                acMotorFailureIcon: Image.asset('assets/icons/ac_motor_failure.png'),
               ),
             ],
           ),

@@ -1,8 +1,9 @@
 import 'package:example/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 ///
-void main() {
+Future<void> main() async {
   DataSource.initialize({
     'app-user': DataSet<Map<String, String>>(
       params: ApiParams( <String, dynamic>{
@@ -16,6 +17,12 @@ void main() {
       ),
     ),
   });
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppUiSettingsString.initialize(
+    jsonMap: JsonMap<String>.fromTextFile(
+      const TextFile.asset('assets/configs/app_ui_settings_config.json'),
+    ),
+  );
   runApp(const MyApp());
 }
 ///

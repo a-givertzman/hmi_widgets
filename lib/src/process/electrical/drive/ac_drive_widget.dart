@@ -29,8 +29,19 @@ class AcDriveWidget extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
-    final acMotorIcon = _acMotorIcon ?? Image.asset('default asset from lib');
-    final acMotorFailureIcon = _acMotorFailureIcon ?? Image.asset('default asset from lib');
+    final iconsRootDir = 'assets/icons';
+    final acMotorIcon = _acMotorIcon ?? Image(
+      image: AssetImage(
+        '$iconsRootDir/ac_motor.png',
+        package: 'hmi_widgets',
+      ),
+    );
+    final acMotorFailureIcon = _acMotorFailureIcon ?? Image(
+      image: AssetImage(
+        '$iconsRootDir/ac_motor_failure.png',
+        package: 'hmi_widgets',
+      ),
+    );
     final caption = _caption;
     final stateColors = Theme.of(context).stateColors;
     return InvalidStatusIndicator(
@@ -47,28 +58,28 @@ class AcDriveWidget extends StatelessWidget {
               Theme.of(context).stateColors.invalid,
               BlendMode.srcIn,
             ), 
-            child: _acMotorIcon,
+            child: acMotorIcon,
           ),
           posOffIcon: ColorFiltered(
             colorFilter: ColorFilter.mode(
               Theme.of(context).stateColors.off,
               BlendMode.srcIn,
             ), 
-            child: _acMotorIcon,
+            child: acMotorIcon,
           ),
           posOnIcon: ColorFiltered(
             colorFilter: ColorFilter.mode(
               Theme.of(context).stateColors.on,
               BlendMode.srcIn,
             ), 
-            child: _acMotorIcon,
+            child: acMotorIcon,
           ),
           posTransientIcon: ColorFiltered(
             colorFilter: ColorFilter.mode(
               Theme.of(context).stateColors.error,
               BlendMode.srcIn,
             ), 
-            child: _acMotorFailureIcon,
+            child: acMotorFailureIcon,
           ),
         ), 
         caption: (caption != null) 
