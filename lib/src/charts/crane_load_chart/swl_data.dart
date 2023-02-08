@@ -1,16 +1,16 @@
-import 'package:flutter/services.dart';
 import 'package:hmi_core/hmi_core.dart';
 
 class SwlData {
-  static const _debug = true;
+  static final _log = const Log('SwlData')..level = LogLevel.info;
   final TextFile _xCsvFile;
   final TextFile _yCsvFile;
   final List<TextFile> _swlCsvFiles;
   final String _assetPath;
   final int _count;
   ///
-  /// xCsvFile load from '$_assetPath/x.csv'
-  /// yCsvFile load from '$_assetPath/y.csv'
+  /// [xCsvFile] load from '$_assetPath/x.csv'
+  /// [yCsvFile] load from '$_assetPath/y.csv'
+  /// [swlCsvFiles] load from '$_assetPath/swl_$i.csv'
   SwlData({
     required TextFile xCsvFile,
     required TextFile yCsvFile,
@@ -30,7 +30,7 @@ class SwlData {
         final v = double.parse(e);
         return v;
       } catch (error) {
-        log(_debug, 'Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
+        _log.error('Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
         return 0.0;       
       }
     }).toList();
@@ -59,7 +59,7 @@ class SwlData {
   Future<List<List<double>>> get swl async {
     return Future.wait(
       List.generate(_count, (i) {
-        return _loadAsset('$_assetPath/swl_$i.csv');
+        return _loadAsset(_swlCsvFiles[i]);
       })
     );
   }
