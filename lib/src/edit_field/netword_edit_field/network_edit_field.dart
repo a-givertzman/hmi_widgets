@@ -22,8 +22,7 @@ class NetworkEditField<T> extends StatefulWidget {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final Duration _flushBarDuration;
-  final String _passwordKey;
+  final Duration? _flushBarDuration;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -43,8 +42,7 @@ class NetworkEditField<T> extends StatefulWidget {
     String? unitText,
     double width = 230.0,
     showApplyButton = false,
-    Duration flushBarDuration = const Duration(milliseconds: 1000),
-    required String passwordKey,
+    Duration? flushBarDuration,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -58,7 +56,6 @@ class NetworkEditField<T> extends StatefulWidget {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
-    _passwordKey = passwordKey,
     super(key: key);
   ///
   @override
@@ -76,7 +73,6 @@ class NetworkEditField<T> extends StatefulWidget {
     width: _width,
     showApplyButton: _showApplyButton,
     flushBarDuration: _flushBarDuration,
-    passwordKey: _passwordKey,
   );
 }
 
@@ -96,8 +92,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final Duration _flushBarDuration;
-  final String _passwordKey;
+  final Duration? _flushBarDuration;
   // bool _accessAllowed = false;
   String _initValue = '';
   ///
@@ -113,8 +108,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required String? unitText,
     required double width,
     required bool showApplyButton,
-    required Duration flushBarDuration,
-    required String passwordKey,
+    Duration? flushBarDuration,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
     _allowedGroups = allowedGroups,
@@ -129,7 +123,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
-    _passwordKey = passwordKey,
     super();
   ///
   @override
@@ -346,8 +339,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       networkFieldAuthenticate(
         context, 
         users, 
-        _passwordKey,
-        flushbarDuration: _flushBarDuration,
       ).then((AuthResult authResult) {
         if (authResult.authenticated) {
           setState(() {
@@ -359,8 +350,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       });
     }
     FlushbarHelper.createError(
-      duration: _flushBarDuration,
-      message: const Localized('Editing is not permitted for current user').toString(),
+      duration: _flushBarDuration ?? Duration(
+        milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+      ),
+      message: const Localized('Editing is not permitted for current user').v,
     ).show(context);
     _state.setAuthenticated(authenticated: false);
     // _accessAllowed = false;

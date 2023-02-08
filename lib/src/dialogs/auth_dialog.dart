@@ -5,17 +5,14 @@ import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
-  final String _passwordKey;
-  final Duration _flushBarDuration;
+  final Duration? _flushBarDuration;
   ///
   const AuthDialog({
     Key? key,
     AppUserSingle? currentUser,
-    required String passwordKey,
-    Duration flushBarDuration = const Duration(milliseconds: 1000),
+    Duration? flushBarDuration,
   }) : 
     _currentUser = currentUser,
-    _passwordKey = passwordKey,
     _flushBarDuration = flushBarDuration,
     super(key: key);
   ///
@@ -23,7 +20,6 @@ class AuthDialog extends StatefulWidget {
   // ignore: no_logic_in_create_state
   State<AuthDialog> createState() => _AuthDialogState(
     currentUser: _currentUser,
-    passwordKey: _passwordKey,
     flushbarDuration: _flushBarDuration,
   );
 }
@@ -32,28 +28,24 @@ class AuthDialog extends StatefulWidget {
 class _AuthDialogState extends State<AuthDialog> {
   static const _debug = true;
   final AppUserSingle? _currentUser;
-  final String _passwordKey;
-  final Duration _flushBarDuration;
+  final Duration? _flushBarDuration;
   late Authenticate _auth;
   late UserLogin _userLogin;
   late UserPassword _userPass;
   _AuthDialogState({
     AppUserSingle? currentUser,
-    required String passwordKey,
-    Duration flushbarDuration = const Duration(milliseconds: 1000),
+    Duration? flushbarDuration,
   }) :
     _currentUser = currentUser,
-    _passwordKey = passwordKey,
     _flushBarDuration = flushbarDuration;
 
   ///
   @override
   void initState() {
     _userLogin = const UserLogin(value: '');
-    _userPass = UserPassword(value: '', key: _passwordKey);
+    _userPass = UserPassword(value: '');
     _auth = Authenticate(
       user: AppUserSingle(),
-      passwordKey: _passwordKey,
     );
     super.initState();
   }
@@ -76,7 +68,7 @@ class _AuthDialogState extends State<AuthDialog> {
               // padding: const EdgeInsets.all(paddingValue * 2),
               children: [
                 Text(
-                  const Localized('Please authenticate to continue...').toString(),
+                  const Localized('Please authenticate to continue...').v,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: paddingValue),
@@ -96,7 +88,7 @@ class _AuthDialogState extends State<AuthDialog> {
                             Icons.account_circle,
                           ),
                           prefixStyle: Theme.of(context).textTheme.bodyMedium,
-                          labelText: const Localized('Your login').toString(),
+                          labelText: const Localized('Your login').v,
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           errorMaxLines: 3,
                         ),
@@ -128,7 +120,7 @@ class _AuthDialogState extends State<AuthDialog> {
                           autocorrect: false,
                           onChanged: (value) {
                             setState(() {
-                              _userPass = UserPassword(value: value, key: _passwordKey);
+                              _userPass = UserPassword(value: value);
                             });
                           },
                         ),
@@ -145,7 +137,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, true);
                       },
                       child: Text(
-                        const Localized('Cancel').toString(),
+                        const Localized('Cancel').v,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -157,7 +149,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, false);
                       },
                       child: Text(
-                        const Localized('Next').toString(),
+                        const Localized('Next').v,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -174,12 +166,15 @@ class _AuthDialogState extends State<AuthDialog> {
   }
   ///
   void _onComplete(BuildContext context, bool cancel) {
+    final flushBarDuration = _flushBarDuration ?? Duration(
+      milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+    );
     log(_debug, '[_AuthDialogState._onComplete] cancel: $cancel');
     if (cancel) {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
           authenticated: false, 
-          message: const Localized('Canceled by user').toString(), 
+          message: const Localized('Canceled by user').v, 
           user: AppUserSingle(remote: DataSet.empty()),
         ),
       );
@@ -187,9 +182,9 @@ class _AuthDialogState extends State<AuthDialog> {
       final currentUser = _currentUser;
       if ((currentUser != null) && (_userLogin.value() == '${currentUser['login']}')) {
         FlushbarHelper.createError(
-          duration: _flushBarDuration,
-          title: const Localized('Authentication').toString(),
-          message: const Localized('User already authenticated').toString(),
+          duration: flushBarDuration,
+          title: const Localized('Authentication').v,
+          message: const Localized('User already authenticated').v,
         ).show(context);
         return ;
       }
@@ -198,18 +193,18 @@ class _AuthDialogState extends State<AuthDialog> {
           .then((authResult) {
             if (authResult.authenticated) {
               FlushbarHelper.createSuccess(
-                duration: _flushBarDuration,
-                title: const Localized('Authentication').toString(),
+                duration: flushBarDuration,
+                title: const Localized('Authentication').v,
                 message: authResult.message,
               ).show(context);
-              Future.delayed(_flushBarDuration)
+              Future.delayed(flushBarDuration)
                 .then((_) {
                   Navigator.of(context).pop<AuthResult>(authResult);
                 });
             } else {
               FlushbarHelper.createError(
-                duration: _flushBarDuration,
-                title: const Localized('Authentication').toString(),
+                duration: flushBarDuration,
+                title: const Localized('Authentication').v,
                 message: authResult.message,
               ).show(context);
             }
@@ -218,8 +213,8 @@ class _AuthDialogState extends State<AuthDialog> {
         final message = _buildWrongLoginPassMessage();
         log(_debug, '[_AuthDialogState._onComplete] message: $message');
         FlushbarHelper.createError(
-          duration: _flushBarDuration,
-          title: const Localized('Authentication').toString(),
+          duration: flushBarDuration,
+          title: const Localized('Authentication').v,
           message: message,
         ).show(context);
       }
@@ -230,12 +225,12 @@ class _AuthDialogState extends State<AuthDialog> {
   String _buildWrongLoginPassMessage() {
     final wrongLoginMessage = _userLogin.validate().valid() 
       ? ''
-      : const Localized('Wrong login').toString();
+      : const Localized('Wrong login').v;
     final wrongPassMessage = _userPass.validate().valid() 
       ? ''
-      : const Localized('Wrong password').toString();
+      : const Localized('Wrong password').v;
     final andText = (wrongLoginMessage.isNotEmpty && wrongPassMessage.isNotEmpty)
-      ? ' ${const Localized('and')} .toString()'
+      ? ' ${const Localized('and')}'
       : '';
     return '$wrongLoginMessage$andText$wrongPassMessage';    
   }

@@ -17,8 +17,7 @@ class NetworkDropdownFormField extends StatefulWidget {
   final String? _responseTagName;
   final String? _labelText;
   final double _width;
-  final Duration _flushBarDuration;
-  final String _passwordKey;
+  final Duration? _flushBarDuration;
   final OilData _oilData;
   ///
   const NetworkDropdownFormField({
@@ -31,8 +30,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     String? responseTagName,
     String? labelText,
     double width = 350.0,
-    Duration flushBarDuration = const Duration(milliseconds: 1000),
-    required String passwordKey,
+    Duration? flushBarDuration,
     required OilData oilData,
   }) : 
     // _onAuthRequested = onAuthRequested,
@@ -44,7 +42,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     _labelText = labelText,
     _width = width,
     _flushBarDuration = flushBarDuration,
-    _passwordKey = passwordKey,
     _oilData = oilData,
     super(key: key);
   ///
@@ -59,7 +56,6 @@ class NetworkDropdownFormField extends StatefulWidget {
     labelText: _labelText,
     width: _width,
     flushBarDuration: _flushBarDuration,
-    passwordKey: _passwordKey,
     oilData: _oilData,
   );
 }
@@ -77,8 +73,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _responseTagName;
   final String? _labelText;
   final double _width;
-  final Duration _flushBarDuration;
-  final String _passwordKey;
+  final Duration? _flushBarDuration;
   bool _accessAllowed = false;
   int? _dropdownValue;
   int? _initValue;
@@ -93,9 +88,8 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required String? responseTagName,
     required String? labelText,
     required double width,
-    required Duration flushBarDuration,
     required OilData oilData,
-    required String passwordKey,
+    Duration? flushBarDuration,
   }) :
     // _onAuthRequested = onAuthRequested,
     _allowedGroups = allowedGroups,
@@ -107,7 +101,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _width = width,
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
-    _passwordKey = passwordKey,
     super();
   ///
   @override
@@ -264,8 +257,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       networkFieldAuthenticate(
         context, 
         users,
-        _passwordKey,
-        flushbarDuration: _flushBarDuration
       ).then((AuthResult authResult) {
         if (authResult.authenticated) {
           setState(() {
@@ -276,8 +267,10 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       });
     }
     FlushbarHelper.createError(
-      duration: _flushBarDuration,
-      message: Localized('Editing is not permitted for current user').toString(),
+      duration: _flushBarDuration ?? Duration(
+        milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+      ),
+      message: const Localized('Editing is not permitted for current user').v,
     ).show(context);
     _accessAllowed = false;
   }

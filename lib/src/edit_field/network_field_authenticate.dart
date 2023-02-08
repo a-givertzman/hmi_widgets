@@ -6,18 +6,17 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
   Future<AuthResult> networkFieldAuthenticate(
     BuildContext context, 
     AppUserStacked users,
-    String passwordKey, {
-      Duration flushbarDuration = const Duration(milliseconds: 1000),
-    }
   ) {
     const _debug = true;
+    final flushBarDuration = Duration(
+      milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+    );
     return Navigator.of(context).push<AuthResult>(
       MaterialPageRoute(
         builder: (context) => AuthDialog(
           key: UniqueKey(),
           currentUser: users.peek,
-          passwordKey: passwordKey,
-          flushBarDuration: flushbarDuration,
+          flushBarDuration: flushBarDuration,
         ),
         settings: const RouteSettings(name: "/authDialog"),
       ),

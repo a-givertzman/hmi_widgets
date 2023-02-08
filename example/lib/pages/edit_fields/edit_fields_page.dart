@@ -34,7 +34,6 @@ class EditFieldsPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: NetworkEditField<double>(
-                    passwordKey: 'passwordKey',
                     labelText: 'TestField',
                   ),
                 ),
@@ -43,11 +42,10 @@ class EditFieldsPage extends StatelessWidget {
           ),
           Column(
             children: const [
-              Text('Date Dropdown Form Field'),
+              Text('Network Dropdown Form Field'),
               SizedBox(
                 width: 300,
                 child: NetworkDropdownFormField(
-                  passwordKey: 'passwordKey',
                   oilData: FakeOilData(),
                 ),
               ),
