@@ -1,5 +1,5 @@
 import 'package:hmi_core/hmi_core.dart';
-
+///
 class SwlData {
   static final _log = const Log('SwlData')..level = LogLevel.info;
   final TextFile _xCsvFile;
@@ -13,7 +13,6 @@ class SwlData {
     required TextFile xCsvFile,
     required TextFile yCsvFile,
     required List<TextFile> swlCsvFiles,
-    required int count,
   }) :
     _xCsvFile = xCsvFile,
     _yCsvFile = yCsvFile,
