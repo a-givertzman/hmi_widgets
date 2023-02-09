@@ -19,15 +19,17 @@ class SwlData {
     _swlCsvFiles = swlCsvFiles;
   ///
   List<double> _parseStringList(List<String> strings) {
-    return strings.map((e) {
-      try {
-        final v = double.parse(e);
-        return v;
-      } catch (error) {
-        _log.error('Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
-        return 0.0;       
-      }
-    }).toList();
+    return strings
+      .where((string) => string.isNotEmpty)
+      .map((e) {
+        try {
+          final v = double.parse(e);
+          return v;
+        } catch (error) {
+          _log.error('Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
+          return 0.0;       
+        }
+      }).toList();
   }
   ///
   Future<List<double>> _loadAsset(TextFile textFile) {
