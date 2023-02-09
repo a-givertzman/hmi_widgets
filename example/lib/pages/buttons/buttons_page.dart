@@ -1,10 +1,11 @@
 import 'package:example/core/get_random_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
-
+///
 class ButtonsPage extends StatelessWidget {
+  ///
   const ButtonsPage({super.key});
-
+  //
   @override
   Widget build(BuildContext context) {
     return Scaffold(

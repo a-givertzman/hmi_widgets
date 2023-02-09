@@ -1,32 +1,39 @@
-import 'package:flutter/services.dart';
 import 'package:hmi_core/hmi_core.dart';
-
+///
 class SwlData {
-  static const _debug = true;
-  final String _assetPath;
-  final int _count;
+  static final _log = const Log('SwlData')..level = LogLevel.info;
+  final TextFile _xCsvFile;
+  final TextFile _yCsvFile;
+  final List<TextFile> _swlCsvFiles;
   ///
+  /// [xCsvFile] load from '$_assetPath/x.csv'
+  /// [yCsvFile] load from '$_assetPath/y.csv'
+  /// [swlCsvFiles] load from '$_assetPath/swl_$i.csv'
   SwlData({
-    required String assetPath,
-    required int count,
+    required TextFile xCsvFile,
+    required TextFile yCsvFile,
+    required List<TextFile> swlCsvFiles,
   }) :
-    _assetPath = assetPath,
-    _count = count;
+    _xCsvFile = xCsvFile,
+    _yCsvFile = yCsvFile,
+    _swlCsvFiles = swlCsvFiles;
   ///
   List<double> _parseStringList(List<String> strings) {
-    return strings.map((e) {
-      try {
-        final v = double.parse(e);
-        return v;
-      } catch (error) {
-        log(_debug, 'Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
-        return 0.0;       
-      }
-    }).toList();
+    return strings
+      .where((string) => string.trim().isNotEmpty)
+      .map((e) {
+        try {
+          final v = double.parse(e);
+          return v;
+        } catch (error) {
+          _log.error('Ошибка в методе $runtimeType._parseStringList() значение: $e \nошибка: $error'); 
+          return 0.0;       
+        }
+      }).toList();
   }
   ///
-  Future<List<double>> _loadAsset(String assetName) {
-    return rootBundle.loadString(assetName)
+  Future<List<double>> _loadAsset(TextFile textFile) {
+    return textFile.content
       .then((value) {
         final doubleList = _parseStringList(
           value.replaceAll('\n', ';').replaceAll(',', '.').trim().split(';'),
@@ -41,15 +48,13 @@ class SwlData {
       });
   }
   ///
-  Future<List<double>> get x => _loadAsset('$_assetPath/x.csv');
+  Future<List<double>> get x => _loadAsset(_xCsvFile);
   ///
-  Future<List<double>> get y => _loadAsset('$_assetPath/y.csv');
+  Future<List<double>> get y => _loadAsset(_yCsvFile);
   ///
-  Future<List<List<double>>> get swl async {
+  Future<List<List<double>>> get swl {
     return Future.wait(
-      List.generate(_count, (i) {
-        return _loadAsset('$_assetPath/swl_$i.csv');
-      })
+      _swlCsvFiles.map((swlFile) => _loadAsset(swlFile)),
     );
   }
 }
