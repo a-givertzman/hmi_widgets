@@ -20,7 +20,7 @@ class SwlData {
   ///
   List<double> _parseStringList(List<String> strings) {
     return strings
-      .where((string) => string.isNotEmpty)
+      .where((string) => string.trim().isNotEmpty)
       .map((e) {
         try {
           final v = double.parse(e);
