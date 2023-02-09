@@ -6,7 +6,7 @@ void main() {
   Log.initialize(level: LogLevel.off);
   group('SwlData', () {
     test('creates normally with valid files', () async {
-      final swlTestData = [
+      const swlTestData = [
         {
           'text_x': '1,1;2,7;3,2;4;5\n\n6,1;7,2;8,3;9,4;10,5',
           'text_y': '6,1;7,2;8,3;9,4;10,5\n\n\n1,1;2,7;3,2;4;5',
