@@ -52,9 +52,17 @@ void main() {
           yCsvFile: FakeTextFile(textY), 
           swlCsvFiles: textSwls.map((textSwl) => FakeTextFile(textSwl)).toList(),
         );
-        expect(await swlData.x, x);
-        expect(await swlData.y, y);
-        expect(await swlData.swl, swl);
+        final receivedX = await swlData.x;
+        final receivedY = await swlData.y;
+        final receivedSwls = await swlData.swl;
+        expect(receivedX, x);
+        expect(receivedY, y);
+        expect(receivedSwls, swl);
+        for(final receivedSwl in receivedSwls) {
+          expect(receivedX.length, receivedY.length);
+          expect(receivedX.length, receivedSwl.length);
+          expect(receivedY.length, receivedSwl.length);
+        }
       }
     });
   });
