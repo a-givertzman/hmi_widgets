@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_data.dart';
+import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_converter.dart';
 
 import 'converter_data.dart';
@@ -23,11 +24,11 @@ void main() {
         height: height, 
         rawWidth: width, 
         width: width,
-        legendData: CraneLoadChartLegendData(
-          limits: limitSet,
-          colors: colorSet,
-          names: nameSet,
-        ),
+        legendData: await CraneLoadChartLegendJson(
+          JsonList.fromTextFile(
+            TextFile.asset('assetPath')
+          ),
+        ).decoded,
       );
       final convertedPoints = await swlDataConverter.points;
       final convertedColors = await swlDataConverter.swlColors;

@@ -157,16 +157,16 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
               }
             ),
           ),
-          for (int i = 0; i < _swlDataCache.legendData.limits.length; i++) 
+          for (int i = 0; i < _swlDataCache.legendData.limits(_swlIndex).length; i++) 
             Positioned(
               top: i * 24 + 8,
               right: 0,
               child: Container(
                 width: 64,
-                color: _swlDataCache.legendData.colors.elementAt(i),
+                color: _swlDataCache.legendData.colors(_swlIndex).elementAt(i),
                 padding: const EdgeInsets.all(2.0),
                 child: Text(
-                  '${_swlDataCache.legendData.limits.elementAt(i)}',
+                  '${_swlDataCache.legendData.names(_swlIndex).elementAt(i)}',
                   textAlign: TextAlign.center,
                   // textScaleFactor: 1.0,
                 ),

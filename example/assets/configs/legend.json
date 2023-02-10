@@ -1,0 +1,13 @@
+[
+    {
+      "blank": {"limit": 4999.0, "color": "0xFF42A5F5"},
+      "5 t": {"limit": 5000.0, "color": "0xffaa5577"}, 
+      "20 t": {"limit": 20000.0, "color": "0xff115577"}
+    },
+    {
+      "blank": {"limit": 4999.0, "color": "0xFF42A5F5"}, 
+      "5 t": {"limit": 5000.0, "color": "0xffaa5577"}, 
+      "7 t": {"limit": 7000.0, "color": "0xffcc5577"}, 
+      "23 t": {"limit": 23000.0, "color": "0xffee5577"}
+    }
+  ]

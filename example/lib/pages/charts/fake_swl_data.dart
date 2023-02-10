@@ -6,16 +6,19 @@ class FakeSwlData implements SwlData {
   final double _rawHeight;
   final int _pointsCount;
   final int _swlIndexesCount;
+  final double _maxSwlValue;
   ///
   FakeSwlData({
     required double rawWidth, 
     required double rawHeight, 
     required int swlIndexesCount,
     required int pointsCount,
+    required double maxSwlValue,
   }) : _swlIndexesCount = swlIndexesCount,
     _pointsCount = pointsCount,
     _rawHeight = rawHeight,
-    _rawWidth = rawWidth;
+    _rawWidth = rawWidth,
+    _maxSwlValue = maxSwlValue;
   //
   @override
   Future<List<double>> get x {
@@ -39,7 +42,7 @@ class FakeSwlData implements SwlData {
     return Future.value(
       List.generate(_swlIndexesCount, (index) => 
         List.generate(
-          _pointsCount, (index) => random.nextDouble(),
+          _pointsCount, (index) => random.nextDouble() * _maxSwlValue,
         ),
       ),
     );

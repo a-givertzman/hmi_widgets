@@ -62,19 +62,19 @@ class SwlDataConverter implements CraneLoadChartData {
   }
   ///
   List<List<Color>> _convertSwlColors(List<List<double>> swl) {
-    final segments = _getSegments(_legendData.limits);
-    return swl.map((swlLayer) {
-      return swlLayer.map((swlLayerValue) {
-        return _pickSwlColor(swlLayerValue, segments);
+    return swl.asMap().entries.map((swlLayer) {
+      final segments = _getSegments(_legendData.limits(swlLayer.key));
+      return swlLayer.value.map((swlValue) {
+        return _pickSwlColor(swlLayer.key, swlValue, segments);
       }).toList();
     }).toList();
   }  
   ///
-  Color _pickSwlColor(double swl, List<_Gap> segments) {
+  Color _pickSwlColor(int layerIndex, double swl, List<_Gap> segments) {
     final colorIndex = segments.indexWhere(
       (segment) => segment.contains(swl),
     );
-    return _legendData.colors.elementAt(colorIndex);
+    return _legendData.colors(layerIndex).elementAt(colorIndex);
   }
   ///
   List<_Gap> _getSegments(Iterable<double> limits) {
