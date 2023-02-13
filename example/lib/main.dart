@@ -4,6 +4,8 @@ import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 ///
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Log.initialize(level: LogLevel.all);
   DataSource.initialize({
     'app-user': DataSet<Map<String, String>>(
       params: ApiParams( <String, dynamic>{
@@ -17,7 +19,6 @@ Future<void> main() async {
       ),
     ),
   });
-  WidgetsFlutterBinding.ensureInitialized();
   await AppUiSettingsString.initialize(
     jsonMap: JsonMap<String>.fromTextFile(
       const TextFile.asset('assets/configs/app_ui_settings_config.json'),
