@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
+import 'crane_load_chart_legend_widget.dart';
 import 'crane_load_point_painter.dart';
 
 /// диаграмма нагрузки крана
@@ -57,7 +58,7 @@ class CraneLoadChart extends StatefulWidget {
 }
 ///
 class _CraneLoadChartState extends State<CraneLoadChart> {
-  static const _debug = true;
+  static final _log = const Log('_CraneLoadChartState')..level = LogLevel.info;
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
@@ -92,15 +93,15 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   @override
   void initState() {
     _showGrid = widget._showGrid;
-    log(_debug, '[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
-    log(_debug, '[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
-    log(_debug, '[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
+    _log.info('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
+    _log.info('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
+    _log.info('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
 
     final swlIndexStream = _swlIndexStream;
     if (swlIndexStream != null) {
       _swlIndexStreamSubscription = swlIndexStream.listen((event) {
-        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
-        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
+        _log.info('_CraneLoadChartState.swlIndexStream.listen] event: ', event);
+        _log.info('_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
         if (event.status == DsStatus.ok) {            
           if (mounted) setState(() => _swlIndex = event.value);
         }
@@ -112,7 +113,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   Widget build(BuildContext context) {
-    log(_debug, '[_CraneLoadChartState.build]');
+    _log.info('[_CraneLoadChartState.build]');
     // log(_debug, '_CraneLoadChartState.build] count:', count);
     // log(_debug, '_CraneLoadChartState.build] _x.length:', _x.length);
     // log(_debug, '_CraneLoadChartState.build] _y.length:', _y.length);
@@ -152,7 +153,9 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     ),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
               }
             ),
@@ -188,74 +191,5 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
       _swlIndexStreamSubscription.cancel();
     }
     super.dispose();
-  }
-}
-
-class CraneLoadChartLegendWidget extends StatelessWidget {
-  final SwlDataCache _swlDataCache;
-  final int _swlIndex;
-  ///
-  const CraneLoadChartLegendWidget({
-    Key? key,
-    required SwlDataCache swlDataCache,
-    required int swlIndex,
-  }) : 
-    _swlDataCache = swlDataCache, 
-    _swlIndex = swlIndex, 
-    super(key: key);
-  //
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        _swlDataCache.legendData.limits,
-        _swlDataCache.legendData.colors,
-        _swlDataCache.legendData.names,
-      ]),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final limits = (snapshot.data![0] as Iterable<Iterable<double>>)
-            .elementAt(_swlIndex);
-          final colors = (snapshot.data![1] as Iterable<Iterable<Color>>)
-            .elementAt(_swlIndex);
-          final names = (snapshot.data![2] as Iterable<Iterable<String>>)
-            .elementAt(_swlIndex);
-          
-          return SizedBox(
-            width: 68,
-            height: names.length * 28,
-            child: Column(
-              children: [
-                for (int i = 0; i < limits.length; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Container(
-                      height: 24,
-                      width: 64,
-                      color: colors.elementAt(i),
-                      child: Text(
-                        '${names.elementAt(i)}',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }
-        else {
-          return SizedBox(
-            width: 64,
-            height: 64,
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Center(
-                child: const CircularProgressIndicator()
-              ),
-            ),
-          );
-        }
-      },
-    );
   }
 }
