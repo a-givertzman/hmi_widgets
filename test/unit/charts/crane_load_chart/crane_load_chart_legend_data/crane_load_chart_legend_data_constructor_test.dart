@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_data.dart';
-
+import 'fake_legend_json.dart';
 void main() {
   group('CraneLoadChartLegendData constructor', () {
     const validData = [
@@ -26,6 +26,28 @@ void main() {
         'names': [['Gap1', 'Gap2', 'Gap3', 'Gap4']],
       },
     ];
+    test('completes normally on valid data', () async {
+      for(final data in validData) {
+        final legendData = CraneLoadChartLegendData(
+          legendJson: FakeCraneLoadChartLegendJson(data),
+        );
+        expect(
+          await legendData.limits,
+          data['limits'],
+          reason: 'Passed limits is not equals to it\'s origin.'
+        );
+        expect(
+          await legendData.colors,
+          data['colors'],
+          reason: 'Passed colors is not equals to it\'s origin.'
+        );
+        expect(
+          await legendData.names,
+          data['names'],
+          reason: 'Passed names is not equals to it\'s origin.'
+        ); 
+      }
+    });
     const invalidData = [
       {
         'limits': <List<double>>[[]],
@@ -53,28 +75,20 @@ void main() {
         'names': [['Gap1']],
       },
     ];
-    test('completes normally on valid data', () {
-      for(final data in validData) {
-        expect(() => CraneLoadChartLegendData(
-          limits: data['limits'] as List<List<double>>, 
-          colors: data['colors'] as List<List<Color>>,
-          names: data['names'] as List<List<String>>,
-          ), 
-          returnsNormally,
-        );
-      }
-    });
     test('asserts on invalid data', () {
       for(final data in invalidData) {
-        expect(() => CraneLoadChartLegendData(
-          limits: data['limits'] as List<List<double>>, 
-          colors: data['colors'] as List<List<Color>>,
-          names: data['names'] as List<List<String>>,
-          ), 
+        final legendData = CraneLoadChartLegendData(
+          legendJson: FakeCraneLoadChartLegendJson(data),
+        );
+        expect(() async {
+            await legendData.limits;
+            await legendData.colors;
+            await legendData.names;
+          }, 
           throwsA(isA<AssertionError>()),
+          reason: 'Error wasn\'t thrown on invalid json.'
         );
       }
     });
   });
-  
 }

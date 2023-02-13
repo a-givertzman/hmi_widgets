@@ -157,21 +157,14 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
               }
             ),
           ),
-          for (int i = 0; i < _swlDataCache.legendData.limits(_swlIndex).length; i++) 
-            Positioned(
-              top: i * 24 + 8,
-              right: 0,
-              child: Container(
-                width: 64,
-                color: _swlDataCache.legendData.colors(_swlIndex).elementAt(i),
-                padding: const EdgeInsets.all(2.0),
-                child: Text(
-                  '${_swlDataCache.legendData.names(_swlIndex).elementAt(i)}',
-                  textAlign: TextAlign.center,
-                  // textScaleFactor: 1.0,
-                ),
-              ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: CraneLoadChartLegendWidget(
+              swlDataCache: _swlDataCache, 
+              swlIndex: _swlIndex,
             ),
+          ),
         ],
       ),
     );
@@ -195,5 +188,74 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
       _swlIndexStreamSubscription.cancel();
     }
     super.dispose();
+  }
+}
+
+class CraneLoadChartLegendWidget extends StatelessWidget {
+  final SwlDataCache _swlDataCache;
+  final int _swlIndex;
+  ///
+  const CraneLoadChartLegendWidget({
+    Key? key,
+    required SwlDataCache swlDataCache,
+    required int swlIndex,
+  }) : 
+    _swlDataCache = swlDataCache, 
+    _swlIndex = swlIndex, 
+    super(key: key);
+  //
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Future.wait([
+        _swlDataCache.legendData.limits,
+        _swlDataCache.legendData.colors,
+        _swlDataCache.legendData.names,
+      ]),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final limits = (snapshot.data![0] as Iterable<Iterable<double>>)
+            .elementAt(_swlIndex);
+          final colors = (snapshot.data![1] as Iterable<Iterable<Color>>)
+            .elementAt(_swlIndex);
+          final names = (snapshot.data![2] as Iterable<Iterable<String>>)
+            .elementAt(_swlIndex);
+          
+          return SizedBox(
+            width: 68,
+            height: names.length * 28,
+            child: Column(
+              children: [
+                for (int i = 0; i < limits.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Container(
+                      height: 24,
+                      width: 64,
+                      color: colors.elementAt(i),
+                      child: Text(
+                        '${names.elementAt(i)}',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }
+        else {
+          return SizedBox(
+            width: 64,
+            height: 64,
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Center(
+                child: const CircularProgressIndicator()
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 }

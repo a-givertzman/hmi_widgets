@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_converter.dart';
 
 import 'converter_data.dart';
 import '../fake_swl_data.dart';
+import 'fake_legend_data.dart';
 
 void main() {
   test('SwlDataConverter conversion ordering', () async {
@@ -24,11 +23,11 @@ void main() {
         height: height, 
         rawWidth: width, 
         width: width,
-        legendData: await CraneLoadChartLegendJson(
-          JsonList.fromTextFile(
-            TextFile.asset('assetPath')
-          ),
-        ).decoded,
+        legendData: FakeCraneLoadChartLegendData(
+          [limitSet, limitSet],
+          [colorSet, colorSet],
+          [nameSet, nameSet],
+        ),
       );
       final convertedPoints = await swlDataConverter.points;
       final convertedColors = await swlDataConverter.swlColors;

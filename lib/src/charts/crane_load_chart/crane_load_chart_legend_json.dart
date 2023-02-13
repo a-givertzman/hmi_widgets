@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_data.dart';
 ///
 class CraneLoadChartLegendJson {
   final JsonList<Map<String, dynamic>> _jsonList;
   ///
-  CraneLoadChartLegendJson(this._jsonList);
+  const CraneLoadChartLegendJson({
+    required JsonList<Map<String, dynamic>> jsonList,
+  }) :
+    _jsonList = jsonList;
   ///
-  Future<CraneLoadChartLegendData> get decoded async {
+  Future<Map<String, List<List<dynamic>>>> get decoded {
     return _jsonList.decoded
-      .then((list) => list.fold(
+      .then(
+        (list) => list.fold<Map<String, List<List<dynamic>>>>(
           {
             'limits': <List<double>>[],
             'colors': <List<Color>>[],
@@ -34,11 +37,9 @@ class CraneLoadChartLegendJson {
             return craneLoadChartLegendMap;
           },
         ),
-      )
-      .then((craneLoadChartLegendMap) => CraneLoadChartLegendData(
-        limits: craneLoadChartLegendMap['limits'] as List<List<double>>,
-        colors: craneLoadChartLegendMap['colors'] as List<List<Color>>,
-        names: craneLoadChartLegendMap['names'] as List<List<String>>,
+      ).onError((error, stackTrace) => throw Failure.convertion(
+        message: 'Ошибка в методе $runtimeType.decoded: $error', 
+        stackTrace: stackTrace,
       ));
   }
 }
