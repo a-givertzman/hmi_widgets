@@ -23,7 +23,6 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    final vMargin = AppUiSettingsNum.getSetting('padding') * 0.25;
     final hMargin = AppUiSettingsNum.getSetting('padding') * 0.5;
     final padding = AppUiSettingsNum.getSetting('padding') * 0.5;
     return FutureBuilder(
@@ -45,7 +44,7 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
             ),
             child: ListView.separated(
               shrinkWrap: true,
-              padding:  EdgeInsets.symmetric(vertical: vMargin, horizontal: hMargin),
+              padding:  EdgeInsets.symmetric(vertical: padding, horizontal: hMargin),
               itemBuilder: (_, i) => Container(
                 padding:  EdgeInsets.all(padding),
                 color: colors.elementAt(i),
@@ -56,7 +55,7 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
                   textAlign: _textAlign,
                 ),
               ), 
-              separatorBuilder: (_, __) => SizedBox(height: hMargin), 
+              separatorBuilder: (_, __) => SizedBox(height: padding), 
               itemCount: names.length,
             ),
           );
