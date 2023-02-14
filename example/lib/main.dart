@@ -19,7 +19,7 @@ Future<void> main() async {
       ),
     ),
   });
-  await AppUiSettingsString.initialize(
+  await AppSettings.initialize(
     jsonMap: JsonMap<String>.fromTextFile(
       const TextFile.asset('assets/configs/app_ui_settings_config.json'),
     ),
