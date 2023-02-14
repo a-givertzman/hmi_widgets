@@ -58,6 +58,7 @@ class CraneLoadChart extends StatefulWidget {
     xScale: _swlDataCache.rawWidth / _swlDataCache.width,
     yScale: _swlDataCache.rawHeight / _swlDataCache.height,
     legendWidth: _legendWidth,
+    showGrid: _showGrid,
   );
 }
 ///
@@ -70,8 +71,8 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final Color? _axisColor;
   final SwlDataCache _swlDataCache;
   final double? _legendWidth;
+  final bool _showGrid;
   late StreamSubscription _swlIndexStreamSubscription;
-  late bool _showGrid;
   int _swlIndex = 0;
   // late Image? _background;
   ///
@@ -86,6 +87,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double yAxisValue,
     required double xScale,
     required double yScale,
+    required bool showGrid,
     double? legendWidth,
   }) :
   _swlDataCache = swlDataCache,
@@ -95,11 +97,11 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
   _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
   _legendWidth = legendWidth,
+  _showGrid = showGrid,
   super();
   ///
   @override
   void initState() {
-    _showGrid = widget._showGrid;
     _log.debug('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
     _log.debug('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
     _log.debug('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
