@@ -3,7 +3,7 @@ import 'package:hmi_core/hmi_core.dart';
 /// Reads oil names and spec data for [SettingsPage] - HPU 
 /// from assets json file
 class OilData {
-  static final _log = const Log('OilData')..level = LogLevel.info;
+  static final _log = const Log('OilData')..level = LogLevel.debug;
   final JsonMap<Map<String, dynamic>> _jsonMap;
   final Map<String, Map<String, dynamic>> _data =  {};
   ///
@@ -25,7 +25,7 @@ class OilData {
       });
     }
     final namesList = _data.keys.toList();
-    _log.info('[$OilData.names] namesList: $namesList');
+    _log.debug('[$OilData.names] namesList: $namesList');
     return Future.value(namesList);
   }
 }

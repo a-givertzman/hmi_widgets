@@ -58,7 +58,7 @@ class CraneLoadChart extends StatefulWidget {
 }
 ///
 class _CraneLoadChartState extends State<CraneLoadChart> {
-  static final _log = const Log('_CraneLoadChartState')..level = LogLevel.info;
+  static final _log = const Log('_CraneLoadChartState')..level = LogLevel.debug;
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
@@ -93,15 +93,15 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   @override
   void initState() {
     _showGrid = widget._showGrid;
-    _log.info('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
-    _log.info('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
-    _log.info('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
+    _log.debug('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
+    _log.debug('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
+    _log.debug('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
 
     final swlIndexStream = _swlIndexStream;
     if (swlIndexStream != null) {
       _swlIndexStreamSubscription = swlIndexStream.listen((event) {
-        _log.info('_CraneLoadChartState.swlIndexStream.listen] event: ', event);
-        _log.info('_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
+        _log.debug('_CraneLoadChartState.swlIndexStream.listen] event: ', event);
+        _log.debug('_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
         if (event.status == DsStatus.ok) {            
           if (mounted) setState(() => _swlIndex = event.value);
         }
@@ -113,7 +113,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   Widget build(BuildContext context) {
-    _log.info('[_CraneLoadChartState.build]');
+    _log.debug('[_CraneLoadChartState.build]');
     // log(_debug, '_CraneLoadChartState.build] count:', count);
     // log(_debug, '_CraneLoadChartState.build] _x.length:', _x.length);
     // log(_debug, '_CraneLoadChartState.build] _y.length:', _y.length);
