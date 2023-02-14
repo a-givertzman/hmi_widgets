@@ -1,50 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
-import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 ///
 class CraneLoadChartLegendWidget extends StatelessWidget {
   final SwlDataCache _swlDataCache;
-  final double? _width;
+  final double _width;
   final TextAlign? _textAlign;
   final int _swlIndex;
+  final Setting _padding;
+  final Setting _margin;
   ///
   const CraneLoadChartLegendWidget({
     Key? key,
     required SwlDataCache swlDataCache,
     required int swlIndex,
-    double? width,
+    required double width,
+    Setting padding = const Setting('padding', factor: 0.5),
+    Setting margin = const Setting('padding', factor: 0.5),
     TextAlign? textAlign
   }) : 
     _swlDataCache = swlDataCache,
     _width = width,
+    _padding = padding,
+    _margin = margin,
     _textAlign = textAlign,
     _swlIndex = swlIndex, 
     super(key: key);
   //
   @override
   Widget build(BuildContext context) {
-    final hMargin = AppUiSettingsNum.getSetting('padding') * 0.5;
-    final padding = AppUiSettingsNum.getSetting('padding') * 0.5;
-    return FutureBuilder(
-      future: Future.wait([
-        _swlDataCache.legendData.colors,
-        _swlDataCache.legendData.names,
-      ]),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final colors = (snapshot.data![0] as Iterable<Iterable<Color>>)
-            .elementAt(_swlIndex);
-          final names = (snapshot.data![1] as Iterable<Iterable<String>>)
-            .elementAt(_swlIndex);
-          return SizedBox(
-            width: _computeWidth(
-              DefaultTextStyle.of(context).style.fontSize ?? 100, 
-              names, 
-              _width,
-            ),
-            child: ListView.separated(
+    final padding = _padding.toDouble;
+    return SizedBox(
+      width: _width,
+      child: FutureBuilder(
+        future: Future.wait([
+          _swlDataCache.legendData.colors,
+          _swlDataCache.legendData.names,
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final colors = (snapshot.data![0] as Iterable<Iterable<Color>>)
+              .elementAt(_swlIndex);
+            final names = (snapshot.data![1] as Iterable<Iterable<String>>)
+              .elementAt(_swlIndex);
+            return ListView.separated(
               shrinkWrap: true,
-              padding:  EdgeInsets.symmetric(vertical: padding, horizontal: hMargin),
+              padding:  EdgeInsets.symmetric(
+                vertical: padding, 
+                horizontal: _margin.toDouble,
+              ),
               itemBuilder: (_, i) => Container(
                 padding:  EdgeInsets.all(padding),
                 color: colors.elementAt(i),
@@ -57,31 +61,15 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
               ), 
               separatorBuilder: (_, __) => SizedBox(height: padding), 
               itemCount: names.length,
-            ),
-          );
-        }
-        else {
-          return Padding(
-            padding: EdgeInsets.all(padding),
-            child: const SizedBox(
-              width: 64,
-              height: 64,
+            );
+          }
+          else {
+            return const Center(
               child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
+            );
+          }
+        },
+      ),
     );
-  }
-  ///
-  double _computeWidth(double fontSize, Iterable<String> names, double? width) {
-    if (width == null) {
-      final maxLength = names.fold(
-        0, 
-        (value, element) => element.length > value ? element.length : value,
-      );
-      return maxLength * fontSize;
-    }
-    return width;
   }
 }

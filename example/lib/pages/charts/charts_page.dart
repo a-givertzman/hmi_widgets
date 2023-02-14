@@ -21,6 +21,7 @@ class ChartsPage extends StatelessWidget {
         child: Column(
           children: [
             CraneLoadChart(
+              legendWidth: 64,
               swlIndexStream: getRandomDataPointStream(
                 (random) => random.nextInt(2),
               ),

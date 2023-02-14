@@ -19,7 +19,7 @@ class CraneLoadChart extends StatefulWidget {
   final Color backgroundColor;
   final Color? _axisColor;
   final double _pointSize;
-  final double? _legendWidth;
+  final double _legendWidth;
   ///
   /// [swlLimitSet] Обязательно должен быть отсортирован по возрастанию
   const CraneLoadChart({
@@ -32,7 +32,7 @@ class CraneLoadChart extends StatefulWidget {
     double pointSize = 1.0,
     Color? axisColor, 
     required SwlDataCache swlDataCache,
-    double? legendWidth,
+    required double legendWidth,
   }) : 
     _swlIndexStream = swlIndexStream,
     _xAxisValue = xAxisValue,
@@ -70,7 +70,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final double _pointSize;
   final Color? _axisColor;
   final SwlDataCache _swlDataCache;
-  final double? _legendWidth;
+  final double _legendWidth;
   final bool _showGrid;
   late StreamSubscription _swlIndexStreamSubscription;
   int _swlIndex = 0;
@@ -88,7 +88,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double xScale,
     required double yScale,
     required bool showGrid,
-    double? legendWidth,
+    required double legendWidth,
   }) :
   _swlDataCache = swlDataCache,
   _swlIndexStream = swlIndexStream,

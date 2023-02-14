@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 
@@ -351,7 +352,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
     FlushbarHelper.createError(
       duration: _flushBarDuration ?? Duration(
-        milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+        milliseconds: const Setting('flushBarDurationMedium').toInt,
       ),
       message: const Localized('Editing is not permitted for current user').v,
     ).show(context);
