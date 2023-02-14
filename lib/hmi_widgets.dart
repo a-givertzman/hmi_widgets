@@ -34,6 +34,7 @@ export 'src/indicators/value_indicators/text_value_indicator_widget.dart';
 //
 // Charts
 export 'src/charts/crane_load_chart/crane_load_chart.dart';
+export 'src/charts/crane_load_chart/crane_load_chart_legend_widget.dart';
 export 'src/charts/crane_load_chart/swl_data_cache.dart';
 export 'src/charts/crane_load_chart/swl_data_converter.dart';
 export 'src/charts/crane_load_chart/swl_data.dart';

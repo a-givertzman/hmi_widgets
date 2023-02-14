@@ -19,6 +19,7 @@ class CraneLoadChart extends StatefulWidget {
   final Color backgroundColor;
   final Color? _axisColor;
   final double _pointSize;
+  final double? _legendWidth;
   ///
   /// [swlLimitSet] Обязательно должен быть отсортирован по возрастанию
   const CraneLoadChart({
@@ -31,6 +32,7 @@ class CraneLoadChart extends StatefulWidget {
     double pointSize = 1.0,
     Color? axisColor, 
     required SwlDataCache swlDataCache,
+    double? legendWidth,
   }) : 
     _swlIndexStream = swlIndexStream,
     _xAxisValue = xAxisValue,
@@ -39,6 +41,7 @@ class CraneLoadChart extends StatefulWidget {
     _swlDataCache = swlDataCache,  
     _axisColor = axisColor, 
     _pointSize = pointSize,
+    _legendWidth = legendWidth,
     super(key: key);
   ///
   @override
@@ -54,6 +57,7 @@ class CraneLoadChart extends StatefulWidget {
     yAxisValue: _yAxisValue,
     xScale: _swlDataCache.rawWidth / _swlDataCache.width,
     yScale: _swlDataCache.rawHeight / _swlDataCache.height,
+    legendWidth: _legendWidth,
   );
 }
 ///
@@ -65,6 +69,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final double _pointSize;
   final Color? _axisColor;
   final SwlDataCache _swlDataCache;
+  final double? _legendWidth;
   late StreamSubscription _swlIndexStreamSubscription;
   late bool _showGrid;
   int _swlIndex = 0;
@@ -81,6 +86,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double yAxisValue,
     required double xScale,
     required double yScale,
+    double? legendWidth,
   }) :
   _swlDataCache = swlDataCache,
   _swlIndexStream = swlIndexStream,
@@ -88,6 +94,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   _pointSize = pointSize,
   _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
   _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
+  _legendWidth = legendWidth,
   super();
   ///
   @override
@@ -164,8 +171,9 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
             top: 0,
             right: 0,
             child: CraneLoadChartLegendWidget(
-              swlDataCache: _swlDataCache, 
+              swlDataCache: _swlDataCache,
               swlIndex: _swlIndex,
+              width: _legendWidth,
             ),
           ),
         ],

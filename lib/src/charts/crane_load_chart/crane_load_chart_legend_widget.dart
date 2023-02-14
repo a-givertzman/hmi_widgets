@@ -1,73 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
-
+import 'package:hmi_core/hmi_core.dart';
+///
 class CraneLoadChartLegendWidget extends StatelessWidget {
   final SwlDataCache _swlDataCache;
+  final double? _width;
+  final TextAlign? _textAlign;
   final int _swlIndex;
   ///
   const CraneLoadChartLegendWidget({
     Key? key,
     required SwlDataCache swlDataCache,
     required int swlIndex,
+    double? width,
+    TextAlign? textAlign
   }) : 
-    _swlDataCache = swlDataCache, 
+    _swlDataCache = swlDataCache,
+    _width = width,
+    _textAlign = textAlign,
     _swlIndex = swlIndex, 
     super(key: key);
   //
   @override
   Widget build(BuildContext context) {
+    final vMargin = AppUiSettingsNum.getSetting('padding') * 0.25;
+    final hMargin = AppUiSettingsNum.getSetting('padding') * 0.5;
+    final padding = AppUiSettingsNum.getSetting('padding') * 0.5;
     return FutureBuilder(
       future: Future.wait([
-        _swlDataCache.legendData.limits,
         _swlDataCache.legendData.colors,
         _swlDataCache.legendData.names,
       ]),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final limits = (snapshot.data![0] as Iterable<Iterable<double>>)
+          final colors = (snapshot.data![0] as Iterable<Iterable<Color>>)
             .elementAt(_swlIndex);
-          final colors = (snapshot.data![1] as Iterable<Iterable<Color>>)
+          final names = (snapshot.data![1] as Iterable<Iterable<String>>)
             .elementAt(_swlIndex);
-          final names = (snapshot.data![2] as Iterable<Iterable<String>>)
-            .elementAt(_swlIndex);
-          
           return SizedBox(
-            width: 68,
-            height: names.length * 28,
-            child: Column(
-              children: [
-                for (int i = 0; i < limits.length; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Container(
-                      height: 24,
-                      width: 64,
-                      color: colors.elementAt(i),
-                      child: Center(
-                        child: Text(
-                          '${names.elementAt(i)}',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
+            width: _computeWidth(
+              DefaultTextStyle.of(context).style.fontSize ?? 100, 
+              names, 
+              _width,
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              padding:  EdgeInsets.symmetric(vertical: vMargin, horizontal: hMargin),
+              itemBuilder: (_, i) => Container(
+                padding:  EdgeInsets.all(padding),
+                color: colors.elementAt(i),
+                child: Text(
+                  '${names.elementAt(i)}',
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  textAlign: _textAlign,
+                ),
+              ), 
+              separatorBuilder: (_, __) => SizedBox(height: hMargin), 
+              itemCount: names.length,
             ),
           );
         }
         else {
-          return const SizedBox(
-            width: 64,
-            height: 64,
-            child: Padding(
-              padding: EdgeInsets.all(2.0),
-              child: Center(
-                child: CircularProgressIndicator()
-              ),
+          return Padding(
+            padding: EdgeInsets.all(padding),
+            child: const SizedBox(
+              width: 64,
+              height: 64,
+              child: CircularProgressIndicator(),
             ),
           );
         }
       },
     );
+  }
+  ///
+  double _computeWidth(double fontSize, Iterable<String> names, double? width) {
+    if (width == null) {
+      final maxLength = names.fold(
+        0, 
+        (value, element) => element.length > value ? element.length : value,
+      );
+      return maxLength * fontSize;
+    }
+    return width;
   }
 }
