@@ -6,40 +6,49 @@ class FakeSwlData implements SwlData {
   final double _rawHeight;
   final int _pointsCount;
   final int _swlIndexesCount;
+  final double _maxSwlValue;
+  final Duration _dataDelay;
   ///
   FakeSwlData({
     required double rawWidth, 
     required double rawHeight, 
     required int swlIndexesCount,
     required int pointsCount,
+    required double maxSwlValue,
+    Duration dataDelay = const Duration(milliseconds: 500),
   }) : _swlIndexesCount = swlIndexesCount,
     _pointsCount = pointsCount,
     _rawHeight = rawHeight,
-    _rawWidth = rawWidth;
+    _rawWidth = rawWidth,
+    _maxSwlValue = maxSwlValue,
+    _dataDelay = dataDelay;
   //
   @override
   Future<List<double>> get x {
     final random = Random();
-    return Future.value(
-      List.generate(_pointsCount, (index) => random.nextDouble() * _rawWidth),
+    return Future.delayed(
+      _dataDelay,
+      () => List.generate(_pointsCount, (index) => random.nextDouble() * _rawWidth),
     );
   }
   //
   @override
   Future<List<double>> get y {
     final random = Random();
-    return Future.value(
-      List.generate(_pointsCount, (index) => random.nextDouble() * _rawHeight),
+    return Future.delayed(
+      _dataDelay,
+      () => List.generate(_pointsCount, (index) => random.nextDouble() * _rawHeight),
     );
   }
   //
   @override
   Future<List<List<double>>> get swl {
     final random = Random();
-    return Future.value(
-      List.generate(_swlIndexesCount, (index) => 
+    return Future.delayed(
+      _dataDelay,
+      () => List.generate(_swlIndexesCount, (index) => 
         List.generate(
-          _pointsCount, (index) => random.nextDouble(),
+          _pointsCount, (index) => random.nextDouble() * _maxSwlValue,
         ),
       ),
     );

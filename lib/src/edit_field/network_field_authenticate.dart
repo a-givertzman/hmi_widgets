@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
 ///
@@ -9,7 +10,7 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
   ) {
     const _debug = true;
     final flushBarDuration = Duration(
-      milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+      milliseconds: const Setting('flushBarDurationMedium').toInt,
     );
     return Navigator.of(context).push<AuthResult>(
       MaterialPageRoute(

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
+import 'crane_load_chart_legend_widget.dart';
 import 'crane_load_point_painter.dart';
 
 /// диаграмма нагрузки крана
@@ -18,6 +20,7 @@ class CraneLoadChart extends StatefulWidget {
   final Color backgroundColor;
   final Color? _axisColor;
   final double _pointSize;
+  final double _legendWidth;
   ///
   /// [swlLimitSet] Обязательно должен быть отсортирован по возрастанию
   const CraneLoadChart({
@@ -30,6 +33,7 @@ class CraneLoadChart extends StatefulWidget {
     double pointSize = 1.0,
     Color? axisColor, 
     required SwlDataCache swlDataCache,
+    required double legendWidth,
   }) : 
     _swlIndexStream = swlIndexStream,
     _xAxisValue = xAxisValue,
@@ -38,6 +42,7 @@ class CraneLoadChart extends StatefulWidget {
     _swlDataCache = swlDataCache,  
     _axisColor = axisColor, 
     _pointSize = pointSize,
+    _legendWidth = legendWidth,
     super(key: key);
   ///
   @override
@@ -53,19 +58,23 @@ class CraneLoadChart extends StatefulWidget {
     yAxisValue: _yAxisValue,
     xScale: _swlDataCache.rawWidth / _swlDataCache.width,
     yScale: _swlDataCache.rawHeight / _swlDataCache.height,
+    legendWidth: _legendWidth,
+    showGrid: _showGrid,
   );
 }
 ///
+///
 class _CraneLoadChartState extends State<CraneLoadChart> {
-  static const _debug = true;
-  final Stream<DsDataPoint<int>>? _swlIndexStream;
+  static final _log = const Log('_CraneLoadChartState')..level = LogLevel.debug;
+  final Stream<DsDataPoint<int>>? _swlIndexPointStream;
+  late final Stream<int>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
   final SwlDataCache _swlDataCache;
-  late StreamSubscription _swlIndexStreamSubscription;
-  late bool _showGrid;
+  final double _legendWidth;
+  final bool _showGrid;
   int _swlIndex = 0;
   // late Image? _background;
   ///
@@ -80,30 +89,33 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double yAxisValue,
     required double xScale,
     required double yScale,
+    required bool showGrid,
+    required double legendWidth,
   }) :
   _swlDataCache = swlDataCache,
-  _swlIndexStream = swlIndexStream,
+  _swlIndexPointStream = swlIndexStream,
   _axisColor = axisColor,
   _pointSize = pointSize,
   _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
   _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
+  _legendWidth = legendWidth,
+  _showGrid = showGrid,
   super();
   ///
   @override
   void initState() {
-    _showGrid = widget._showGrid;
-    log(_debug, '[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
-    log(_debug, '[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
-    log(_debug, '[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
-
-    final swlIndexStream = _swlIndexStream;
-    if (swlIndexStream != null) {
-      _swlIndexStreamSubscription = swlIndexStream.listen((event) {
-        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event: ', event);
-        log(_debug, '_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
+    _log.debug('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
+    _log.debug('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
+    _log.debug('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
+    final swlIndexPointStream = _swlIndexPointStream;
+    if (swlIndexPointStream != null) {
+      _swlIndexStream = swlIndexPointStream.map((event) {
+        _log.debug('_CraneLoadChartState.swlIndexStream.listen] event: ', event);
+        _log.debug('_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
         if (event.status == DsStatus.ok) {            
-          if (mounted) setState(() => _swlIndex = event.value);
+          _swlIndex = event.value;
         }
+        return _swlIndex;
       });
     }
     super.initState();
@@ -112,7 +124,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   Widget build(BuildContext context) {
-    log(_debug, '[_CraneLoadChartState.build]');
+    _log.debug('[_CraneLoadChartState.build]');
     // log(_debug, '_CraneLoadChartState.build] count:', count);
     // log(_debug, '_CraneLoadChartState.build] _x.length:', _x.length);
     // log(_debug, '_CraneLoadChartState.build] _y.length:', _y.length);
@@ -135,43 +147,53 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                 if (snapshot.hasData) {
                   final points = snapshot.data![0] as List<Offset>;
                   final colors = snapshot.data![1] as List<List<Color>>;
-                  return CustomPaint(
-                    isComplex: true,
-                    // willChange: false,
-                    size: size,
-                    foregroundPainter: CraneLoadPointPainter(
-                      xAxis: _xAxis,
-                      yAxis: _yAxis,
-                      showGrid: _showGrid,
-                      points: points,
-                      colors: colors[_swlIndex],
-                      size: size,
-                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                      backgroundColor: widget.backgroundColor,
-                      pointSize: _pointSize,
-                    ),
+                  return StreamBuilder<int>(
+                    stream: _swlIndexStream,
+                    initialData: _swlIndex,
+                    builder: (context, snapshot) {
+                      return CustomPaint(
+                        isComplex: true,
+                        // willChange: false,
+                        size: size,
+                        foregroundPainter: CraneLoadPointPainter(
+                          xAxis: _xAxis,
+                          yAxis: _yAxis,
+                          showGrid: _showGrid,
+                          points: points,
+                          colors: colors[_swlIndex],
+                          size: size,
+                          axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                          backgroundColor: widget.backgroundColor,
+                          pointSize: _pointSize,
+                        ),
+                      );
+                    }
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return Center(
+                    child: CupertinoActivityIndicator(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  );
                 }
               }
             ),
           ),
-          for (int i = 0; i < _swlDataCache.legendData.limits.length; i++) 
-            Positioned(
-              top: i * 24 + 8,
-              right: 0,
-              child: Container(
-                width: 64,
-                color: _swlDataCache.legendData.colors.elementAt(i),
-                padding: const EdgeInsets.all(2.0),
-                child: Text(
-                  '${_swlDataCache.legendData.limits.elementAt(i)}',
-                  textAlign: TextAlign.center,
-                  // textScaleFactor: 1.0,
-                ),
-              ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: StreamBuilder<int>(
+              stream: _swlIndexStream,
+              initialData: _swlIndex,
+              builder: (context, snapshot) {
+                return CraneLoadChartLegendWidget(
+                  swlDataCache: _swlDataCache,
+                  swlIndex: _swlIndex,
+                  width: _legendWidth,
+                );
+              }
             ),
+          ),
         ],
       ),
     );
@@ -191,9 +213,6 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   void dispose() {
-    if (_swlIndexStream != null) {
-      _swlIndexStreamSubscription.cancel();
-    }
     super.dispose();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:hmi_core/hmi_core.dart';
 ///
 class SwlData {
-  static final _log = const Log('SwlData')..level = LogLevel.info;
+  static final _log = const Log('SwlData')..level = LogLevel.debug;
   final TextFile _xCsvFile;
   final TextFile _yCsvFile;
   final List<TextFile> _swlCsvFiles;

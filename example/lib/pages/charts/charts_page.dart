@@ -1,12 +1,11 @@
 import 'package:example/core/get_random_stream.dart';
 import 'package:example/pages/charts/fake_swl_data.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
+import 'delayed_crane_load_chart_legend_data.dart';
 ///
 class ChartsPage extends StatelessWidget {
-  final _swlLimitSet = const [0.3, 0.5, 0.7, 1.1];
-  final _swlColorSet = const [Colors.grey, Colors.green, Colors.blue, Colors.red];
-  final _swlNameSet = const ['Limit1', 'Limit2', 'Limit3', 'Limits4'];
   final _width = 450.0; 
   final _height = 450.0;
   final _rawWidth = 20.0;
@@ -20,35 +19,54 @@ class ChartsPage extends StatelessWidget {
         title: const Text('Charts'),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CraneLoadChart(
-              swlIndexStream: getRandomDataPointStream(
-                (random) => random.nextInt(4),
-              ),
-              xAxisValue: 5.0, 
-              yAxisValue: 5.0,
-              backgroundColor: Theme.of(context).colorScheme.background, 
-              swlDataCache: SwlDataCache(
-                swlDataConverter: SwlDataConverter(
-                  height: _height, 
-                  width: _width,
-                  rawWidth: _rawWidth, 
-                  rawHeight: _rawHeight, 
-                  legendData: CraneLoadChartLegendData(
-                    limits: _swlLimitSet, 
-                    colors: _swlColorSet, 
-                    names: _swlNameSet,
+            Column(
+              children: [
+                const Text('CraneLoadChart'),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
                   ),
-                  swlData: FakeSwlData(
-                    rawWidth: _rawWidth, 
-                    rawHeight: _rawHeight,
-                    swlIndexesCount: 5, 
-                    pointsCount: 500,
+                  child: CraneLoadChart(
+                    showGrid: true,
+                    legendWidth: 64,
+                    swlIndexStream: getRandomDataPointStream(
+                      (random) => random.nextInt(2),
+                    ).asBroadcastStream(),
+                    xAxisValue: 5.0, 
+                    yAxisValue: 5.0,
+                    backgroundColor: Theme.of(context).colorScheme.background, 
+                    swlDataCache: SwlDataCache(
+                      swlDataConverter: SwlDataConverter(
+                        height: _height, 
+                        width: _width,
+                        rawWidth: _rawWidth, 
+                        rawHeight: _rawHeight, 
+                        legendData: DelayedCraneLoadChartLegendData(
+                          delay: const Duration(milliseconds: 500),
+                          legendJson: CraneLoadChartLegendJson(
+                            jsonList: JsonList.fromTextFile(
+                              const TextFile.asset('assets/configs/legend.json'),
+                            ),
+                          ),
+                        ),
+                        swlData: FakeSwlData(
+                          rawWidth: _rawWidth, 
+                          rawHeight: _rawHeight,
+                          maxSwlValue: 20000.0,
+                          swlIndexesCount: 2, 
+                          pointsCount: 500,
+                        ),
+                      ),
+                    ),
+                    pointSize: 5.0,
                   ),
                 ),
-              ),
-              pointSize: 5.0,
+              ],
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
@@ -167,7 +168,7 @@ class _AuthDialogState extends State<AuthDialog> {
   ///
   void _onComplete(BuildContext context, bool cancel) {
     final flushBarDuration = _flushBarDuration ?? Duration(
-      milliseconds: AppUiSettingsNum.getSetting('flushBarDurationMedium') as int,
+      milliseconds: const Setting('flushBarDurationMedium').toInt,
     );
     log(_debug, '[_AuthDialogState._onComplete] cancel: $cancel');
     if (cancel) {

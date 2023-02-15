@@ -1,28 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 ///
-/// Holds colors and names coresponding to swl values gaps for [CraneLoadChart] legend
+/// Holds colors and names corresponding to swl values gaps for [CraneLoadChart] legend
 class CraneLoadChartLegendData {
-  final List<double> _limits;
-  final List<Color> _colors;
-  final List<String> _names;
+  final CraneLoadChartLegendJson _legendJson;
+  final List<List<double>> _limits = [];
+  final List<List<Color>> _colors = [];
+  final List<List<String>> _names = [];
   ///
   /// [limits.length] = [colors.length] = [names.length] 
-  const CraneLoadChartLegendData({
-    required List<double> limits,
-    required List<Color> colors,
-    required List<String> names,
+  CraneLoadChartLegendData({
+    required CraneLoadChartLegendJson legendJson,
   }) : 
-    assert(limits.length > 0),
-    assert(colors.length > 0),
-    assert(names.length > 0),
-    assert(limits.length == colors.length && colors.length == names.length),
-    _limits = limits,
-    _colors = colors,
-    _names = names;
+    _legendJson = legendJson;
   ///
-  Iterable<double> get limits => _limits;
+  Future<Iterable<Iterable<double>>> get limits async {
+    if (_limits.isEmpty) {
+      await _fillListsFromJson(_legendJson);
+    }
+    return Future.value(_limits);
+  }
   ///
-  Iterable<Color> get colors => _colors;
+  Future<Iterable<Iterable<Color>>> get colors async {
+    if (_colors.isEmpty) {
+      await _fillListsFromJson(_legendJson);
+    }
+    return Future.value(_colors);
+  }
   ///
-  Iterable<String> get names => _names;
+  Future<Iterable<Iterable<String>>> get names async {
+    if (_names.isEmpty) {
+      await _fillListsFromJson(_legendJson);
+    }
+    return Future.value(_names);
+  }
+  ///
+  Future<void> _fillListsFromJson(CraneLoadChartLegendJson legendJson) {
+    return legendJson.decoded
+    .then((legendMap) {
+      final limits = legendMap['limits'] as List<List<double>>;
+      final colors = legendMap['colors'] as List<List<Color>>;
+      final names = legendMap['names'] as List<List<String>>;
+      assert(limits.length == colors.length && colors.length == names.length);
+      for(int i = 0; i < limits.length; i++) {
+        assert(limits[i].length == colors[i].length && colors[i].length == names[i].length);
+      }
+      _limits.addAll(limits);
+      _colors.addAll(colors);
+      _names.addAll(names);
+    }); 
+  } 
 }
