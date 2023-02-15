@@ -63,9 +63,11 @@ class CraneLoadChart extends StatefulWidget {
   );
 }
 ///
+///
 class _CraneLoadChartState extends State<CraneLoadChart> {
   static final _log = const Log('_CraneLoadChartState')..level = LogLevel.debug;
-  final Stream<DsDataPoint<int>>? _swlIndexStream;
+  final Stream<DsDataPoint<int>>? _swlIndexPointStream;
+  late final Stream<int>? _swlIndexStream;
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
   final double _pointSize;
@@ -73,7 +75,6 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final SwlDataCache _swlDataCache;
   final double _legendWidth;
   final bool _showGrid;
-  late StreamSubscription _swlIndexStreamSubscription;
   int _swlIndex = 0;
   // late Image? _background;
   ///
@@ -92,7 +93,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double legendWidth,
   }) :
   _swlDataCache = swlDataCache,
-  _swlIndexStream = swlIndexStream,
+  _swlIndexPointStream = swlIndexStream,
   _axisColor = axisColor,
   _pointSize = pointSize,
   _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
@@ -106,15 +107,15 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     _log.debug('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
     _log.debug('[_CraneLoadChartState.initState] legendData colors: ', _swlDataCache.legendData.colors);
     _log.debug('[_CraneLoadChartState.initState] legendData names: ', _swlDataCache.legendData.names);
-
-    final swlIndexStream = _swlIndexStream;
-    if (swlIndexStream != null) {
-      _swlIndexStreamSubscription = swlIndexStream.listen((event) {
+    final swlIndexPointStream = _swlIndexPointStream;
+    if (swlIndexPointStream != null) {
+      _swlIndexStream = swlIndexPointStream.map((event) {
         _log.debug('_CraneLoadChartState.swlIndexStream.listen] event: ', event);
         _log.debug('_CraneLoadChartState.swlIndexStream.listen] event.status: ', event.status);
         if (event.status == DsStatus.ok) {            
-          if (mounted) setState(() => _swlIndex = event.value);
+          _swlIndex = event.value;
         }
+        return _swlIndex;
       });
     }
     super.initState();
@@ -146,21 +147,27 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                 if (snapshot.hasData) {
                   final points = snapshot.data![0] as List<Offset>;
                   final colors = snapshot.data![1] as List<List<Color>>;
-                  return CustomPaint(
-                    isComplex: true,
-                    // willChange: false,
-                    size: size,
-                    foregroundPainter: CraneLoadPointPainter(
-                      xAxis: _xAxis,
-                      yAxis: _yAxis,
-                      showGrid: _showGrid,
-                      points: points,
-                      colors: colors[_swlIndex],
-                      size: size,
-                      axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
-                      backgroundColor: widget.backgroundColor,
-                      pointSize: _pointSize,
-                    ),
+                  return StreamBuilder<int>(
+                    stream: _swlIndexStream,
+                    initialData: _swlIndex,
+                    builder: (context, snapshot) {
+                      return CustomPaint(
+                        isComplex: true,
+                        // willChange: false,
+                        size: size,
+                        foregroundPainter: CraneLoadPointPainter(
+                          xAxis: _xAxis,
+                          yAxis: _yAxis,
+                          showGrid: _showGrid,
+                          points: points,
+                          colors: colors[_swlIndex],
+                          size: size,
+                          axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                          backgroundColor: widget.backgroundColor,
+                          pointSize: _pointSize,
+                        ),
+                      );
+                    }
                   );
                 } else {
                   return Center(
@@ -175,10 +182,16 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
           Positioned(
             top: 0,
             right: 0,
-            child: CraneLoadChartLegendWidget(
-              swlDataCache: _swlDataCache,
-              swlIndex: _swlIndex,
-              width: _legendWidth,
+            child: StreamBuilder<int>(
+              stream: _swlIndexStream,
+              initialData: _swlIndex,
+              builder: (context, snapshot) {
+                return CraneLoadChartLegendWidget(
+                  swlDataCache: _swlDataCache,
+                  swlIndex: _swlIndex,
+                  width: _legendWidth,
+                );
+              }
             ),
           ),
         ],
@@ -200,9 +213,6 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   ///
   @override
   void dispose() {
-    if (_swlIndexStream != null) {
-      _swlIndexStreamSubscription.cancel();
-    }
     super.dispose();
   }
 }

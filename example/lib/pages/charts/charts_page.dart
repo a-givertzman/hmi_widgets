@@ -36,7 +36,7 @@ class ChartsPage extends StatelessWidget {
                     legendWidth: 64,
                     swlIndexStream: getRandomDataPointStream(
                       (random) => random.nextInt(2),
-                    ),
+                    ).asBroadcastStream(),
                     xAxisValue: 5.0, 
                     yAxisValue: 5.0,
                     backgroundColor: Theme.of(context).colorScheme.background, 
