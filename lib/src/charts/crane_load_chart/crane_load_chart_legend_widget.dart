@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_cache.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
@@ -64,8 +65,10 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
             );
           }
           else {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: CupertinoActivityIndicator(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
             );
           }
         },

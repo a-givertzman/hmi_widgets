@@ -3,6 +3,7 @@ import 'package:example/pages/charts/fake_swl_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
+import 'delayed_crane_load_chart_legend_data.dart';
 ///
 class ChartsPage extends StatelessWidget {
   final _width = 450.0; 
@@ -18,39 +19,54 @@ class ChartsPage extends StatelessWidget {
         title: const Text('Charts'),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CraneLoadChart(
-              legendWidth: 64,
-              swlIndexStream: getRandomDataPointStream(
-                (random) => random.nextInt(2),
-              ),
-              xAxisValue: 5.0, 
-              yAxisValue: 5.0,
-              backgroundColor: Theme.of(context).colorScheme.background, 
-              swlDataCache: SwlDataCache(
-                swlDataConverter: SwlDataConverter(
-                  height: _height, 
-                  width: _width,
-                  rawWidth: _rawWidth, 
-                  rawHeight: _rawHeight, 
-                  legendData: CraneLoadChartLegendData(
-                    legendJson: CraneLoadChartLegendJson(
-                      jsonList: JsonList.fromTextFile(
-                        const TextFile.asset('assets/configs/legend.json'),
-                      ),
+            Column(
+              children: [
+                const Text('CraneLoadChart'),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                   ),
-                  swlData: FakeSwlData(
-                    rawWidth: _rawWidth, 
-                    rawHeight: _rawHeight,
-                    maxSwlValue: 20000.0,
-                    swlIndexesCount: 2, 
-                    pointsCount: 500,
+                  child: CraneLoadChart(
+                    showGrid: true,
+                    legendWidth: 64,
+                    swlIndexStream: getRandomDataPointStream(
+                      (random) => random.nextInt(2),
+                    ),
+                    xAxisValue: 5.0, 
+                    yAxisValue: 5.0,
+                    backgroundColor: Theme.of(context).colorScheme.background, 
+                    swlDataCache: SwlDataCache(
+                      swlDataConverter: SwlDataConverter(
+                        height: _height, 
+                        width: _width,
+                        rawWidth: _rawWidth, 
+                        rawHeight: _rawHeight, 
+                        legendData: DelayedCraneLoadChartLegendData(
+                          delay: const Duration(milliseconds: 500),
+                          legendJson: CraneLoadChartLegendJson(
+                            jsonList: JsonList.fromTextFile(
+                              const TextFile.asset('assets/configs/legend.json'),
+                            ),
+                          ),
+                        ),
+                        swlData: FakeSwlData(
+                          rawWidth: _rawWidth, 
+                          rawHeight: _rawHeight,
+                          maxSwlValue: 20000.0,
+                          swlIndexesCount: 2, 
+                          pointsCount: 500,
+                        ),
+                      ),
+                    ),
+                    pointSize: 5.0,
                   ),
                 ),
-              ),
-              pointSize: 5.0,
+              ],
             ),
           ],
         ),
