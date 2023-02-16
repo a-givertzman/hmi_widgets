@@ -51,8 +51,8 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
                 horizontal: _margin.toDouble,
               ),
               itemBuilder: (_, i) => Container(
-                padding:  EdgeInsets.all(padding),
-                color: colors.elementAt(i).withOpacity(0.5),
+                padding:  EdgeInsets.symmetric(vertical: padding * 0.5, horizontal: padding),
+                color: colors.elementAt(i).withOpacity(0.3),
                 child: Text(
                   '${names.elementAt(i)}',
                   softWrap: false,
