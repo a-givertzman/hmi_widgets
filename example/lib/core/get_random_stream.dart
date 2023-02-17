@@ -9,7 +9,7 @@ Stream<DsDataPoint<T>> getRandomDataPointStream<T>(
   return getRandomStream((random) => 
     DsDataPoint(
       type: DsDataType.uInt, 
-      name: DsPointName(fullPath: '/test'),
+      name: DsPointName('/test'),
       value: randomDelegate(random),
       status: DsStatus.ok,
       timestamp: DsTimeStamp.now().toString(),
