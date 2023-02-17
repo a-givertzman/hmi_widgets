@@ -74,7 +74,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
     _unitTextStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
     return StreamBuilder<DsDataPoint<num>>(
       initialData: DsDataPoint<num>(
-        type: DsDataType.bool, name: DsPointName(fullPath: '/test'), value: 0.0, status: DsStatus.obsolete, timestamp: '',
+        type: DsDataType.bool, name: DsPointName('/test'), value: 0.0, status: DsStatus.obsolete, timestamp: '',
       ),
       stream: _stream,
       builder: (context, snapshot) {

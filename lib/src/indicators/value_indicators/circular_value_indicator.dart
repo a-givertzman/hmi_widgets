@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/core/relative_value.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Круговой индикатор значения из потока [stream] <DsDataPoint<double>.
