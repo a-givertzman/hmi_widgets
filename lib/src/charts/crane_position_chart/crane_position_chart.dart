@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-
 import 'crane_position_painter.dart';
 ///
 class CranePositionChart extends StatefulWidget {
@@ -29,17 +28,17 @@ class CranePositionChart extends StatefulWidget {
     _xScale = rawWidth / width,
     _yScale = rawHeight / height,
     super(key: key);
-  ///
+  //
   @override
   State<CranePositionChart> createState() => _CranePositionChartState();
 }
 
-
+///
 class _CranePositionChartState extends State<CranePositionChart> {
   // static const _debug = true;
   final DrawingController _drawingController = DrawingController();
   Offset _point = Offset.zero;
-  ///
+  //
   @override
   void initState() {
     widget._xStream.listen((event) {
@@ -54,7 +53,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
     });
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final size = Size(widget._width, widget._height);
@@ -76,7 +75,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
     );
   }
 }
-
+///
 class DrawingController extends ChangeNotifier {
   Offset _point = Offset.zero;
   ///

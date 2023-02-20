@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+///
 void showFailureDialog(BuildContext context, {Widget? title, Widget? content}) {
   showDialog<bool>(
     context: context, 

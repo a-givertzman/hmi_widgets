@@ -11,12 +11,10 @@ Color colorShiftLightness(Color color, double factor) {
   if (lightness > 1) return hslColor.withLightness(1).toColor();
   return hslColor.withLightness(lightness).toColor();
 }
-
 ///
 Color colorInvert(Color color) {
   final r = 255 - color.red;
   final g = 255 - color.green;
   final b = 255 - color.blue;
-
   return Color.fromARGB((color.opacity * 255).round(), r, g, b);
 }

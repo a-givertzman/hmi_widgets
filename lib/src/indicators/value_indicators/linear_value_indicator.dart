@@ -79,7 +79,7 @@ class LinearValueIndicator extends StatelessWidget {
     _onTheCard = onTheCard,
     _cardPadding = cardPadding ?? 8.0,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     double value = 0;

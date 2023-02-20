@@ -45,7 +45,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
     super(key: key);
-  ///
+  //
   @override
   State<NetworkDropdownFormField> createState() => _NetworkDropdownFormFieldState(
     // onAuthRequested: _onAuthRequested,
@@ -103,7 +103,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
     super();
-  ///
+  //
   @override
   void initState() {
     super.initState();
@@ -114,7 +114,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
         });
       });
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final width = _width;

@@ -24,7 +24,7 @@ class ControlButtonIndicator extends StatefulWidget {
     _stateColor = stateColor,
     _captionColor = captionColor,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<ControlButtonIndicator> createState() => _ControlButtonIndicatorState(
@@ -68,7 +68,7 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
     super() {
       log(_debug, '[$_ControlButtonIndicatorState]');
     }
-  ///
+  //
   @override
   void initState() {
     _animationController = AnimationController(
@@ -81,7 +81,7 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
     }
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     _invalidValueColor = Theme.of(context).stateColors.invalid;

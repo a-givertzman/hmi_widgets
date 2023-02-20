@@ -23,7 +23,7 @@ class BoolColorIndicator extends StatefulWidget {
     _falseColor = falseColor,
     _iconData = iconData,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<BoolColorIndicator> createState() => _BoolColorIndicatorState(
@@ -55,7 +55,7 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
     _falseColor = falseColor,
     _iconData = iconData,
     super();
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     _invalidValueColor = Theme.of(context).stateColors.invalid;
@@ -111,5 +111,4 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
     }
     return color;
   }
-
 }

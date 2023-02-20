@@ -24,7 +24,7 @@ class TextValueIndicator extends StatefulWidget {
     _high = high,
     _low = low,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<TextValueIndicator> createState() => _TextValueIndicatorState(
@@ -61,12 +61,12 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
     _high = high,
     _low = low,
     super();
-  ///
+  //
   @override
   void initState() {
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     _stateColors = Theme.of(context).stateColors;
@@ -117,6 +117,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
       ],
     );
   }
+  ///
   List<Widget> _buildUnitText(String valueUnit, Color? color) {
     if (valueUnit.isNotEmpty) {
       return [

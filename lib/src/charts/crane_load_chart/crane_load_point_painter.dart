@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
@@ -37,7 +36,7 @@ class CraneLoadPointPainter extends CustomPainter {
     _pointSize = pointSize,
     code = Random().nextInt(1000),
     super();
-  ///
+  //
   @override
   void paint(Canvas canvas, Size size) {
     log(_debug, '[$CraneLoadPointPainter.paint]');
@@ -123,7 +122,7 @@ class CraneLoadPointPainter extends CustomPainter {
       );
     }
   }
-  ///
+  //
   @override
   bool shouldRepaint(covariant CraneLoadPointPainter oldDelegate) {
     // return true;

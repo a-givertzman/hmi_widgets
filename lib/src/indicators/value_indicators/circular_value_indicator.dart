@@ -66,7 +66,7 @@ class CircularValueIndicator extends StatelessWidget {
     _highColor = highColor,
     // _disabled = disabled ?? false,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     // log(CircularBarIndicator._debug, '[$CircularBarIndicator.build]');

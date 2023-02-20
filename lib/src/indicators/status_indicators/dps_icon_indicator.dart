@@ -36,7 +36,7 @@ class DpsIconIndicator extends StatefulWidget {
     _posTransientIcon = posTransientIcon,
     _showInvalidStatusIndicator = showInvalidStatusIndicator,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<DpsIconIndicator> createState() => _DpsIconIndicatorState(
@@ -76,7 +76,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
     _posTransientIcon = posTransientIcon,
     _showInvalidStatusIndicator = showInvalidStatusIndicator,
     super();  
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final stateColors = Theme.of(context).stateColors;
@@ -201,6 +201,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
       ],
     );
   }
+  ///
   Widget _offIconDefault(
     BuildContext context, 
     Color? color, 
@@ -226,6 +227,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
       ],
     );
   }
+  ///
   Widget _onIconDefault(
     BuildContext context, 
     Color? color, 
@@ -251,6 +253,7 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
       ],
     );
   }
+  ///
   Widget _transientIconDefault(
     BuildContext context, 
     Color? color, 

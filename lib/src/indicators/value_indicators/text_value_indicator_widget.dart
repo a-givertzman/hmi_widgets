@@ -25,7 +25,7 @@ class TextIndicatorWidget extends StatelessWidget {
     _width = width,
     _height = height,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -43,6 +43,7 @@ class TextIndicatorWidget extends StatelessWidget {
       ),
     );
   }
+  ///
   Widget _buildWidget(BuildContext context, Widget indicator, Widget caption) {
     // top alignment
     if (_alignment == Alignment.topLeft) {

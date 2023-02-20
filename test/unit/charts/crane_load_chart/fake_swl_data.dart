@@ -1,5 +1,5 @@
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data.dart';
-//
+///
 class FakeSwlData implements SwlData {
   final List<double> _x;
   final List<double> _y;

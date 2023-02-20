@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
@@ -33,7 +32,7 @@ class LiveChartWidget extends StatefulWidget {
     _xInterval = xInterval,
     _caption = caption,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<LiveChartWidget> createState() => _LiveChartWidgetState(
@@ -77,7 +76,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
     _xInterval = xInterval,
     _caption = caption,
     super();
-  ///
+  //
   @override
   void initState() {
     _chartLineColor = Colors.greenAccent;
@@ -87,7 +86,6 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
         setState(() {});
       }
     });
-
     final stream = _stream;
     if (stream != null) {
       stream.listen((event) {
@@ -101,7 +99,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
     }
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -194,6 +192,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
       ),
     );
   }
+  //
   LineChartBarData _chartLine(List<FlSpot> points) {
     return LineChartBarData(
       spots: points,
@@ -212,6 +211,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> {
       // isStepLineChart: true,
     );
   }
+  //
   @override
   void dispose() {
     _timer.cancel();

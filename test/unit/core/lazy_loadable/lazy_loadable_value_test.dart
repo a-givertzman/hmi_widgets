@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_widgets/src/core/lazy_loadable.dart';
-
 void main() {
   late int startValue;
   int increment() => ++startValue;

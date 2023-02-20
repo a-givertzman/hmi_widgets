@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_converter.dart';
-
 import 'converter_data.dart';
 import '../fake_swl_data.dart';
 import 'fake_legend_data.dart';
-
 void main() {
   test('SwlDataConverter conversion ordering', () async {
     for(int i = 0; i < converterData.length; i++) {

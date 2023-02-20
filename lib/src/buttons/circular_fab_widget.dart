@@ -1,7 +1,6 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
+///
 class CircularFabWidget extends StatefulWidget {
   final Widget _icon;
   final List<Widget> _children;
@@ -26,7 +25,7 @@ class CircularFabWidget extends StatefulWidget {
     _revAnimationDuration = revAnimationDuration,
     _radius = radius,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<CircularFabWidget> createState() => _CircularFabWidgetState(
@@ -63,7 +62,7 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
     _fwdAnimationDuration = fwdAnimationDuration,
     _revAnimationDuration = revAnimationDuration,
     _radius = radius;
-  ///
+  //
   @override
   void initState() {
     _animationController = AnimationController(
@@ -73,7 +72,7 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
     );
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final menuButton = FloatingActionButton(
@@ -117,7 +116,7 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
       child: button,
     );
   }
-  ///
+  //
   @override
   void dispose() {
     _animationController.dispose();
@@ -143,7 +142,7 @@ class FlowMenuDelegate extends FlowDelegate {
     _padding = padding,
     _radius = radius ?? buttonSize * 2,
     super(repaint: animationController);
-  ///
+  //
   @override
   void paintChildren(FlowPaintingContext context) {
     // final size = context.size;
@@ -174,7 +173,7 @@ class FlowMenuDelegate extends FlowDelegate {
       );
     }
   }
-  ///
+  //
   @override
   bool shouldRepaint(covariant FlowDelegate oldDelegate) => false;
 }

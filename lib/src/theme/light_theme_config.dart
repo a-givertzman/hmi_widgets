@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/theme/theme_config.dart';
 import 'color_utils.dart';
-
+///
 class LightThemeConfig implements ThemeConfig {
-
+  //
   @override
   final canvasColor = const Color(0xffFFFFFF);
-
+  //
   @override
   final primaryColor = const Color(0xff7C987F);
   @override
@@ -15,31 +15,30 @@ class LightThemeConfig implements ThemeConfig {
   late final primaryColorLight = colorShiftLightness(primaryColor, 1.2);
   @override
   late final primaryColorDark = colorShiftLightness(primaryColor, 0.6);
-
+  //
   @override
   final secondary = const Color(0xff5D7E5F); // colorShiftLightness(canvasColor, 0.8); //Color(0xff269926);// Color(0xff242527);
   @override
   final onSecondary = const Color(0xff242527);
-
+  //
   @override
   final tertiary = const Color(0xff98BBFF);
   @override
   final onTertiary = const Color(0xff3B3B3B);
-
+  //
   @override
   final surfaceColor = const Color(0xffEEF1EF);  //Colors.amberAccent[400]!;
   @override
   final onSurfaceColor = Colors.black;
-
-
+  //
   @override
   final focusColor = Colors.white;
   @override
   final hoverColor = Colors.white;
-
+  //
   @override
   late final shadowColor = colorShiftLightness(canvasColor, 0.2).withOpacity(0.3);
-
+  //
   @override
   late final scaffoldBackgroundColor = canvasColor;
   @override
@@ -76,12 +75,12 @@ class LightThemeConfig implements ThemeConfig {
   late final onErrorColor = colorInvert(backgroundColor);
   @override
   final toggleableActiveColor = Colors.white;
-
+  //
   @override
   final activeStateColor = const Color(0xff84E4B7);
   @override
   late final passiveStateColor = backgroundColor;
-
+  //
   @override
   late final lowLevelColor = errorColor;
   @override
@@ -92,7 +91,7 @@ class LightThemeConfig implements ThemeConfig {
   final invalidStatusColor = Colors.purple;
   @override
   final timeInvalidStatusColor = Colors.purple;
-
+  //
   @override
   final alarmClass1Color = const Color(0xffF00505);
   @override
