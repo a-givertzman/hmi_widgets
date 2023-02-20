@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/core/color_filters.dart';
 import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
@@ -80,7 +78,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   int _lastSelectedValue = -1;
-  final StreamController<DoubleContainer<DsDataPointExtracted<int>, bool>> _streamController = StreamController<DoubleContainer<DsDataPointExtracted<int>, bool>>();
+  final StreamController<DoubleContainer<DsDataPoint<int>, bool>> _streamController = StreamController<DoubleContainer<DsDataPoint<int>, bool>>();
   ///
   _DropDownControlButtonState({
     required Stream<bool>? isDisabledStream,
@@ -108,6 +106,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   //
   @override
   void initState() {
+    super.initState();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       reverseDuration: const Duration(milliseconds: 100),
@@ -123,26 +122,23 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         _itemDisabledSuscriptions.add(itemDisabledSuscription);
       });
     }
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      final dsClient = _dsClient;
-      final responseTagName = _buildResponseTagName(_responseTagName,  _writeTagName);
-      DsDataStreamExtract<int>(
-        stream: (dsClient != null && responseTagName != null) 
-          ? dsClient.streamInt(responseTagName) 
-          : null,
-        stateColors: Theme.of(context).stateColors,
-      ).stream.listen((pointExtracted) {
+    final dsClient = _dsClient;
+    final responseTagName = _buildResponseTagName(_responseTagName,  _writeTagName);
+    if (dsClient != null && responseTagName != null) {
+      dsClient.streamInt(responseTagName).listen((pointExtracted) {
+        if (_state.isLoading) {
+          _state.setLoaded();
+        }
         _streamController.add(
-          DoubleContainer<DsDataPointExtracted<int>, bool>(value1: pointExtracted),
+          DoubleContainer<DsDataPoint<int>, bool>(value1: pointExtracted),
         );
       });
-      final isDisabledStream = _isDisabledStream ?? const Stream.empty();
-      isDisabledStream.listen((event) {
-        _streamController.add(
-          DoubleContainer<DsDataPointExtracted<int>, bool>(value2: event),
-        );      
-      });
+    }
+    final isDisabledStream = _isDisabledStream ?? const Stream.empty();
+    isDisabledStream.listen((event) {
+      _streamController.add(
+        DoubleContainer<DsDataPoint<int>, bool>(value2: event),
+      );      
     });
   }
   //
@@ -152,25 +148,13 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     final height = _height;
     final backgroundColor = Theme.of(context).colorScheme.primary;
     final textColor = Theme.of(context).colorScheme.onPrimary;
-    return StreamBuilder<DoubleContainer<DsDataPointExtracted<int>, bool>>(
+    return StreamBuilder<DoubleContainer<DsDataPoint<int>, bool>>(
       stream: _streamController.stream,
       builder: (context, snapshots) {
-        int? value;
         bool isDisabled = false;
         if (snapshots.hasData) {
           final point = snapshots.data?.value1;
-          if (point != null) {
-            value = point.value;
-            _lastSelectedValue = value;
-            if (_state.isLoading) {
-              Future.delayed(
-              Duration.zero,
-              () {
-                if (mounted) setState(() => _state.setLoaded());
-              },
-            );
-            }
-          }
+          _lastSelectedValue = point?.value ?? _lastSelectedValue;
           isDisabled = snapshots.data?.value2 ?? false;
         }
         log(_debug, '$_DropDownControlButtonState.build isDisabled: ', isDisabled);
@@ -194,7 +178,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
                   child: AnimatedBuilder(
                     animation: _animationController,
                     builder: (context, child) {
-                      return _buildButtonIcon(value, textColor, _animationController.value);
+                      return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
                     },
                   ),
                 ),
