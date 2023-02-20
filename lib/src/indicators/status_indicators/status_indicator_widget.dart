@@ -29,7 +29,7 @@ class StatusIndicatorWidget extends StatelessWidget {
     _height = height,
     _disabled = disabled,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     return SizedBox(

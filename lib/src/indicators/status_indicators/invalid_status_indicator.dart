@@ -31,7 +31,7 @@ class InvalidStatusIndicator extends StatelessWidget {
     _padding = padding ?? size,
     _child = child,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     return Stack(

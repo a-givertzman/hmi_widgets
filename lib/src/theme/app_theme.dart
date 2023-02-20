@@ -1,19 +1,18 @@
 import "package:flutter/material.dart";
 import 'package:hmi_core/hmi_core.dart';
-
 import 'dark_theme_config.dart';
 import 'light_theme_config.dart';
-
+///
 final light_theme = LightThemeConfig();
 final dark_theme = DarkThemeConfig();
-
+///
 enum AppTheme {
   light,
   dark,
 }
-
+///
 const cardThemeElevation = 6.0;
-
+///
 extension AppThemeData on ThemeData {
   StateColors get stateColors => StateColors(
     error: brightness == Brightness.light
@@ -68,7 +67,7 @@ extension AppThemeData on ThemeData {
       : dark_theme.alarmClass6Color, 
   );
 }
-
+///
 final Map<AppTheme, ThemeData> appThemes = {
   ///
   /// Light theme of entire application

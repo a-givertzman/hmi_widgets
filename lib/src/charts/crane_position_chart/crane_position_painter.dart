@@ -1,9 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-
 import 'crane_position_chart.dart';
 ///
 class CranePositionPainter extends CustomPainter {
@@ -19,7 +17,7 @@ class CranePositionPainter extends CustomPainter {
     _drawingController = drawingController,
     code = Random().nextInt(1000),
     super(repaint: drawingController);
-  ///
+  //
   @override
   void paint(Canvas canvas, Size size) {
     log(_debug, '[$CranePositionPainter.paint]');
@@ -92,7 +90,7 @@ class CranePositionPainter extends CustomPainter {
       paint,
     );
   }
-  ///
+  //
   @override
   bool shouldRepaint(covariant CranePositionPainter oldDelegate) {
     // return true;

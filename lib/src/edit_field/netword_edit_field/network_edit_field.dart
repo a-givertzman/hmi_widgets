@@ -58,7 +58,7 @@ class NetworkEditField<T> extends StatefulWidget {
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<NetworkEditField<T>> createState() => _NetworkEditFieldState<T>(
@@ -125,12 +125,12 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
     super();
-  ///
+  //
   @override
   void initState() {
     super.initState();
   }
-  ///
+  //
   @override
   void didChangeDependencies() {
     // final themeData = Theme.of(context);
@@ -170,7 +170,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
     super.didChangeDependencies();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     log(_debug, '[$_NetworkEditFieldState.build] _users', _users?.toList());

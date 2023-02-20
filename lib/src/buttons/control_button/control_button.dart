@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-
 import 'control_button_indicator.dart';
-
+///
 class ControlButton extends StatelessWidget {
   final Stream<DsDataPoint<num>>? _stream;
   final List<String> _stateValues;
@@ -30,7 +29,7 @@ class ControlButton extends StatelessWidget {
     _caption = caption,
     // _child = child,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     return SizedBox(

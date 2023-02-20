@@ -21,7 +21,7 @@ class SpsIconIndicator extends StatefulWidget {
     _trueIcon = trueIcon,
     _falseIcon = falseIcon,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<SpsIconIndicator> createState() => _SpsIconIndicatorState(
@@ -48,7 +48,7 @@ class _SpsIconIndicatorState extends State<SpsIconIndicator> {
     _trueIcon = trueIcon,
     _falseIcon = falseIcon,
     super();  
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     _stateColors = Theme.of(context).stateColors;

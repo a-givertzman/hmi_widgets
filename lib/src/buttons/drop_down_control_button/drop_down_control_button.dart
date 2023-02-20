@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -46,7 +45,7 @@ class DropDownControlButton extends StatefulWidget {
     _tooltip = tooltip,
     _label = label,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<DropDownControlButton> createState() => _DropDownControlButtonState(
@@ -106,7 +105,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     _tooltip = tooltip,
     _label = label,
     super();
-  ///
+  //
   @override
   void initState() {
     _animationController = AnimationController(
@@ -146,7 +145,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       });
     });
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final width = _width;
@@ -329,7 +328,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         });
     }
   }  
-  ///
+  //
   @override
   void dispose() {
     for (var suscription in _itemDisabledSuscriptions) {

@@ -1,13 +1,10 @@
-
 import 'package:flutter/material.dart';
 ///
 ///              SWL COLORING (FAKE VALUES)
-/// 
-///     0.0   4631.56   11,387.42  18,555.321  
-/// 
-///      |-------|---------|-----------|----------
-/// 
-///      | GREEN | YELLOW  |   ORANGE  |    RED   
+///     0.0   4631.56   11,387.42  18,555.321  23000.23
+///      | Gap1  |  Gap2   |   Gap3    |   Gap4   |
+///      |-------|---------|-----------|----------|
+///      | first | second  |   third   |   forth  |
 const limitSet = [4631.56, 11387.42, 18555.321, 23000.23];
 const first = Color(0x00000001);
 const second = Color(0x00000002);

@@ -44,7 +44,7 @@ class CraneLoadChart extends StatefulWidget {
     _pointSize = pointSize,
     _legendWidth = legendWidth,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<CraneLoadChart> createState() => _CraneLoadChartState(
@@ -101,7 +101,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   _legendWidth = legendWidth,
   _showGrid = showGrid,
   super();
-  ///
+  //
   @override
   void initState() {
     _log.debug('[_CraneLoadChartState.initState] legendData limits: ', _swlDataCache.legendData.limits);
@@ -120,8 +120,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     }
     super.initState();
   }
-  ///
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     _log.debug('[_CraneLoadChartState.build]');
@@ -210,7 +209,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     }
     return axis;
   }
-  ///
+  //
   @override
   void dispose() {
     super.dispose();

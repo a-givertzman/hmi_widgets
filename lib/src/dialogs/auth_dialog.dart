@@ -16,7 +16,7 @@ class AuthDialog extends StatefulWidget {
     _currentUser = currentUser,
     _flushBarDuration = flushBarDuration,
     super(key: key);
-  ///
+  //
   @override
   // ignore: no_logic_in_create_state
   State<AuthDialog> createState() => _AuthDialogState(
@@ -40,7 +40,7 @@ class _AuthDialogState extends State<AuthDialog> {
     _currentUser = currentUser,
     _flushBarDuration = flushbarDuration;
 
-  ///
+  //
   @override
   void initState() {
     _userLogin = const UserLogin(value: '');
@@ -50,7 +50,7 @@ class _AuthDialogState extends State<AuthDialog> {
     );
     super.initState();
   }
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     log(_debug, '[_AuthDialogState.build]');

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/edit_field/network_dropdown_field/oil_data.dart';
-
 import 'fake_json_map.dart';
 void main() {
   Log.initialize(level: LogLevel.off);

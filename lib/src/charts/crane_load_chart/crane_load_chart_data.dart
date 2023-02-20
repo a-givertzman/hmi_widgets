@@ -1,5 +1,5 @@
 import 'crane_load_chart_legend_data.dart';
-
+///
 abstract class CraneLoadChartData {
   /// The height of the CraneLoadChart widget canvas, px
   double get height;

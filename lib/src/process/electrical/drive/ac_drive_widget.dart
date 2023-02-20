@@ -5,6 +5,7 @@ import 'package:hmi_widgets/src/indicators/status_indicators/invalid_status_indi
 import 'package:hmi_widgets/src/indicators/status_indicators/status_indicator_widget.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 
+///
 class AcDriveWidget extends StatelessWidget {
   final Stream<DsDataPoint<int>>? _stream;
   final String? _caption;
@@ -26,7 +27,7 @@ class AcDriveWidget extends StatelessWidget {
     _acMotorIcon = acMotorIcon,
     _acMotorFailureIcon = acMotorFailureIcon,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     final iconsRootDir = 'assets/icons';

@@ -24,7 +24,7 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
     _caption = caption,
     _alignment = alignment,
     super(key: key);
-  ///
+  //
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -39,6 +39,7 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
       ),
     );
   }
+  ///
   Widget _buildIndicatorWidget({
     required Widget stateIndicator, 
     required Widget alarmIndicator, 
