@@ -186,13 +186,12 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       )
         .exec(value)
         .then((responseValue) {
-          responseValue.fold(
-            onData: (_) => setState(() => _state.setSaved()),
-            onError: (_) => setState(() => _state.setChanged()),
-          );
-        })
-        .catchError((_) {
-          setState(() => _state.setChanged());
+          setState(() {
+            _state.setSaved();
+            if (responseValue.hasError) {
+              _state.setChanged();
+            }
+          });
         });
     }
   }

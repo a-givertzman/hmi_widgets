@@ -288,13 +288,12 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         pointName: writeTagName,
         response: responseTagName,
       ).exec(value).then((responseValue) {
-        responseValue.fold(
-          onData:  (_) => setState(() => _state.setSaved()),
-          onError: (_) => setState(() => _state.setChanged()),
-        );
-      })
-      .catchError((_) {
-        setState(() => _state.setChanged());
+        setState(() {
+          _state.setSaved();
+          if (responseValue.hasError) {
+            _state.setChanged();
+          }
+        });
       });
     }
   }
