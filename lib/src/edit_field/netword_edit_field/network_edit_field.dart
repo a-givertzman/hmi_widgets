@@ -287,6 +287,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         dsClient: dsClient,
         pointName: writeTagName,
         response: responseTagName,
+        responseTimeout: 5,
       ).exec(value).then((responseValue) {
         setState(() {
           _state.setSaved();
