@@ -78,6 +78,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   int _lastSelectedValue = -1;
+  bool _isDisabled = false;
   final StreamController<DoubleContainer<DsDataPoint<int>, bool>> _streamController = StreamController<DoubleContainer<DsDataPoint<int>, bool>>();
   ///
   _DropDownControlButtonState({
@@ -151,22 +152,21 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     return StreamBuilder<DoubleContainer<DsDataPoint<int>, bool>>(
       stream: _streamController.stream,
       builder: (context, snapshots) {
-        bool isDisabled = false;
         if (snapshots.hasData) {
           final point = snapshots.data?.value1;
           _lastSelectedValue = point?.value ?? _lastSelectedValue;
-          isDisabled = snapshots.data?.value2 ?? false;
+          _isDisabled = snapshots.data?.value2 ?? _isDisabled;
         }
-        log(_debug, '$_DropDownControlButtonState.build isDisabled: ', isDisabled);
+        log(_debug, '$_DropDownControlButtonState.build isDisabled: ', _isDisabled);
         return PopupMenuButtonCustom<int>(
           // color: backgroundColor,
           offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
-          enabled: !isDisabled,
+          enabled: !_isDisabled,
           tooltip: _tooltip,
           child: Stack(
             children: [
               ColorFiltered(
-                colorFilter: ColorFilters.disabled(context, isDisabled),
+                colorFilter: ColorFilters.disabled(context, _isDisabled),
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
