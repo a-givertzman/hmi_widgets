@@ -190,6 +190,9 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
             onData: (_) => setState(() => _state.setSaved()),
             onError: (_) => setState(() => _state.setChanged()),
           );
+        })
+        .catchError((_) {
+          setState(() => _state.setChanged());
         });
     }
   }

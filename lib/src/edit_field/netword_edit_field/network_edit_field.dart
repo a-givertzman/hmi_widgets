@@ -292,6 +292,9 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
           onData:  (_) => setState(() => _state.setSaved()),
           onError: (_) => setState(() => _state.setChanged()),
         );
+      })
+      .catchError((_) {
+        setState(() => _state.setChanged());
       });
     }
   }
