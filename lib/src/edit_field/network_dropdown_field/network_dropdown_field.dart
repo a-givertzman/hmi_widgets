@@ -62,7 +62,7 @@ class NetworkDropdownFormField extends StatefulWidget {
 }
 ///
 class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
-  static const _debug = true;
+  static final _log = const Log('_NetworkDropdownFormFieldState')..level = LogLevel.debug;
     final dropdownState = GlobalKey<FormFieldState>();
   final _state = NetworkOperationState(isLoading: true);
   final OilData _oilData;
@@ -146,7 +146,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
             key: dropdownState,
             value: _dropdownValue,
             onChanged: (newValue) {
-              log(_debug, '[$_NetworkDropdownFormFieldState.onChanged] value: $newValue');
+              _log.debug('[.onChanged] value: $newValue');
               if (newValue != _initValue) {
                 dropdownState.currentState?.didChange(_initValue);
               }
@@ -186,16 +186,17 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       )
         .exec(value)
         .then((responseValue) {
-          setState(() {
-            _state.setSaved();
-          });
+          responseValue.fold(
+            onData: (_) => setState(() => _state.setSaved()),
+            onError: (_) => setState(() => _state.setChanged()),
+          );
         });
     }
   }
   ///
   List<DropdownMenuItem<int>> _buildDropdownMenuItems(BuildContext context, List<String> oilNames, double width) {
     return oilNames.asMap().map((index, name) {
-      log(_debug, '[$_NetworkDropdownFormFieldState._buildDropdownMenuItems]');
+      _log.debug('[._buildDropdownMenuItems]');
       return MapEntry(
         index, 
         DropdownMenuItem<int>(
