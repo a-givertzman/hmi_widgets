@@ -24,12 +24,14 @@ class NetworkEditField<T> extends StatefulWidget {
   final double _width;
   final bool _showApplyButton;
   final Duration? _flushBarDuration;
+  final int _responseTimeout;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
   /// - [users] - current stack of authenticated users
   /// tried to edit the value but not in list of allowed
   /// - [allowedGroups] - list of user group names allowed to edit this field
+  /// - [responseTimeout] - timeout in seconds to wait server response
   const NetworkEditField({
     Key? key,
     List<String> allowedGroups = const [],
@@ -44,6 +46,7 @@ class NetworkEditField<T> extends StatefulWidget {
     double width = 230.0,
     showApplyButton = false,
     Duration? flushBarDuration,
+    int responseTimeout = 5,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -57,6 +60,7 @@ class NetworkEditField<T> extends StatefulWidget {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
+    _responseTimeout = responseTimeout,
     super(key: key);
   //
   @override
@@ -74,6 +78,7 @@ class NetworkEditField<T> extends StatefulWidget {
     width: _width,
     showApplyButton: _showApplyButton,
     flushBarDuration: _flushBarDuration,
+    responseTimeout: _responseTimeout
   );
 }
 
@@ -94,6 +99,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final double _width;
   final bool _showApplyButton;
   final Duration? _flushBarDuration;
+  final int _responseTimeout;
   // bool _accessAllowed = false;
   String _initValue = '';
   ///
@@ -109,6 +115,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required String? unitText,
     required double width,
     required bool showApplyButton,
+    required int responseTimeout,
     Duration? flushBarDuration,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
@@ -124,6 +131,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
+    _responseTimeout = responseTimeout,
     super();
   //
   @override
@@ -287,7 +295,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         dsClient: dsClient,
         pointName: writeTagName,
         response: responseTagName,
-        responseTimeout: 5,
+        responseTimeout: _responseTimeout,
       ).exec(value).then((responseValue) {
         setState(() {
           _state.setSaved();

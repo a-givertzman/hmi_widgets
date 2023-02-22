@@ -20,7 +20,14 @@ class NetworkDropdownFormField extends StatefulWidget {
   final double _width;
   final Duration? _flushBarDuration;
   final OilData _oilData;
+  final int _responseTimeout;
   ///
+  /// - [writeTagName] - the name of DataServer tag to send value
+  /// - [responseTagName] - the name of DataServer tag to get response if value written
+  /// - [users] - current stack of authenticated users
+  /// tried to edit the value but not in list of allowed
+  /// - [allowedGroups] - list of user group names allowed to edit this field
+  /// - [responseTimeout] - timeout in seconds to wait server response
   const NetworkDropdownFormField({
     Key? key,
     // Future<AuthResult> Function(BuildContext context)? onAuthRequested,
@@ -33,6 +40,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     double width = 350.0,
     Duration? flushBarDuration,
     required OilData oilData,
+    int responseTimeout = 5,
   }) : 
     // _onAuthRequested = onAuthRequested,
     _allowedGroups = allowedGroups,
@@ -44,6 +52,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     _width = width,
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
+    _responseTimeout = responseTimeout,
     super(key: key);
   //
   @override
@@ -58,6 +67,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     width: _width,
     flushBarDuration: _flushBarDuration,
     oilData: _oilData,
+    responseTimeout: _responseTimeout,
   );
 }
 ///
@@ -75,6 +85,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _labelText;
   final double _width;
   final Duration? _flushBarDuration;
+  final int _responseTimeout;
   bool _accessAllowed = false;
   int? _dropdownValue;
   int? _initValue;
@@ -90,6 +101,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required String? labelText,
     required double width,
     required OilData oilData,
+    required int responseTimeout,
     Duration? flushBarDuration,
   }) :
     // _onAuthRequested = onAuthRequested,
@@ -102,6 +114,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _width = width,
     _flushBarDuration = flushBarDuration,
     _oilData = oilData,
+    _responseTimeout = responseTimeout,
     super();
   //
   @override
@@ -132,9 +145,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
           stateColors: stateColors,
         ).stream,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            // TODO add implementation or remove this block
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             final point = snapshot.data;
             if (point != null) {
               _initValue = point.value;
@@ -183,7 +194,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
         dsClient: dsClient, 
         pointName: writeTagName, 
         response: responseTagName,
-        responseTimeout: 5,
+        responseTimeout: _responseTimeout,
       )
         .exec(value)
         .then((responseValue) {
