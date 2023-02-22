@@ -24,12 +24,14 @@ class NetworkEditField<T> extends StatefulWidget {
   final double _width;
   final bool _showApplyButton;
   final Duration? _flushBarDuration;
+  final int _responseTimeout;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
   /// - [users] - current stack of authenticated users
   /// tried to edit the value but not in list of allowed
   /// - [allowedGroups] - list of user group names allowed to edit this field
+  /// - [responseTimeout] - timeout in seconds to wait server response
   const NetworkEditField({
     Key? key,
     List<String> allowedGroups = const [],
@@ -44,6 +46,7 @@ class NetworkEditField<T> extends StatefulWidget {
     double width = 230.0,
     showApplyButton = false,
     Duration? flushBarDuration,
+    int responseTimeout = 5,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -57,6 +60,7 @@ class NetworkEditField<T> extends StatefulWidget {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
+    _responseTimeout = responseTimeout,
     super(key: key);
   //
   @override
@@ -74,12 +78,13 @@ class NetworkEditField<T> extends StatefulWidget {
     width: _width,
     showApplyButton: _showApplyButton,
     flushBarDuration: _flushBarDuration,
+    responseTimeout: _responseTimeout
   );
 }
 
 ///
 class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
-  static const _debug = true;
+  final _log = Log('${_NetworkEditFieldState<T>}')..level = LogLevel.debug;
   final _state = NetworkOperationState(isLoading: true);
   final TextEditingController _editingController = TextEditingController();
   final List<String> _allowedGroups;
@@ -94,6 +99,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final double _width;
   final bool _showApplyButton;
   final Duration? _flushBarDuration;
+  final int _responseTimeout;
   // bool _accessAllowed = false;
   String _initValue = '';
   ///
@@ -109,6 +115,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required String? unitText,
     required double width,
     required bool showApplyButton,
+    required int responseTimeout,
     Duration? flushBarDuration,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
@@ -124,6 +131,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _width = width,
     _showApplyButton = showApplyButton,
     _flushBarDuration = flushBarDuration,
+    _responseTimeout = responseTimeout,
     super();
   //
   @override
@@ -152,11 +160,11 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
             : null,
         stateColors: statusColors,
       ).stream.listen((event) {
-        log(_debug, '[$runtimeType.didChangeDependencies] event: $event');
-        log(_debug, '[$runtimeType.didChangeDependencies] event.value: ${event.value}');
+        _log.debug('[$runtimeType.didChangeDependencies] event: $event');
+        _log.debug('[$runtimeType.didChangeDependencies] event.value: ${event.value}');
         _initValue = (event.value as num).toStringAsFixed(_fractionDigits);
         if (!_state.isEditing) {
-          log(_debug, '[$runtimeType.didChangeDependencies] _initValue: $_initValue');
+          _log.debug('[$runtimeType.didChangeDependencies] _initValue: $_initValue');
           // setState(() {
           _editingController.text = _initValue;
           // });
@@ -173,7 +181,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   //
   @override
   Widget build(BuildContext context) {
-    log(_debug, '[$_NetworkEditFieldState.build] _users', _users?.toList());
+    _log.debug('[.build] _users', _users?.toList());
     return SizedBox(
       width: _width,
       child: RepaintBoundary(
@@ -211,7 +219,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
             fillColor: Theme.of(context).colorScheme.background,
           ),
           onChanged: (newValue) async {
-            log(_debug, '[$_NetworkEditFieldState.build.onChanged] newValue: $newValue');
+            _log.debug('[.build.onChanged] newValue: $newValue');
             if (_state.isAuthenticating) {
               _editingController.text = _initValue;
             } else {
@@ -234,10 +242,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
           },
           onEditingComplete: () => _onEditingComplete(),
           onFieldSubmitted: (value) {
-            log(_debug, '[$_NetworkEditFieldState.build] onFieldSubmitted');
+            _log.debug('[.build] onFieldSubmitted');
           },
           onSaved: (newValue) {
-            log(_debug, '[$_NetworkEditFieldState.build] onSaved');
+            _log.debug('[.build] onSaved');
           },
         ),
       ),
@@ -245,7 +253,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   }
   ///
   void _onEditingComplete() {
-    log(_debug, '[$_NetworkEditFieldState._onEditingComplete]');
+    _log.debug('[._onEditingComplete]');
     T? numValue;
     if (T == int) {
       numValue = int.tryParse(_editingController.text) as T;
@@ -253,7 +261,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     if (T == double) {
       numValue = _textToFixedDouble(_editingController.text, _fractionDigits) as T;
     }
-    log(_debug, '[$_NetworkEditFieldState.build.onEditingComplete] numValue: $numValue\t_initValue: $_initValue');
+    _log.debug('[.build.onEditingComplete] numValue: $numValue\t_initValue: $_initValue');
     if (numValue != double.parse(_initValue)) {
       _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
     } else {
@@ -277,7 +285,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     String? responseTagName, 
     T? newValue,
   ) {
-    log(_debug, '[$_NetworkEditFieldState._sendValue] newValue: ', newValue);
+    _log.debug('[._sendValue] newValue: ', newValue);
     final value = newValue;
     if (dsClient != null && writeTagName != null && value != null) {
       setState(() {
@@ -287,8 +295,14 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         dsClient: dsClient,
         pointName: writeTagName,
         response: responseTagName,
+        responseTimeout: _responseTimeout,
       ).exec(value).then((responseValue) {
-        setState(() => _state.setSaved());
+        setState(() {
+          _state.setSaved();
+          if (responseValue.hasError) {
+            _state.setChanged();
+          }
+        });
       });
     }
   }
@@ -326,10 +340,10 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
     final users = _users;
     if (users != null) {
-      log(_debug, '[$_NetworkEditFieldState._requestAccess] users:', users.toList());
+      _log.debug('[._requestAccess] users:', users.toList());
       final user = users.peek;
-      log(_debug, '[$_NetworkEditFieldState._requestAccess] user:', user);
-      log(_debug, '[$_NetworkEditFieldState._requestAccess] _user.group:', user.userGroup().value);
+      _log.debug('[._requestAccess] user:', user);
+      _log.debug('[._requestAccess] _user.group:', user.userGroup().value);
       if (user.exists()) {
         if (_allowedGroups.contains(user.userGroup().value)) {
           _state.setAuthenticated();
