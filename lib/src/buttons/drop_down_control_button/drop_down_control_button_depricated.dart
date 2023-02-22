@@ -3,13 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/core/buffered_stream.dart';
 import 'package:hmi_widgets/src/core/color_filters.dart';
 import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
-class DropDownControlButton extends StatefulWidget {
-  final BufferedStream<bool>? _disabledStream;
+class DropDownControlButtonDepricated extends StatefulWidget {
+  final Stream<bool>? _disabledStream;
   final Map<int, Stream<bool>>? _itemsDisabledStreams;
   final double? _width;
   final double? _height;
@@ -20,9 +19,9 @@ class DropDownControlButton extends StatefulWidget {
   final String? _tooltip;
   final String? _label;
   ///
-  const DropDownControlButton({
+  const DropDownControlButtonDepricated({
     Key? key,
-    BufferedStream<bool>? disabledStream,
+    Stream<bool>? disabledStream,
     Map<int, Stream<bool>>? itemsDisabledStreams,
     double? width,
     double? height,
@@ -47,7 +46,7 @@ class DropDownControlButton extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<DropDownControlButton> createState() => _DropDownControlButtonState(
+  State<DropDownControlButtonDepricated> createState() => _DropDownControlButtonState(
     isDisabledStream: _disabledStream,
     itemsDisabledStreams: _itemsDisabledStreams,
     width: _width,
@@ -55,54 +54,41 @@ class DropDownControlButton extends StatefulWidget {
     dsClient: _dsClient,
     writeTagName: _writeTagName,
     responseTagName: _responseTagName,
-    responseStream: _buildResponseSTream(_dsClient, _responseTagName ?? _writeTagName?.name),
     items: _items,
     tooltip: _tooltip,
     label: _label,
   );
-  ///
-  BufferedStream<DsDataPoint<int>>? _buildResponseSTream(DsClient? dsClient, String? tagName) {
-    if (dsClient != null){
-      if (tagName != null) {
-        return BufferedStream<DsDataPoint<int>>(
-          dsClient.streamInt(tagName),
-          initValue: DsDataPoint(type: DsDataType.integer, name: DsPointName('/test/test/test/test'), value: -1, status: DsStatus.ok, timestamp: DsTimeStamp.now().toString()),
-        );
-      }
-    }
-    return null;
-  }
 }
 
 ///
-class _DropDownControlButtonState extends State<DropDownControlButton> with TickerProviderStateMixin {
-  final _log = Log('$_DropDownControlButtonState')..level = LogLevel.debug;
+class _DropDownControlButtonState extends State<DropDownControlButtonDepricated> with TickerProviderStateMixin {
+  static const _debug = true;
   final _state = NetworkOperationState(isLoading: true);
   final double? _width;
   final double? _height;
   final DsClient? _dsClient;
   final DsPointName? _writeTagName;
   final String? _responseTagName;
-  final BufferedStream<DsDataPoint<int>>? _responseStream;
   final Map<int, String> _items;
   final String? _tooltip;
   final String? _label;
-  final BufferedStream<bool>? _isDisabledStream;
+  final Stream<bool>? _isDisabledStream;
   final Map<int, Stream<bool>>? _itemsDisabledStreams;
   final List<StreamSubscription> _itemDisabledSuscriptions = [];
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
-  final StreamController<Null> _streamController = StreamController<Null>();
+  int _lastSelectedValue = -1;
+  bool _isDisabled = false;
+  final StreamController<DoubleContainer<DsDataPoint<int>, bool>> _streamController = StreamController<DoubleContainer<DsDataPoint<int>, bool>>();
   ///
   _DropDownControlButtonState({
-    required BufferedStream<bool>? isDisabledStream,
+    required Stream<bool>? isDisabledStream,
     required Map<int, Stream<bool>>? itemsDisabledStreams,
     required double? width,
     required double? height,
     required DsClient? dsClient,
     required DsPointName? writeTagName,
     required String? responseTagName,
-    required BufferedStream<DsDataPoint<int>>? responseStream,
     required Map<int, String> items,
     required String? tooltip,
     required String? label,
@@ -114,7 +100,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     _dsClient = dsClient,
     _writeTagName = writeTagName,
     _responseTagName = responseTagName,
-    _responseStream = responseStream,
     _items = items,
     _tooltip = tooltip,
     _label = label,
@@ -122,32 +107,39 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   //
   @override
   void initState() {
-    _log.info('[.initState] before super.initState');
     super.initState();
-    _log.info('[.initState] after super.initState');
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       reverseDuration: const Duration(milliseconds: 100),
       vsync: this,
     );    
     final itemsDisabledStreams = _itemsDisabledStreams;
-    itemsDisabledStreams?.forEach((index, itemDisabledStream) {
-      final itemDisabledSuscription = itemDisabledStream.listen((event) {
-        _log.debug('[.initState] index: $index\tevent: $event');
-        _itemsDisabled[index] = event;
+    if (itemsDisabledStreams != null) {
+      itemsDisabledStreams.forEach((index, itemDisabledStream) {
+        final itemDisabledSuscription = itemDisabledStream.listen((event) {
+          log(_debug, '[$_DropDownControlButtonState.initState] index: $index\tevent: $event');
+          _itemsDisabled[index] = event;
+        });
+        _itemDisabledSuscriptions.add(itemDisabledSuscription);
       });
-      _itemDisabledSuscriptions.add(itemDisabledSuscription);
-    });
-    final responseStream = _responseStream;
-    responseStream?.stream.listen((event) { 
-      if (_state.isLoading) {
-        _state.setLoaded();
-      }
-      _streamController.add(null);
-    });
-    final isDisabledStream = _isDisabledStream;
-    isDisabledStream?.stream.listen((event) {
-      _streamController.add(null);      
+    }
+    final dsClient = _dsClient;
+    final responseTagName = _buildResponseTagName(_responseTagName,  _writeTagName);
+    if (dsClient != null && responseTagName != null) {
+      dsClient.streamInt(responseTagName).listen((pointExtracted) {
+        if (_state.isLoading) {
+          _state.setLoaded();
+        }
+        _streamController.add(
+          DoubleContainer<DsDataPoint<int>, bool>(value1: pointExtracted),
+        );
+      });
+    }
+    final isDisabledStream = _isDisabledStream ?? const Stream.empty();
+    isDisabledStream.listen((event) {
+      _streamController.add(
+        DoubleContainer<DsDataPoint<int>, bool>(value2: event),
+      );      
     });
   }
   //
@@ -157,13 +149,15 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     final height = _height;
     final backgroundColor = Theme.of(context).colorScheme.primary;
     final textColor = Theme.of(context).colorScheme.onPrimary;
-    return StreamBuilder<Null>(
+    return StreamBuilder<DoubleContainer<DsDataPoint<int>, bool>>(
       stream: _streamController.stream,
       builder: (context, snapshots) {
-        int? _lastSelectedValue = _responseStream?.value?.value ?? _responseStream?.initialValue?.value;
-        bool _isDisabled = _isDisabledStream?.value ?? _isDisabledStream?.initialValue ?? false;
-        _log.debug('[.build] _lastSelectedValue: $_lastSelectedValue');
-        _log.debug('[.build] isDisabled: $_isDisabled');
+        if (snapshots.hasData) {
+          final point = snapshots.data?.value1;
+          _lastSelectedValue = point?.value ?? _lastSelectedValue;
+          _isDisabled = snapshots.data?.value2 ?? _isDisabled;
+        }
+        log(_debug, '$_DropDownControlButtonState.build isDisabled: ', _isDisabled);
         return PopupMenuButtonCustom<int>(
           // color: backgroundColor,
           offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
@@ -224,10 +218,10 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
             }).values.toList();
           },
           onCanceled: () {
-            _log.debug('[.build] onCanceled');
+            log(_debug, '[$_DropDownControlButtonState] onCanceled');
           },
           onSelected: (value) {
-            _log.debug('[.build] onSelected: value: $value');
+            log(_debug, '[$_DropDownControlButtonState] onSelected: ', value);
             if (_items.containsKey(value)) {
               final sendValue = value;
               if (sendValue != _lastSelectedValue) {
@@ -291,6 +285,16 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     //     color: color,
     //   ),
     // );
+  }
+  ///
+  String? _buildResponseTagName(String? responseTagName, DsPointName? writeTagName) {
+    if (responseTagName != null) {
+      return responseTagName;
+    }
+    if (writeTagName != null) {
+      return writeTagName.name;
+    }
+    return null;
   }
   ///
   void _sendValue(DsClient? dsClient, DsPointName? writeTagName, String? responseTagName, int? newValue) {

@@ -34,9 +34,11 @@ class ButtonsPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropDownControlButton(
-                    disabledStream: getRandomStream(
-                      (random) => random.nextBool(),
-                      duration: const Duration(seconds: 3),
+                    disabledStream: BufferedStream(
+                      getRandomStream(
+                        (random) => random.nextBool(),
+                        duration: const Duration(seconds: 3),
+                      ),
                     ),
                     items: const {
                       1: 'Item 1',
