@@ -7,7 +7,7 @@ import 'package:hmi_widgets/src/core/color_filters.dart';
 import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
-class DropDownControlButton extends StatefulWidget {
+class DropDownControlButtonDepricated extends StatefulWidget {
   final Stream<bool>? _disabledStream;
   final Map<int, Stream<bool>>? _itemsDisabledStreams;
   final double? _width;
@@ -19,7 +19,7 @@ class DropDownControlButton extends StatefulWidget {
   final String? _tooltip;
   final String? _label;
   ///
-  const DropDownControlButton({
+  const DropDownControlButtonDepricated({
     Key? key,
     Stream<bool>? disabledStream,
     Map<int, Stream<bool>>? itemsDisabledStreams,
@@ -46,7 +46,7 @@ class DropDownControlButton extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<DropDownControlButton> createState() => _DropDownControlButtonState(
+  State<DropDownControlButtonDepricated> createState() => _DropDownControlButtonState(
     isDisabledStream: _disabledStream,
     itemsDisabledStreams: _itemsDisabledStreams,
     width: _width,
@@ -61,7 +61,7 @@ class DropDownControlButton extends StatefulWidget {
 }
 
 ///
-class _DropDownControlButtonState extends State<DropDownControlButton> with TickerProviderStateMixin {
+class _DropDownControlButtonState extends State<DropDownControlButtonDepricated> with TickerProviderStateMixin {
   static const _debug = true;
   final _state = NetworkOperationState(isLoading: true);
   final double? _width;
