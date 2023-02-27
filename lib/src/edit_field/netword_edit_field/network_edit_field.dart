@@ -137,13 +137,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   @override
   void initState() {
     super.initState();
-  }
-  //
-  @override
-  void didChangeDependencies() {
-    // final themeData = Theme.of(context);
-    final statusColors = Theme.of(context).stateColors;
-    // _editingController = TextEditingController(text: _newValue);
     final dsClient = _dsClient;
     final writeTagName = _writeTagName;
     final responseTagName = _responseTagName != null
@@ -153,21 +146,14 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
             : writeTagName != null
                 ? writeTagName.name
                 : null;
-    if (dsClient != null) {
-      DsDataStreamExtract<T>(
-        stream: (responseTagName != null)
-            ? dsClient.stream<T>(responseTagName)
-            : null,
-        stateColors: statusColors,
-      ).stream.listen((event) {
+    if (responseTagName != null) {
+      dsClient?.stream<T>(responseTagName).listen((event) {
         _log.debug('[$runtimeType.didChangeDependencies] event: $event');
         _log.debug('[$runtimeType.didChangeDependencies] event.value: ${event.value}');
         _initValue = (event.value as num).toStringAsFixed(_fractionDigits);
         if (!_state.isEditing) {
           _log.debug('[$runtimeType.didChangeDependencies] _initValue: $_initValue');
-          // setState(() {
           _editingController.text = _initValue;
-          // });
         }
         if (mounted) {
           setState(() {
@@ -176,7 +162,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         }
       });
     }
-    super.didChangeDependencies();
   }
   //
   @override
@@ -254,28 +239,40 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   ///
   void _onEditingComplete() {
     _log.debug('[._onEditingComplete]');
-    T? numValue;
+    Result<T> result;
     if (T == int) {
-      numValue = int.tryParse(_editingController.text) as T;
+      final value = int.tryParse(_editingController.text);
+      result = value != null 
+        ? Result<T>(data: value as T) 
+        : Result<T>(
+          error: Failure.convertion(
+            message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into int: $value', 
+            stackTrace: StackTrace.current),
+          );
     }
     if (T == double) {
-      numValue = _textToFixedDouble(_editingController.text, _fractionDigits) as T;
+      result = _textToFixedDouble(_editingController.text, _fractionDigits);
     }
-    _log.debug('[.build.onEditingComplete] numValue: $numValue\t_initValue: $_initValue');
-    if (numValue != double.parse(_initValue)) {
-      _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
+    _log.debug('[.build.onEditingComplete] numValue: $result\t_initValue: $_initValue');
+    if (result. != double.parse(_initValue)) {
+      _sendValue(_dsClient, _writeTagName, _responseTagName, result);
     } else {
       _editingController.text = _initValue;
       setState(() => _state.setLoaded());
     }
   }
   ///
-  double _textToFixedDouble(String value, int fractionDigits) {
+  Result<double> _textToFixedDouble(String value, int fractionDigits) {
     final doubleValue = double.tryParse(_editingController.text);
     if (doubleValue != null) {
-      return double.parse(doubleValue.toStringAsFixed(fractionDigits));
+      return Result<double>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)));
     } else {
-      return 0.0;
+      return Result<double>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into double: $value', 
+          stackTrace: StackTrace.current,
+        ),
+      );
     }
   }
   ///
