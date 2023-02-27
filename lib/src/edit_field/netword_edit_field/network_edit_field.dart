@@ -212,9 +212,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
               if (newValue != _initValue) {
                 await _requestAccess().then((_) {
                   if (_state.isAuthenticeted) {
-                    if (newValue == _initValue) {
-                      _state.setLoaded();
-                    } else if (!_state.isChanged) {
+                    if (!_state.isChanged) {
                       _state.setEditing();
                       _state.setChanged();
                     }
@@ -223,6 +221,13 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
                     _editingController.text = _initValue;
                   }
                 });
+              } else {
+                if (_state.isChanged) {
+                  // _state.setChanged();
+                  if (mounted) setState(() {
+                    _state.setLoaded();
+                  });
+                }
               }
             }
           },
@@ -241,7 +246,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   /// validating if the value can be parsed in to T (int / double)
   String? _valueValidator(value) {
     final result = _parseValue(value, fractionDigits: _fractionDigits);
-    return result.hasError ? result.error.toString() : null;
+    return result.hasError ? const Localized('Invalid date value').v : null;
   }
   ///
   void _onEditingComplete() {
@@ -254,8 +259,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         }
       }, 
       onError: (failure) {
-        // _editingController.text = _initValue;
-        // setState(() => _state.setLoaded());
         _log.debug('[.build._onEditingComplete] error: ${failure.message}');
       },
     );
