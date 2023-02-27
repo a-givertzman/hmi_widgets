@@ -246,7 +246,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     } else {
       result = Result<T>(
         error: Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into int: $value', 
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted: ${_editingController.text}', 
           stackTrace: StackTrace.current
         ),
       );
