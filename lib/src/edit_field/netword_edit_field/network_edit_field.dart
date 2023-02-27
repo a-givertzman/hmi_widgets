@@ -246,13 +246,12 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   ///
   void _onEditingComplete() {
     _log.debug('[._onEditingComplete]');
-    _parseValue(_editingController.text, fractionDigits: _fractionDigits).fold<T>(
+    _parseValue(_editingController.text, fractionDigits: _fractionDigits).fold(
       onData: (numValue) {
         if ('${numValue}' != _initValue) {
           _log.debug('[.build._onEditingComplete] new numValue: ${numValue}\t_initValue: $_initValue');
           _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
         }
-        return numValue;
       }, 
       onError: (failure) {
         // _editingController.text = _initValue;
