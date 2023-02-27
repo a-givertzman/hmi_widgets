@@ -1,5 +1,6 @@
 import 'package:example/core/get_random_stream.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class ButtonsPage extends StatelessWidget {

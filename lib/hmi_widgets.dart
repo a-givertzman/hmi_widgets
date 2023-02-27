@@ -1,7 +1,8 @@
 library hmi_widgets;
 //
 // core
-export 'src/core/buffered_stream.dart';
+export 'src/core/lazy_loadable.dart';
+export 'src/core/color_filters.dart';
 //
 // Theme
 export 'src/theme/app_theme.dart';

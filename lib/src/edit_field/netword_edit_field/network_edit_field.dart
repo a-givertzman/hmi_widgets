@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
 
 ///
 /// Gets and shows the value of type [T] from the DataServer.
@@ -137,13 +136,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   @override
   void initState() {
     super.initState();
-  }
-  //
-  @override
-  void didChangeDependencies() {
-    // final themeData = Theme.of(context);
-    final statusColors = Theme.of(context).stateColors;
-    // _editingController = TextEditingController(text: _newValue);
     final dsClient = _dsClient;
     final writeTagName = _writeTagName;
     final responseTagName = _responseTagName != null
@@ -153,21 +145,14 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
             : writeTagName != null
                 ? writeTagName.name
                 : null;
-    if (dsClient != null) {
-      DsDataStreamExtract<T>(
-        stream: (responseTagName != null)
-            ? dsClient.stream<T>(responseTagName)
-            : null,
-        stateColors: statusColors,
-      ).stream.listen((event) {
+    if (responseTagName != null) {
+      dsClient?.stream<T>(responseTagName).listen((event) {
         _log.debug('[$runtimeType.didChangeDependencies] event: $event');
         _log.debug('[$runtimeType.didChangeDependencies] event.value: ${event.value}');
         _initValue = (event.value as num).toStringAsFixed(_fractionDigits);
         if (!_state.isEditing) {
           _log.debug('[$runtimeType.didChangeDependencies] _initValue: $_initValue');
-          // setState(() {
           _editingController.text = _initValue;
-          // });
         }
         if (mounted) {
           setState(() {
@@ -176,7 +161,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         }
       });
     }
-    super.didChangeDependencies();
   }
   //
   @override
@@ -186,6 +170,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       width: _width,
       child: RepaintBoundary(
         child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) => _valueValidator(value),
           controller: _editingController,
           keyboardType: _keyboardType,
           textAlign: TextAlign.end,
@@ -226,9 +212,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
               if (newValue != _initValue) {
                 await _requestAccess().then((_) {
                   if (_state.isAuthenticeted) {
-                    if (newValue == _initValue) {
-                      _state.setLoaded();
-                    } else if (!_state.isChanged) {
+                    if (!_state.isChanged) {
                       _state.setEditing();
                       _state.setChanged();
                     }
@@ -237,6 +221,13 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
                     _editingController.text = _initValue;
                   }
                 });
+              } else {
+                if (_state.isChanged) {
+                  // _state.setChanged();
+                  if (mounted) setState(() {
+                    _state.setLoaded();
+                  });
+                }
               }
             }
           },
@@ -252,30 +243,65 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     );
   }
   ///
+  /// validating if the value can be parsed in to T (int / double)
+  String? _valueValidator(value) {
+    final result = _parseValue(value, fractionDigits: _fractionDigits);
+    return result.hasError ? const Localized('Invalid date value').v : null;
+  }
+  ///
   void _onEditingComplete() {
     _log.debug('[._onEditingComplete]');
-    T? numValue;
+    _parseValue(_editingController.text, fractionDigits: _fractionDigits).fold(
+      onData: (numValue) {
+        if ('${numValue}' != _initValue) {
+          _log.debug('[.build._onEditingComplete] new numValue: ${numValue}\t_initValue: $_initValue');
+          _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
+        }
+      }, 
+      onError: (failure) {
+        _log.debug('[.build._onEditingComplete] error: ${failure.message}');
+      },
+    );
+  }
+  ///
+  /// Parses string into T (int / double)
+  Result<T> _parseValue(String value, {int fractionDigits = 0}) {
     if (T == int) {
-      numValue = int.tryParse(_editingController.text) as T;
-    }
-    if (T == double) {
-      numValue = _textToFixedDouble(_editingController.text, _fractionDigits) as T;
-    }
-    _log.debug('[.build.onEditingComplete] numValue: $numValue\t_initValue: $_initValue');
-    if (numValue != double.parse(_initValue)) {
-      _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
+      return _textToInt(value);
+    } else if (T == double) {
+      return _textToFixedDouble(value, fractionDigits);
     } else {
-      _editingController.text = _initValue;
-      setState(() => _state.setLoaded());
+      return Result<T>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "${_editingController.text}" can`t be converted', 
+          stackTrace: StackTrace.current
+        ),
+      );
     }
   }
   ///
-  double _textToFixedDouble(String value, int fractionDigits) {
-    final doubleValue = double.tryParse(_editingController.text);
+  Result<T> _textToInt(String value) {
+    final intValue = int.tryParse(value);
+    return intValue != null 
+      ? Result<T>(data: intValue as T) 
+      : Result<T>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
+          stackTrace: StackTrace.current),
+        );
+  }
+  ///
+  Result<T> _textToFixedDouble(String value, int fractionDigits) {
+    final doubleValue = double.tryParse(value);
     if (doubleValue != null) {
-      return double.parse(doubleValue.toStringAsFixed(fractionDigits));
+      return Result<T>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
     } else {
-      return 0.0;
+      return Result<T>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "$value" can`t be converted into double', 
+          stackTrace: StackTrace.current,
+        ),
+      );
     }
   }
   ///
