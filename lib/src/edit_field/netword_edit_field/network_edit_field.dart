@@ -241,7 +241,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   /// validating if the value can be parsed in to T (int / double)
   String? _valueValidator(value) {
     final result = _parseValue(value, fractionDigits: _fractionDigits);
-    return result.hasError ? result.data.toString() : null;
+    return result.hasError ? result.error.toString() : null;
   }
   ///
   void _onEditingComplete() {
