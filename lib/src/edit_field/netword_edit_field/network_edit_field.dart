@@ -170,6 +170,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       width: _width,
       child: RepaintBoundary(
         child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) => _valueValidator(value),
           controller: _editingController,
           keyboardType: _keyboardType,
           textAlign: TextAlign.end,
@@ -236,49 +238,65 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     );
   }
   ///
+  /// validating if the value can be parsed in to T (int / double)
+  String? _valueValidator(value) {
+    final result = _parseValue(value, fractionDigits: _fractionDigits);
+    return result.hasError ? result.data.toString() : null;
+  }
+  ///
   void _onEditingComplete() {
     _log.debug('[._onEditingComplete]');
-    Result<T> result;
+    _parseValue(_editingController.text, fractionDigits: _fractionDigits).fold<T>(
+      onData: (numValue) {
+        if ('${numValue}' != _initValue) {
+          _log.debug('[.build._onEditingComplete] new numValue: ${numValue}\t_initValue: $_initValue');
+          _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
+        }
+        return numValue;
+      }, 
+      onError: (failure) {
+        // _editingController.text = _initValue;
+        // setState(() => _state.setLoaded());
+        _log.debug('[.build._onEditingComplete] error: ${failure.message}');
+      },
+    );
+  }
+  ///
+  /// Parses string into T (int / double)
+  Result<T> _parseValue(String value, {int fractionDigits = 0}) {
     if (T == int) {
-      result = _textToInt(_editingController.text);
+      return _textToInt(value);
     } else if (T == double) {
-      result = _textToFixedDouble(_editingController.text, _fractionDigits);
+      return _textToFixedDouble(value, fractionDigits);
     } else {
-      result = Result<T>(
+      return Result<T>(
         error: Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted: ${_editingController.text}', 
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "${_editingController.text}" can`t be converted', 
           stackTrace: StackTrace.current
         ),
       );
     }
-    if (result.hasData && '${result.data}' != _initValue) {
-      _log.debug('[.build.onEditingComplete] newValue: ${result.data}\t_initValue: $_initValue');
-      _sendValue(_dsClient, _writeTagName, _responseTagName, result.data);
-    } else {
-      _editingController.text = _initValue;
-      setState(() => _state.setLoaded());
-    }
   }
   ///
   Result<T> _textToInt(String value) {
-    final value = int.tryParse(_editingController.text);
-    return value != null 
-      ? Result<T>(data: value as T) 
+    final intValue = int.tryParse(value);
+    return intValue != null 
+      ? Result<T>(data: intValue as T) 
       : Result<T>(
         error: Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToInt: value can`t be converted into int: $value', 
+          message: 'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
           stackTrace: StackTrace.current),
         );
   }
   ///
   Result<T> _textToFixedDouble(String value, int fractionDigits) {
-    final doubleValue = double.tryParse(_editingController.text);
+    final doubleValue = double.tryParse(value);
     if (doubleValue != null) {
       return Result<T>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
     } else {
       return Result<T>(
         error: Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into double: $value', 
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "$value" can`t be converted into double', 
           stackTrace: StackTrace.current,
         ),
       );
