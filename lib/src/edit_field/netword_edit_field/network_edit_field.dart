@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
 
 ///
 /// Gets and shows the value of type [T] from the DataServer.
@@ -241,33 +240,43 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _log.debug('[._onEditingComplete]');
     Result<T> result;
     if (T == int) {
-      final value = int.tryParse(_editingController.text);
-      result = value != null 
-        ? Result<T>(data: value as T) 
-        : Result<T>(
-          error: Failure.convertion(
-            message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into int: $value', 
-            stackTrace: StackTrace.current),
-          );
-    }
-    if (T == double) {
+      result = _textToInt(_editingController.text);
+    } else if (T == double) {
       result = _textToFixedDouble(_editingController.text, _fractionDigits);
+    } else {
+      result = Result<T>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into int: $value', 
+          stackTrace: StackTrace.current
+        ),
+      );
     }
-    _log.debug('[.build.onEditingComplete] numValue: $result\t_initValue: $_initValue');
-    if (result. != double.parse(_initValue)) {
-      _sendValue(_dsClient, _writeTagName, _responseTagName, result);
+    if (result.hasData && '${result.data}' != _initValue) {
+      _log.debug('[.build.onEditingComplete] newValue: ${result.data}\t_initValue: $_initValue');
+      _sendValue(_dsClient, _writeTagName, _responseTagName, result.data);
     } else {
       _editingController.text = _initValue;
       setState(() => _state.setLoaded());
     }
   }
   ///
-  Result<double> _textToFixedDouble(String value, int fractionDigits) {
+  Result<T> _textToInt(String value) {
+    final value = int.tryParse(_editingController.text);
+    return value != null 
+      ? Result<T>(data: value as T) 
+      : Result<T>(
+        error: Failure.convertion(
+          message: 'Ошибка в методе $runtimeType._textToInt: value can`t be converted into int: $value', 
+          stackTrace: StackTrace.current),
+        );
+  }
+  ///
+  Result<T> _textToFixedDouble(String value, int fractionDigits) {
     final doubleValue = double.tryParse(_editingController.text);
     if (doubleValue != null) {
-      return Result<double>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)));
+      return Result<T>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
     } else {
-      return Result<double>(
+      return Result<T>(
         error: Failure.convertion(
           message: 'Ошибка в методе $runtimeType._textToFixedDouble: value can`t be converted into double: $value', 
           stackTrace: StackTrace.current,
