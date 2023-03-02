@@ -84,7 +84,10 @@ class NetworkEditField<T> extends StatefulWidget {
 ///
 class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final _log = Log('${_NetworkEditFieldState<T>}')..level = LogLevel.debug;
-  final _state = NetworkOperationState(isLoading: true);
+  OperationState _loadingState = OperationState.inProgress;
+  OperationState _savingState = OperationState.undefined;
+  OperationState _authState = OperationState.undefined;
+  EditingState _editingState = EditingState.notChanged;
   final TextEditingController _editingController = TextEditingController();
   final List<String> _allowedGroups;
   late AppUserStacked? _users;
@@ -150,17 +153,25 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         _log.debug('[$runtimeType.initState] event: $event');
         _log.debug('[$runtimeType.initState] event.value: ${event.value}');
         _initValue = (event.value as num).toStringAsFixed(_fractionDigits);
-        if (!_state.isEditing) {
-          _log.debug('[$runtimeType.initState] _initValue: $_initValue');
-          _editingController.text = _initValue;
-        }
+        _log.debug('[$runtimeType.initState] _initValue: $_initValue');
+        _setEditingControllerValue(_initValue);
         if (mounted) {
           setState(() {
-            _state.setLoaded();
+            _loadingState = OperationState.success;
+            _editingState = EditingState.notChanged;
           });
         }
       });
     }
+  }
+  ///
+  _setEditingControllerValue(String value) {
+    _editingController.value = TextEditingValue(
+      text: value,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: value.length),
+      ),
+    );
   }
   //
   @override
@@ -204,28 +215,26 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
             filled: true,
             fillColor: Theme.of(context).colorScheme.background,
           ),
-          onChanged: (newValue) async {
+          onChanged: (newValue) {
             _log.debug('[.build.onChanged] newValue: $newValue');
-            if (_state.isAuthenticating) {
-              _editingController.text = _initValue;
+            if (_authState == OperationState.inProgress) {
+              _setEditingControllerValue(_initValue);
             } else {
               if (newValue != _initValue) {
-                await _requestAccess().then((_) {
-                  if (_state.isAuthenticeted) {
-                    if (!_state.isChanged) {
-                      _state.setEditing();
-                      _state.setChanged();
+                _requestAccess().then((_) {
+                  if (_authState == OperationState.success) {
+                    if (_editingState == EditingState.notChanged) {
+                      _editingState = EditingState.changed;
                     }
                     if (mounted) setState(() {;});
                   } else {
-                    _editingController.text = _initValue;
+                    _setEditingControllerValue(_initValue);
                   }
                 });
               } else {
-                if (_state.isChanged) {
-                  // _state.setChanged();
+                if (_editingState == EditingState.changed) {
                   if (mounted) setState(() {
-                    _state.setLoaded();
+                    _editingState = EditingState.notChanged;
                   });
                 }
               }
@@ -315,7 +324,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     final value = newValue;
     if (dsClient != null && writeTagName != null && value != null) {
       setState(() {
-        _state.setSaving();
+        _savingState = OperationState.inProgress;
       });
       DsSend<T>(
         dsClient: dsClient,
@@ -324,9 +333,12 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         responseTimeout: _responseTimeout,
       ).exec(value).then((responseValue) {
         setState(() {
-          _state.setSaved();
           if (responseValue.hasError) {
-            _state.setChanged();
+            _savingState = OperationState.undefined;
+            _editingState = EditingState.changed;
+          } else {
+            _savingState = OperationState.success;
+            _editingState = EditingState.notChanged;
           }
         });
       });
@@ -334,13 +346,13 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   }
   ///
   Widget _buildSufixIcon() {
-    if (_state.isLoading || _state.isSaving) {
+    if (_loadingState == OperationState.inProgress || _savingState == OperationState.inProgress) {
       return _buildProgressIndicator();
     }
-    if (_state.isChanged) {
+    if (_editingState == EditingState.changed) {
       return const Icon(Icons.info_outline);
     }
-    if (_state.isSaved) {
+    if (_savingState == OperationState.success) {
       return Icon(Icons.check, color: Theme.of(context).primaryColor);
     }
     return Icon(null);
@@ -358,10 +370,9 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   /// Проверяет наличие доступа у текущего пользователя
   /// на редактирования данного поля
   Future<void> _requestAccess() async {
-    _state.setAuthenticating();
+    _authState = OperationState.inProgress;
     if (_allowedGroups.isEmpty) {
-      _state.setAuthenticated();
-      // _accessAllowed = true;
+      _authState = OperationState.success;
       return;
     }
     final users = _users;
@@ -372,31 +383,32 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       _log.debug('[._requestAccess] _user.group:', user.userGroup().value);
       if (user.exists()) {
         if (_allowedGroups.contains(user.userGroup().value)) {
-          _state.setAuthenticated();
-          // _accessAllowed = true;
+          _authState = OperationState.success;
           return;
         }
       }
-      networkFieldAuthenticate(
+      return networkFieldAuthenticate(
         context, 
         users, 
       ).then((AuthResult authResult) {
         if (authResult.authenticated) {
-          setState(() {
-            _state.setAuthenticated();
-            // _accessAllowed = true;
-            return;
-          });
+          _authState = OperationState.success;
+        } else {
+          _authState = OperationState.undefined;
         }
       });
     }
+    _authState = OperationState.undefined;
     FlushbarHelper.createError(
       duration: _flushBarDuration ?? Duration(
         milliseconds: const Setting('flushBarDurationMedium').toInt,
       ),
       message: const Localized('Editing is not permitted for current user').v,
     ).show(context);
-    _state.setAuthenticated(authenticated: false);
-    // _accessAllowed = false;
   }
+}
+
+enum EditingState {
+  changed,
+  notChanged,
 }
