@@ -147,11 +147,11 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
                 : null;
     if (responseTagName != null) {
       dsClient?.stream<T>(responseTagName).listen((event) {
-        _log.debug('[$runtimeType.didChangeDependencies] event: $event');
-        _log.debug('[$runtimeType.didChangeDependencies] event.value: ${event.value}');
+        _log.debug('[$runtimeType.initState] event: $event');
+        _log.debug('[$runtimeType.initState] event.value: ${event.value}');
         _initValue = (event.value as num).toStringAsFixed(_fractionDigits);
         if (!_state.isEditing) {
-          _log.debug('[$runtimeType.didChangeDependencies] _initValue: $_initValue');
+          _log.debug('[$runtimeType.initState] _initValue: $_initValue');
           _editingController.text = _initValue;
         }
         if (mounted) {
