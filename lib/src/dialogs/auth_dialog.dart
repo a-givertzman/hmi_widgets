@@ -193,12 +193,13 @@ class _AuthDialogState extends State<AuthDialog> {
         _auth.authenticateByLoginAndPass(_userLogin.value(), _userPass.value())
           .then((authResult) {
             if (authResult.authenticated) {
+              final flushBarDurationOnSucces = flushBarDuration * 0.2;
               FlushbarHelper.createSuccess(
-                duration: flushBarDuration,
+                duration: flushBarDurationOnSucces,
                 title: const Localized('Authentication').v,
                 message: authResult.message,
               ).show(context);
-              Future.delayed(flushBarDuration)
+              Future.delayed(flushBarDurationOnSucces)
                 .then((_) {
                   Navigator.of(context).pop<AuthResult>(authResult);
                 });
