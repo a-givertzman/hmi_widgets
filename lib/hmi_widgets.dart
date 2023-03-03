@@ -29,7 +29,6 @@ export 'src/indicators/status_indicators/dps_icon_indicator.dart';
 export 'src/indicators/status_indicators/invalid_status_indicator.dart';
 export 'src/indicators/status_indicators/sps_icon_indicator.dart';
 export 'src/indicators/status_indicators/status_indicator_widget.dart';
-export 'src/indicators/status_indicators/circular_progress_idicator_streamed.dart';
 //
 //     Value indicators
 export 'src/indicators/value_indicators/circular_value_indicator.dart';
