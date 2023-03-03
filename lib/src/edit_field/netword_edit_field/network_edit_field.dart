@@ -184,6 +184,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
           keyboardType: _keyboardType,
           textAlign: TextAlign.end,
           decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
             suffixText: _unitText,
             prefixStyle: Theme.of(context).textTheme.bodyMedium,
             label: Text(
