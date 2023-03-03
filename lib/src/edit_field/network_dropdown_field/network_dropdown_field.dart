@@ -2,7 +2,7 @@ import 'dart:core';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/edit_field/show_editing_not_allowed_flushbar.dart';
+import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 import 'oil_data.dart';
 
@@ -18,7 +18,7 @@ class NetworkDropdownFormField extends StatefulWidget {
   final double _width;
   final OilData _oilData;
   final int _responseTimeout;
-  final void Function(BuildContext)? _onUnallowedEdit;
+  final void Function(BuildContext)? _onUnauthorizedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -35,7 +35,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     String? responseTagName,
     String? labelText,
     double width = 350.0,
-    void Function(BuildContext)? onUnallowedEdit,
+    void Function(BuildContext)? onUnauthorizedEdit,
     required OilData oilData,
     int responseTimeout = 5,
   }) : 
@@ -48,7 +48,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     _width = width,
     _oilData = oilData,
     _responseTimeout = responseTimeout,
-    _onUnallowedEdit = onUnallowedEdit,
+    _onUnauthorizedEdit = onUnauthorizedEdit,
     super(key: key);
   //
   @override
@@ -62,7 +62,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     width: _width,
     oilData: _oilData,
     responseTimeout: _responseTimeout,
-    onUnallowedEdit: _onUnallowedEdit,
+    onUnauthorizedEdit: _onUnauthorizedEdit,
   );
 }
 ///
@@ -78,7 +78,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _responseTagName;
   final String? _labelText;
   final double _width;
-  void Function(BuildContext) _onUnallowedEdit;
+  void Function(BuildContext) _onUnauthorizedEdit;
   final int _responseTimeout;
   bool _accessAllowed = false;
   int? _dropdownValue;
@@ -95,7 +95,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required double width,
     required OilData oilData,
     required int responseTimeout,
-    void Function(BuildContext)? onUnallowedEdit,
+    void Function(BuildContext)? onUnauthorizedEdit,
   }) :
     _allowedGroups = allowedGroups,
     _users = users,
@@ -106,7 +106,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _width = width,
     _oilData = oilData,
     _responseTimeout = responseTimeout,
-    _onUnallowedEdit = onUnallowedEdit ?? showEditingNotAllowedFlushbar,
+    _onUnauthorizedEdit = onUnauthorizedEdit ?? showUnauthorizedEditingFlushbar,
     super();
   //
   @override
@@ -264,6 +264,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       }
     }
     _accessAllowed = false;
-    _onUnallowedEdit(context);
+    _onUnauthorizedEdit(context);
   }
 }

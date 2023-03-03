@@ -1,7 +1,7 @@
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/edit_field/show_editing_not_allowed_flushbar.dart';
+import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 
 ///
 /// Gets and shows the value of type [T] from the DataServer.
@@ -21,7 +21,7 @@ class NetworkEditField<T> extends StatefulWidget {
   final double _width;
   final bool _showApplyButton;
   final int _responseTimeout;
-  final void Function(BuildContext)? _onUnallowedEdit;
+  final void Function(BuildContext)? _onUnauthorizedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -43,7 +43,7 @@ class NetworkEditField<T> extends StatefulWidget {
     double width = 230.0,
     showApplyButton = false,
     int responseTimeout = 5,
-    void Function(BuildContext)? onUnallowedEdit,
+    void Function(BuildContext)? onUnauthorizedEdit,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -57,7 +57,7 @@ class NetworkEditField<T> extends StatefulWidget {
     _width = width,
     _showApplyButton = showApplyButton,
     _responseTimeout = responseTimeout,
-    _onUnallowedEdit = onUnallowedEdit,
+    _onUnauthorizedEdit = onUnauthorizedEdit,
     super(key: key);
   //
   @override
@@ -75,7 +75,7 @@ class NetworkEditField<T> extends StatefulWidget {
     width: _width,
     showApplyButton: _showApplyButton,
     responseTimeout: _responseTimeout,
-    onUnallowedEdit: _onUnallowedEdit,
+    onUnauthorizedEdit: _onUnauthorizedEdit,
   );
 }
 
@@ -99,7 +99,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final double _width;
   final bool _showApplyButton;
   final int _responseTimeout;
-  final void Function(BuildContext) _onUnallowedEdit;
+  final void Function(BuildContext) _onUnauthorizedEdit;
   String _initValue = '';
   ///
   _NetworkEditFieldState({
@@ -115,7 +115,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required double width,
     required bool showApplyButton,
     required int responseTimeout,
-    void Function(BuildContext)? onUnallowedEdit,
+    void Function(BuildContext)? onUnauthorizedEdit,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
     _allowedGroups = allowedGroups,
@@ -130,7 +130,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _width = width,
     _showApplyButton = showApplyButton,
     _responseTimeout = responseTimeout,
-    _onUnallowedEdit = onUnallowedEdit ?? showEditingNotAllowedFlushbar,
+    _onUnauthorizedEdit = onUnauthorizedEdit ?? showUnauthorizedEditingFlushbar,
     super();
   //
   @override
@@ -386,7 +386,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       }
     }
     _authState = OperationState.undefined;
-    _onUnallowedEdit(context);
+    _onUnauthorizedEdit(context);
   }
 }
 

@@ -3,7 +3,7 @@ import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_core/hmi_core_translate.dart';
 ///
-void showEditingNotAllowedFlushbar(BuildContext context) {
+void showUnauthorizedEditingFlushbar(BuildContext context) {
   FlushbarHelper.createError(
     duration: Duration(
       milliseconds: const Setting('flushBarDurationMedium').toInt,
