@@ -1,9 +1,7 @@
-import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_app_settings.dart';
-import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
+import 'package:hmi_widgets/src/edit_field/show_editing_not_allowed_flushbar.dart';
 
 ///
 /// Gets and shows the value of type [T] from the DataServer.
@@ -22,8 +20,8 @@ class NetworkEditField<T> extends StatefulWidget {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final Duration? _flushBarDuration;
   final int _responseTimeout;
+  final void Function(BuildContext)? _onUnallowedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -44,8 +42,8 @@ class NetworkEditField<T> extends StatefulWidget {
     String? unitText,
     double width = 230.0,
     showApplyButton = false,
-    Duration? flushBarDuration,
     int responseTimeout = 5,
+    void Function(BuildContext)? onUnallowedEdit,
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -58,8 +56,8 @@ class NetworkEditField<T> extends StatefulWidget {
     _unitText = unitText,
     _width = width,
     _showApplyButton = showApplyButton,
-    _flushBarDuration = flushBarDuration,
     _responseTimeout = responseTimeout,
+    _onUnallowedEdit = onUnallowedEdit,
     super(key: key);
   //
   @override
@@ -76,8 +74,8 @@ class NetworkEditField<T> extends StatefulWidget {
     unitText: _unitText,
     width: _width,
     showApplyButton: _showApplyButton,
-    flushBarDuration: _flushBarDuration,
-    responseTimeout: _responseTimeout
+    responseTimeout: _responseTimeout,
+    onUnallowedEdit: _onUnallowedEdit,
   );
 }
 
@@ -100,9 +98,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final Duration? _flushBarDuration;
   final int _responseTimeout;
-  // bool _accessAllowed = false;
+  final void Function(BuildContext) _onUnallowedEdit;
   String _initValue = '';
   ///
   _NetworkEditFieldState({
@@ -118,7 +115,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required double width,
     required bool showApplyButton,
     required int responseTimeout,
-    Duration? flushBarDuration,
+    void Function(BuildContext)? onUnallowedEdit,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),
     _allowedGroups = allowedGroups,
@@ -132,8 +129,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     _unitText = unitText,
     _width = width,
     _showApplyButton = showApplyButton,
-    _flushBarDuration = flushBarDuration,
     _responseTimeout = responseTimeout,
+    _onUnallowedEdit = onUnallowedEdit ?? showEditingNotAllowedFlushbar,
     super();
   //
   @override
@@ -221,7 +218,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
               _setEditingControllerValue(_initValue);
             } else {
               if (newValue != _initValue) {
-                _requestAccess().then((_) {
+                _requestAccess(context).then((_) {
                   if (_authState == OperationState.success) {
                     if (_editingState == EditingState.notChanged) {
                       _editingState = EditingState.changed;
@@ -369,7 +366,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   }
   /// Проверяет наличие доступа у текущего пользователя
   /// на редактирования данного поля
-  Future<void> _requestAccess() async {
+  Future<void> _requestAccess(BuildContext context) async {
     _authState = OperationState.inProgress;
     if (_allowedGroups.isEmpty) {
       _authState = OperationState.success;
@@ -387,24 +384,9 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
           return;
         }
       }
-      return networkFieldAuthenticate(
-        context, 
-        users, 
-      ).then((AuthResult authResult) {
-        if (authResult.authenticated) {
-          _authState = OperationState.success;
-        } else {
-          _authState = OperationState.undefined;
-        }
-      });
     }
     _authState = OperationState.undefined;
-    FlushbarHelper.createError(
-      duration: _flushBarDuration ?? Duration(
-        milliseconds: const Setting('flushBarDurationMedium').toInt,
-      ),
-      message: const Localized('Editing is not permitted for current user').v,
-    ).show(context);
+    _onUnallowedEdit(context);
   }
 }
 

@@ -2,9 +2,7 @@ import 'dart:core';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_app_settings.dart';
-import 'package:another_flushbar/flushbar_helper.dart';
-import 'package:hmi_widgets/src/edit_field/network_field_authenticate.dart';
+import 'package:hmi_widgets/src/edit_field/show_editing_not_allowed_flushbar.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 import 'oil_data.dart';
 
@@ -18,9 +16,9 @@ class NetworkDropdownFormField extends StatefulWidget {
   final String? _responseTagName;
   final String? _labelText;
   final double _width;
-  final Duration? _flushBarDuration;
   final OilData _oilData;
   final int _responseTimeout;
+  final void Function(BuildContext)? _onUnallowedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
   /// - [responseTagName] - the name of DataServer tag to get response if value written
@@ -30,7 +28,6 @@ class NetworkDropdownFormField extends StatefulWidget {
   /// - [responseTimeout] - timeout in seconds to wait server response
   const NetworkDropdownFormField({
     Key? key,
-    // Future<AuthResult> Function(BuildContext context)? onAuthRequested,
     List<String> allowedGroups = const [],
     AppUserStacked? users,
     DsClient? dsClient,
@@ -38,11 +35,10 @@ class NetworkDropdownFormField extends StatefulWidget {
     String? responseTagName,
     String? labelText,
     double width = 350.0,
-    Duration? flushBarDuration,
+    void Function(BuildContext)? onUnallowedEdit,
     required OilData oilData,
     int responseTimeout = 5,
   }) : 
-    // _onAuthRequested = onAuthRequested,
     _allowedGroups = allowedGroups,
     _users = users,
     _dsClient = dsClient,
@@ -50,14 +46,13 @@ class NetworkDropdownFormField extends StatefulWidget {
     _responseTagName = responseTagName,
     _labelText = labelText,
     _width = width,
-    _flushBarDuration = flushBarDuration,
     _oilData = oilData,
     _responseTimeout = responseTimeout,
+    _onUnallowedEdit = onUnallowedEdit,
     super(key: key);
   //
   @override
   State<NetworkDropdownFormField> createState() => _NetworkDropdownFormFieldState(
-    // onAuthRequested: _onAuthRequested,
     allowedGroups: _allowedGroups,
     users: _users,
     dsClient: _dsClient,
@@ -65,9 +60,9 @@ class NetworkDropdownFormField extends StatefulWidget {
     responseTagName: _responseTagName,
     labelText: _labelText,
     width: _width,
-    flushBarDuration: _flushBarDuration,
     oilData: _oilData,
     responseTimeout: _responseTimeout,
+    onUnallowedEdit: _onUnallowedEdit,
   );
 }
 ///
@@ -76,7 +71,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     final dropdownState = GlobalKey<FormFieldState>();
   final _state = NetworkOperationState(isLoading: true);
   final OilData _oilData;
-  // final Future<AuthResult> Function(BuildContext context)? _onAuthRequested;
   final List<String> _allowedGroups;
   late AppUserStacked? _users;
   final DsClient? _dsClient;
@@ -84,7 +78,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _responseTagName;
   final String? _labelText;
   final double _width;
-  final Duration? _flushBarDuration;
+  void Function(BuildContext) _onUnallowedEdit;
   final int _responseTimeout;
   bool _accessAllowed = false;
   int? _dropdownValue;
@@ -92,7 +86,6 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   List<String> _oilNames = [];
   ///
   _NetworkDropdownFormFieldState({
-    // required Future<AuthResult> Function(BuildContext context)? onAuthRequested,
     required List<String> allowedGroups,
     required AppUserStacked? users,
     required DsClient? dsClient,
@@ -102,9 +95,8 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required double width,
     required OilData oilData,
     required int responseTimeout,
-    Duration? flushBarDuration,
+    void Function(BuildContext)? onUnallowedEdit,
   }) :
-    // _onAuthRequested = onAuthRequested,
     _allowedGroups = allowedGroups,
     _users = users,
     _dsClient = dsClient,
@@ -112,9 +104,9 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     _responseTagName = responseTagName,
     _labelText = labelText,
     _width = width,
-    _flushBarDuration = flushBarDuration,
     _oilData = oilData,
     _responseTimeout = responseTimeout,
+    _onUnallowedEdit = onUnallowedEdit ?? showEditingNotAllowedFlushbar,
     super();
   //
   @override
@@ -161,7 +153,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
               if (newValue != _initValue) {
                 dropdownState.currentState?.didChange(_initValue);
               }
-              _requestAccess().then((value) {
+              _requestAccess(context).then((value) {
                 if (_accessAllowed) {
                   _sendValue(_dsClient, _writeTagName, _responseTagName, newValue);
                 }
@@ -256,7 +248,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   }
   /// Проверяет наличие доступа у текущего пользователя 
   /// на редактирования данного поля
-  Future<void> _requestAccess() async {
+  Future<void> _requestAccess(BuildContext context) async {
     if (_allowedGroups.isEmpty) {
       _accessAllowed = true;
       return;
@@ -270,24 +262,8 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
           return;
         }
       }
-      networkFieldAuthenticate(
-        context, 
-        users,
-      ).then((AuthResult authResult) {
-        if (authResult.authenticated) {
-          setState(() {
-            _accessAllowed = true;
-            return;
-          });
-        }
-      });
     }
-    FlushbarHelper.createError(
-      duration: _flushBarDuration ?? Duration(
-        milliseconds: const Setting('flushBarDurationMedium').toInt,
-      ),
-      message: const Localized('Editing is not permitted for current user').v,
-    ).show(context);
     _accessAllowed = false;
+    _onUnallowedEdit(context);
   }
 }
