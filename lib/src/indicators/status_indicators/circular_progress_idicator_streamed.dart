@@ -21,7 +21,7 @@ class CircularProgressIndicatorStreamed extends StatelessWidget {
             if (data == OperationState.inProgress) {
               return const FittedBox(child: CupertinoActivityIndicator());
             }
-            if (data == OperationState.success || data == OperationState.failure) {
+            if (data == OperationState.success || data == OperationState.failure || data == OperationState.undefined) {
               return const Icon(null);
               // return Icon(Icons.account_tree_sharp, color: Theme.of(context).stateColors.on);
             }
