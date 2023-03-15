@@ -6,13 +6,16 @@ import 'live_axis.dart';
 class LiveChartLegend extends StatelessWidget {
   final double _legendWidth;
   final List<LiveAxis> _axes;
+  final void Function(String, bool) _onChanged;
   ///
   const LiveChartLegend({
     super.key,
     required double legendWidth,
     required List<LiveAxis> axes,
+    required void Function(String signalName, bool isVisible) onChanged,
   }) : 
-    _legendWidth = legendWidth, 
+    _legendWidth = legendWidth,
+    _onChanged = onChanged,
     _axes = axes;
   //
   @override
@@ -42,9 +45,7 @@ class LiveChartLegend extends StatelessWidget {
                     Checkbox(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: axisData.isVisible, 
-                      onChanged: (isVisible) {
-                        axisData.isVisible = isVisible!;
-                      },
+                      onChanged: (isVisible) => _onChanged(axisData.signalName, isVisible!),
                     ),
                   ],
                 ),

@@ -150,7 +150,6 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   //
   @override
   Widget build(BuildContext context) {
-    final axes = _axesData.values.toList();
     final padding = const Setting('padding').toDouble;
     return Stack(
       children: [
@@ -171,13 +170,21 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
             mainAxisSize: MainAxisSize.min,
             children: [
               ShowDotsSwitch(
-                legendWidth: _legendWidth, 
-                axes: axes,
+                width: _legendWidth,
+                isOn: _axesData.values.every((axisData) => axisData.showDots),
+                onChanged: (showDots) {
+                  for (final axisData in _axesData.values) {
+                    axisData.showDots = showDots;
+                  }
+                },
               ),
               SizedBox(height: padding / 4),
               LiveChartLegend(
                 legendWidth: _legendWidth,
-                axes: axes,
+                axes: _axesData.values.toList(),
+                onChanged: (signal, isVisible) {
+                  _axesData[signal]!.isVisible = isVisible;
+                },
               ),
             ],
           ),

@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 
-import 'live_axis.dart';
-
 ///
 class ShowDotsSwitch extends StatelessWidget {
-  final double _legendWidth;
-  final List<LiveAxis> _axesData;
+  final bool _isOn;
+  final void Function(bool) _onChanged;
+  final double _width;
   ///
   const ShowDotsSwitch({
     super.key,
-    required double legendWidth,
-    required List<LiveAxis> axes,
+    required double width,
+    required bool isOn,
+    required void Function(bool) onChanged,
   }) : 
-    _legendWidth = legendWidth, 
-    _axesData = axes;
+    _width = width, 
+    _isOn = isOn,
+    _onChanged = onChanged;
   //
   @override
   Widget build(BuildContext context) {
     final padding = const Setting('padding').toDouble;
     return SizedBox(
-      width: _legendWidth,
+      width: _width,
       child: Card(
         margin: EdgeInsets.zero,
         child: Row(
@@ -36,12 +37,8 @@ class ShowDotsSwitch extends StatelessWidget {
             const Spacer(),
             Switch(
               activeColor: Theme.of(context).colorScheme.primary,
-              value: _axesData.every((axisData) => axisData.showDots), 
-              onChanged: (showDots) {
-                for (final axisData in _axesData) {
-                  axisData.showDots = showDots;
-                }
-              },
+              value: _isOn,
+              onChanged: _onChanged,
             ),
           ],
         ),
