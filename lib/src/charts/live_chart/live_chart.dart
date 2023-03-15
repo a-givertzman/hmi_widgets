@@ -4,7 +4,10 @@ import 'live_axis.dart';
 import 'x_title.dart';
 import 'y_title.dart';
 
-/// Real-time chart that draws provided values from multiple signals.
+///
+/// Chart that draws multiple signals:
+/// - point values taken from [points] Map<String, List<FlSpot>>,
+/// - view data for each signal taken from [axesData] Map<String, LiveAxis>.
 class LiveChart extends StatelessWidget {
   final double? _minX;
   final double? _maxX;
@@ -15,6 +18,9 @@ class LiveChart extends StatelessWidget {
   final Map<String, LiveAxis> _axesData;
   final Map<String, List<FlSpot>> _points;
   ///
+  /// Chart that draws multiple signals:
+  /// - point values taken from [points] Map<String, List<FlSpot>>,
+  /// - view data for each signal taken from [axesData] Map<String, LiveAxis>.
   const LiveChart({
     super.key,
     required double? minX,
