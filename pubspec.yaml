@@ -18,7 +18,7 @@ dev_dependencies:
   mockito: ^5.3.0
   another_flushbar: ^1.12.29
   # flutter_lints: ^2.0.0
-  fl_chart: ^0.55.1
+  fl_chart: ^0.61.0
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
