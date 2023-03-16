@@ -7,7 +7,9 @@ import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'live_chart.dart';
 import 'live_axis.dart';
 import 'live_chart_legend.dart';
+import 'pause_switch.dart';
 import 'show_dots_switch.dart';
+import 'show_legend_switch.dart';
 
 /// Displays [LiveChart] with [LiveChartLegend] and [ShowDotsSwitch].
 class LiveChartWidget extends StatefulWidget {
@@ -64,8 +66,8 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   final double? _maxY;
   double? _minX;
   double? _maxX;
-  late final double _startMinX;
-  late final double _startMaxX;
+  late double _startMinX;
+  late double _startMaxX;
   final double? _xInterval;
   final double? _yInterval;
   final Map<String, LiveAxis> _axesData = {};
@@ -73,7 +75,9 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late final Map<String, List<FlSpot>> _points;
   late final StreamSubscription<DsDataPoint<double>> _subscription;
   late final Ticker _ticker;
+  late final Timer _autoScrollDelayTimer;
   bool _isAutoScrollStarted = false;
+  bool _showLegend = true;
   ///
   _LiveChartWidgetState({
     required double? minY,
@@ -114,7 +118,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
       _minX = _startMinX + elapsedX;
       if (mounted) setState(() {return;});
     });
-    Future.delayed(_autoScrollDelay, () {
+    _autoScrollDelayTimer = Timer(_autoScrollDelay, () {
       _isAutoScrollStarted = true;
       _ticker.start();
     });
@@ -134,18 +138,48 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     });
     super.initState();
   }
+  //
+  @override
+  void dispose() {
+    _autoScrollDelayTimer.cancel();
+    _subscription.cancel();
+    _ticker.dispose();
+    super.dispose();
+  }
   ///
   double _getMinX(DateTime now) => now.subtract(const Duration(seconds: 25))
     .millisecondsSinceEpoch.toDouble();
   ///
   double _getMaxX(DateTime now) => now.add(const Duration(seconds: 5))
     .millisecondsSinceEpoch.toDouble();
-  //
-  @override
-  void dispose() {
-    _subscription.cancel();
-    _ticker.dispose();
-    super.dispose();
+    ///
+  void _pauseChart() {
+    setState(() {
+      if (_autoScrollDelayTimer.isActive) {
+        _autoScrollDelayTimer.cancel();
+      }
+      if (_ticker.isActive) {
+        _ticker.stop();
+      }
+      if (!_subscription.isPaused) {
+        _subscription.pause();
+      }
+    });
+  }
+  ///
+  void _playChart() {
+    final now = DateTime.now().millisecondsSinceEpoch.toDouble();
+    final xRange = _maxX! - _minX!;
+    setState(() {
+      _startMaxX = _maxX = now;
+      _startMinX =_minX = now - xRange;
+      if (!_ticker.isActive) {
+        _ticker.start();
+      }
+      if (_subscription.isPaused) {
+        _subscription.resume();
+      }
+    });
   }
   //
   @override
@@ -153,39 +187,91 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     final padding = const Setting('padding').toDouble;
     return Stack(
       children: [
-        LiveChart(
-          minX: _minX,
-          maxX: _maxX,
-          minY: _minY,
-          maxY: _maxY,
-          yInterval: _yInterval,
-          xInterval: _xInterval,
-          axesData: _axesData,
-          points: _points,
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragUpdate: (details) {
+            _pauseChart();
+            final delta = details.primaryDelta ?? 0;
+            _log.debug('drag update: $delta');
+            final shift = 15.0 * delta;
+            setState(() {
+              _minX = _minX! - shift;
+              _maxX = _maxX! - shift;
+            });
+          },
+          child: AbsorbPointer(
+            child: LiveChart(
+              minX: _minX,
+              maxX: _maxX,
+              minY: _minY,
+              maxY: _maxY,
+              yInterval: _yInterval,
+              xInterval: _xInterval,
+              axesData: _axesData,
+              points: _points,
+            ),
+          ),
         ),
-        Positioned(
-          left: padding * 6,
-          top: 0,
+        Align(
+          alignment: Alignment.topCenter,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ShowDotsSwitch(
+              SizedBox(
                 width: _legendWidth,
-                isOn: _axesData.values.every((axisData) => axisData.showDots),
-                onChanged: (showDots) {
-                  for (final axisData in _axesData.values) {
-                    axisData.showDots = showDots;
-                  }
-                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowDotsSwitch(
+                        isOn: _axesData.values.every((axisData) => axisData.showDots),
+                        onChanged: (showDots) {
+                          setState(() {
+                            for (final axisData in _axesData.values) {
+                              axisData.showDots = showDots;
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowLegendSwitch(
+                        isOn: _showLegend, 
+                        onChanged: (value) {
+                          setState(() {
+                            _showLegend = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: PauseSwitch(
+                        isOn: !_ticker.isActive, 
+                        onChanged: (isPaused) {
+                          if (isPaused) {
+                            _pauseChart();
+                          } else {
+                            _playChart();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: padding / 4),
-              LiveChartLegend(
-                legendWidth: _legendWidth,
-                axes: _axesData.values.toList(),
-                onChanged: (signal, isVisible) {
-                  _axesData[signal]!.isVisible = isVisible;
-                },
-              ),
+              if (_showLegend)
+                LiveChartLegend(
+                  legendWidth: _legendWidth,
+                  axes: _axesData.values.toList(),
+                  onChanged: (signal, isVisible) {
+                    setState(() {
+                      _axesData[signal]!.isVisible = isVisible;
+                    });
+                  },
+                ),
             ],
           ),
         ),
