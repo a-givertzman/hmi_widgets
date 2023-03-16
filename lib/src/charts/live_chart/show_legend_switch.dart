@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+
 ///
-class ShowDotsSwitch extends StatelessWidget {
+class ShowLegendSwitch extends StatelessWidget {
   final bool _isOn;
   final void Function(bool) _onChanged;
   ///
-  const ShowDotsSwitch({
-    super.key,
-    required bool isOn,
+  const ShowLegendSwitch({
+    super.key, 
+    required bool isOn, 
     required void Function(bool) onChanged,
-  }) : 
+  }) :
     _isOn = isOn,
     _onChanged = onChanged;
   //
@@ -21,10 +22,10 @@ class ShowDotsSwitch extends StatelessWidget {
         shape: CircleBorder(),
       ),
       child: IconButton(
-        tooltip: _isOn ? const Localized('Draw lines').v : const Localized('Draw dots').v,
+        tooltip: _isOn ? const Localized('Hide legend').v : const Localized('Show legend').v,
         onPressed: () => _onChanged(!_isOn), 
         color: Theme.of(context).colorScheme.onPrimary,
-        icon: Icon(_isOn ? Icons.timeline : Icons.more_horiz),
+        icon: Icon(Icons.legend_toggle),
       ),
     );
   }
