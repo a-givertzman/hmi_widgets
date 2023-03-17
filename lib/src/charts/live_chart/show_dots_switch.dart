@@ -15,7 +15,7 @@ class ShowDotsSwitch extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return Container(
       decoration: ShapeDecoration(
         color: Theme.of(context).colorScheme.primary,
         shape: CircleBorder(),

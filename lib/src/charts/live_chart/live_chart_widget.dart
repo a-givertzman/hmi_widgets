@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
+import 'package:hmi_widgets/src/charts/live_chart/chart_action_button.dart';
 import 'live_chart.dart';
 import 'live_axis.dart';
 import 'live_chart_legend.dart';
@@ -61,6 +62,9 @@ class LiveChartWidget extends StatefulWidget {
 ///
 class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProviderStateMixin {
   static final _log = const Log('_LiveChartState')..level = LogLevel.debug;
+  static const _scrollSpeed = 22.5;
+  static const _minXDelta = 1000.0;
+  static const _maxXDelta = 300000.0;
   final double _legendWidth;
   final double? _minY;
   final double? _maxY;
@@ -147,10 +151,10 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     super.dispose();
   }
   ///
-  double _getMinX(DateTime now) => now.subtract(const Duration(seconds: 25))
+  double _getMinX(DateTime now) => now.subtract(const Duration(seconds: 30))
     .millisecondsSinceEpoch.toDouble();
   ///
-  double _getMaxX(DateTime now) => now.add(const Duration(seconds: 5))
+  double _getMaxX(DateTime now) => now.add(const Duration(seconds: 0))
     .millisecondsSinceEpoch.toDouble();
     ///
   void _pauseChart() {
@@ -193,7 +197,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
             _pauseChart();
             final delta = details.primaryDelta ?? 0;
             _log.debug('drag update: $delta');
-            final shift = 15.0 * delta;
+            final shift = _scrollSpeed * delta;
             setState(() {
               _minX = _minX! - shift;
               _maxX = _maxX! - shift;
@@ -206,7 +210,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
               minY: _minY,
               maxY: _maxY,
               yInterval: _yInterval,
-              xInterval: _xInterval,
+              xInterval: _xInterval ?? (_maxX! - _minX!) / 6.0,
               axesData: _axesData,
               points: _points,
             ),
@@ -217,50 +221,93 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                width: _legendWidth,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: ShowDotsSwitch(
-                        isOn: _axesData.values.every((axisData) => axisData.showDots),
-                        onChanged: (showDots) {
-                          setState(() {
-                            for (final axisData in _axesData.values) {
-                              axisData.showDots = showDots;
-                            }
-                          });
-                        },
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(padding),
+                    child: ShowDotsSwitch(
+                      isOn: _axesData.values.every((axisData) => axisData.showDots),
+                      onChanged: (showDots) {
+                        setState(() {
+                          for (final axisData in _axesData.values) {
+                            axisData.showDots = showDots;
+                          }
+                        });
+                      },
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: ShowLegendSwitch(
-                        isOn: _showLegend, 
-                        onChanged: (value) {
-                          setState(() {
-                            _showLegend = value;
-                          });
-                        },
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(padding),
+                    child: ShowLegendSwitch(
+                      isOn: _showLegend, 
+                      onChanged: (value) {
+                        setState(() {
+                          _showLegend = value;
+                        });
+                      },
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: PauseSwitch(
-                        isOn: !_ticker.isActive, 
-                        onChanged: (isPaused) {
-                          if (isPaused) {
-                            _pauseChart();
-                          } else {
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(padding),
+                    child: ChartActionButton(
+                      tooltip: const Localized('Zoom out').v,
+                      icon: Icon(Icons.remove),
+                      onPressed: _maxX! - _minX! < _maxXDelta 
+                        ? () {
+                          final isChartWasActive = _ticker.isActive;
+                          _pauseChart();
+                          setState(() {
+                            double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
+                            final newXDelta = _maxX! - newMinX;
+                            newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
+                            _startMinX = newMinX;
+                            _minX = newMinX;
+                          });
+                          if(isChartWasActive) {
                             _playChart();
                           }
-                        },
-                      ),
+                        } 
+                        : null,
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(padding),
+                    child: ChartActionButton(
+                      tooltip: const Localized('Zoom in').v,
+                      icon: Icon(Icons.add),
+                      onPressed: _maxX! - _minX! > _minXDelta 
+                        ? () {
+                          final isChartWasActive = _ticker.isActive;
+                          _pauseChart();
+                          setState(() {
+                            double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
+                            final newXDelta = _maxX! - newMinX;
+                            newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
+                            _startMinX = newMinX;
+                            _minX = newMinX;
+                          });
+                          if(isChartWasActive) {
+                            _playChart();
+                          }
+                        } 
+                        : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(padding),
+                    child: PauseSwitch(
+                      isOn: !_ticker.isActive, 
+                      onChanged: (isPaused) {
+                        if (isPaused) {
+                          _pauseChart();
+                        } else {
+                          _playChart();
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
               if (_showLegend)
                 LiveChartLegend(
@@ -277,5 +324,9 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
         ),
       ],
     );
+  }
+
+  double _computeTimeRangeStep(double currentTimeRange) {
+    return 0.05 * currentTimeRange + 5000.0;
   }
 }
