@@ -17,13 +17,12 @@ class ChartActionButton extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return Container(
       decoration: ShapeDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        shape: CircleBorder(),
-      ),
+      color: Theme.of(context).colorScheme.primary,
+      shape: CircleBorder(),
+    ),
       child: IconButton(
-        
         tooltip: _tooltip,
         onPressed: _onPressed, 
         color: Theme.of(context).colorScheme.onPrimary,

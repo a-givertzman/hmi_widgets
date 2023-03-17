@@ -62,9 +62,9 @@ class LiveChartWidget extends StatefulWidget {
 ///
 class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProviderStateMixin {
   static final _log = const Log('_LiveChartState')..level = LogLevel.debug;
-  static const _minXDelta = 10000.0;
+  static const _scrollSpeed = 22.5;
+  static const _minXDelta = 1000.0;
   static const _maxXDelta = 300000.0;
-  static const _timeRangeStep = 10000.0;
   final double _legendWidth;
   final double? _minY;
   final double? _maxY;
@@ -197,7 +197,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
             _pauseChart();
             final delta = details.primaryDelta ?? 0;
             _log.debug('drag update: $delta');
-            final shift = 15.0 * delta;
+            final shift = _scrollSpeed * delta;
             setState(() {
               _minX = _minX! - shift;
               _maxX = _maxX! - shift;
@@ -251,14 +251,22 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                   Padding(
                     padding: EdgeInsets.all(padding),
                     child: ChartActionButton(
-                      tooltip: const Localized('Increase time range').v,
-                      icon: Icon(Icons.add),
-                      onPressed: _maxX! - _minX! + _timeRangeStep <= _maxXDelta 
+                      tooltip: const Localized('Zoom out').v,
+                      icon: Icon(Icons.remove),
+                      onPressed: _maxX! - _minX! < _maxXDelta 
                         ? () {
+                          final isChartWasActive = _ticker.isActive;
+                          _pauseChart();
                           setState(() {
-                            final newMinX = _minX! - 10000;
-                            _startMinX = _minX = newMinX; 
+                            double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
+                            final newXDelta = _maxX! - newMinX;
+                            newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
+                            _startMinX = newMinX;
+                            _minX = newMinX;
                           });
+                          if(isChartWasActive) {
+                            _playChart();
+                          }
                         } 
                         : null,
                     ),
@@ -266,14 +274,22 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                   Padding(
                     padding: EdgeInsets.all(padding),
                     child: ChartActionButton(
-                      tooltip: const Localized('Decrease time range').v,
-                      icon: Icon(Icons.remove),
-                      onPressed: _maxX! - _minX! - _timeRangeStep >= _minXDelta 
+                      tooltip: const Localized('Zoom in').v,
+                      icon: Icon(Icons.add),
+                      onPressed: _maxX! - _minX! > _minXDelta 
                         ? () {
+                          final isChartWasActive = _ticker.isActive;
+                          _pauseChart();
                           setState(() {
-                            final newMinX = _minX! + 10000;
-                            _startMinX = _minX = newMinX; 
+                            double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
+                            final newXDelta = _maxX! - newMinX;
+                            newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
+                            _startMinX = newMinX;
+                            _minX = newMinX;
                           });
+                          if(isChartWasActive) {
+                            _playChart();
+                          }
                         } 
                         : null,
                     ),
@@ -291,6 +307,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                       },
                     ),
                   ),
+                  Text('${_computeTimeRangeStep(_maxX! - _minX!)}'),
                 ],
               ),
               if (_showLegend)
@@ -308,5 +325,9 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
         ),
       ],
     );
+  }
+
+  double _computeTimeRangeStep(double currentTimeRange) {
+    return 0.05 * currentTimeRange + 5000.0;
   }
 }
