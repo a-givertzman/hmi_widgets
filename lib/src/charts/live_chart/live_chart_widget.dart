@@ -307,7 +307,6 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                       },
                     ),
                   ),
-                  Text('${_computeTimeRangeStep(_maxX! - _minX!)}'),
                 ],
               ),
               if (_showLegend)
