@@ -10,7 +10,7 @@ class MinLengthValidationCase implements ValidationCase {
     _minLength = minLength;
   //
   @override
-  Result<bool> isSatisfiedBy(String? value) {
+  Result<void> isSatisfiedBy(String? value) {
     if (value != null && value.length >= _minLength) {
       return Result(data: true);
     }

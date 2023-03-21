@@ -10,7 +10,7 @@ class MaxLengthValidationCase implements ValidationCase {
     _maxLength = maxLength;
   //
   @override
-  Result<bool> isSatisfiedBy(String? value) {
+  Result<void> isSatisfiedBy(String? value) {
     if (value != null && value.length <= _maxLength) {
       return Result(data: true);
     }

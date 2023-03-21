@@ -7,7 +7,7 @@ class OnlyDigitsValidationCase implements ValidationCase {
   const OnlyDigitsValidationCase();
   //
   @override
-  Result<bool> isSatisfiedBy(String? value) {
+  Result<void> isSatisfiedBy(String? value) {
     if(value != null && value.isNotEmpty) {
       final regex = RegExp(r'[\d]*');
       final match = regex.matchAsPrefix(value);
