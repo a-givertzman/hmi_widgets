@@ -38,6 +38,7 @@ class StatusIndicatorWidget extends StatelessWidget {
       child: ColorFiltered(
         colorFilter: ColorFilters.disabled(context, _disabled),
         child: Card(
+          margin: EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.all(7.0),
             child: _buildIndicatorWidget(

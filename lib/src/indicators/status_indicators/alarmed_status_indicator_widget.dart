@@ -28,6 +28,7 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(7.0),
         child: _buildIndicatorWidget(

@@ -28,12 +28,13 @@ class TextIndicatorWidget extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(7.0),
-        child: SizedBox(
-          width: _width,
-          height: _height,
+    return SizedBox(
+      width: _width,
+      height: _height,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(7.0),
           child: _buildWidget(
             context,
             _indicator,
