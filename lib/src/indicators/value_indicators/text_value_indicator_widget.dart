@@ -127,7 +127,7 @@ class TextIndicatorWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _caption,
+        Expanded(child: _caption),
         const SizedBox(width: 3.0,),
         _indicator,
       ],
