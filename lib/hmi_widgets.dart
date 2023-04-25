@@ -3,6 +3,7 @@ library hmi_widgets;
 // core
 export 'src/core/lazy_loadable.dart';
 export 'src/core/color_filters.dart';
+export 'src/core/overflowable_text.dart';
 //    
 //     Validation
 export 'src/core/validation/validator.dart';

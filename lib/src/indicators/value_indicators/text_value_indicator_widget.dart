@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
-
+import 'package:hmi_core/hmi_core_app_settings.dart';
 ///
 /// Показывает прямоугольник с индикатором и надпись
 /// Положение надписи можно определить в параметре [textPosition]
@@ -28,12 +28,15 @@ class TextIndicatorWidget extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(7.0),
-        child: SizedBox(
-          width: _width,
-          height: _height,
+    return SizedBox(
+      width: _width,
+      height: _height,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: EdgeInsets.all(
+            const Setting('padding').toDouble
+          ),
           child: _buildWidget(
             context,
             _indicator,
@@ -83,7 +86,7 @@ class TextIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         _indicator,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _caption,
       ],
     );
@@ -94,7 +97,7 @@ class TextIndicatorWidget extends StatelessWidget {
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _indicator,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _caption,
       ],
     );
@@ -105,7 +108,7 @@ class TextIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _indicator,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _caption,
       ],
     );
@@ -116,7 +119,7 @@ class TextIndicatorWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _caption,
-        const SizedBox(width: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );
@@ -126,8 +129,8 @@ class TextIndicatorWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _caption,
-        const SizedBox(width: 3.0,),
+        Expanded(child: _caption),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );
@@ -138,7 +141,7 @@ class TextIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         _caption,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );
@@ -149,7 +152,7 @@ class TextIndicatorWidget extends StatelessWidget {
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _caption,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );
@@ -160,7 +163,7 @@ class TextIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _caption,
-        const SizedBox(height: 3.0,),
+        SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/src/core/color_filters.dart';
 
 ///
@@ -38,8 +39,11 @@ class StatusIndicatorWidget extends StatelessWidget {
       child: ColorFiltered(
         colorFilter: ColorFilters.disabled(context, _disabled),
         child: Card(
+          margin: EdgeInsets.zero,
           child: Padding(
-            padding: const EdgeInsets.all(7.0),
+            padding: EdgeInsets.all(
+              const Setting('padding').toDouble,
+            ),
             child: _buildIndicatorWidget(
               _indicator, 
               _caption, 
@@ -52,6 +56,7 @@ class StatusIndicatorWidget extends StatelessWidget {
   }
   ///
   Widget _buildIndicatorWidget(Widget indicator, Widget? caption, Alignment alignment) {
+    final padding = const Setting('padding').toDouble;
     if (alignment == Alignment.centerLeft) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -59,7 +64,7 @@ class StatusIndicatorWidget extends StatelessWidget {
         children: [
           indicator,
           if (caption != null) ...[
-            const SizedBox(width: 7.0,),
+            SizedBox(width: padding),
             caption,
           ],
         ],
@@ -72,7 +77,7 @@ class StatusIndicatorWidget extends StatelessWidget {
         children: [
           if (caption != null) ...[
             caption,
-            const SizedBox(width: 7.0,),
+            SizedBox(width: padding),
           ],
           indicator,
         ],
