@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 
 ///
 /// Показывает прямоугольник с двумя индикатороми и надпись
@@ -30,7 +31,9 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(7.0),
+        padding: EdgeInsets.all(
+          const Setting('padding').toDouble
+        ),
         child: _buildIndicatorWidget(
           stateIndicator: _stateIndicator, 
           alarmIndicator: _alarmIndicator, 
@@ -56,7 +59,7 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
               _alarmIndicator,
             ],
           ),
-          const SizedBox(width: 7.0,),
+          SizedBox(width: const Setting('padding').toDouble),
           _caption,
         ],
       );
@@ -65,7 +68,7 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
       return Row(
         children: [
           _caption,
-          const SizedBox(width: 7.0,),
+          SizedBox(width: const Setting('padding').toDouble),
           Stack(
             children: [
               _stateIndicator,
