@@ -378,9 +378,14 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       _log.debug('[._requestAccess] users:', users.toList());
       final user = users.peek;
       _log.debug('[._requestAccess] user:', user);
-      _log.debug('[._requestAccess] _user.group:', user.userGroup().value);
+      final userGroups = user.userGroups();
+      _log.debug('[._requestAccess] _user.groups:', userGroups);
       if (user.exists()) {
-        if (_allowedGroups.contains(user.userGroup().value)) {
+        if(
+          _allowedGroups.any(
+            (allowedGroup) => userGroups.contains(allowedGroup),
+          )
+        ) {
           _authState = OperationState.success;
           return;
         }
