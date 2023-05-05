@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/theme/app_theme.dart';
 import 'crane_position_painter.dart';
 ///
 class CranePositionChart extends StatefulWidget {
   final Stream<DsDataPoint<double>> _xStream;
   final Stream<DsDataPoint<double>> _yStream;
+  final Stream<DsDataPoint<bool>> _swlProtectionStream;
   final double _width;
   final double _height;
   final double rawWidth;
@@ -16,6 +18,7 @@ class CranePositionChart extends StatefulWidget {
     Key? key,
     required Stream<DsDataPoint<double>> xStream,
     required Stream<DsDataPoint<double>> yStream,
+    required Stream<DsDataPoint<bool>> swlProtectionStream,
     required double width,
     required double height,
     required this.rawWidth,
@@ -23,6 +26,7 @@ class CranePositionChart extends StatefulWidget {
   }) : 
     _xStream = xStream,
     _yStream = yStream,
+    _swlProtectionStream = swlProtectionStream,
     _width = width,
     _height = height,
     _xScale = rawWidth / width,
@@ -38,18 +42,23 @@ class _CranePositionChartState extends State<CranePositionChart> {
   // static const _debug = true;
   final DrawingController _drawingController = DrawingController();
   Offset _point = Offset.zero;
+  bool _swlProtection = false;
   //
   @override
   void initState() {
     widget._xStream.listen((event) {
       final dx = event.value / widget._xScale;
       _point = Offset(dx, _point.dy);
-      _drawingController.add(_point);
+      _drawingController.add(_point, _swlProtection);
     });
     widget._yStream.listen((event) {
       final dy = event.value / widget._yScale;
       _point = Offset(_point.dx, dy);
-      _drawingController.add(_point);
+      _drawingController.add(_point, _swlProtection);
+    });
+    widget._swlProtectionStream.listen((event) {
+      _swlProtection = event.value;
+      _drawingController.add(_point, _swlProtection);
     });
     super.initState();
   }
@@ -66,6 +75,8 @@ class _CranePositionChartState extends State<CranePositionChart> {
           foregroundPainter: CranePositionPainter(
             drawingController: _drawingController,
             size: size,
+            indicatorColor: Colors.yellow,
+            alarmIndicatorColor: Theme.of(context).stateColors.alarmHighLevel,
           ),
         ),
       // RepaintBoundary(
@@ -78,11 +89,15 @@ class _CranePositionChartState extends State<CranePositionChart> {
 ///
 class DrawingController extends ChangeNotifier {
   Offset _point = Offset.zero;
+  bool _swlProtection = false;
   ///
-  void add(Offset point) {
+  void add(Offset point, bool swlProtection) {
     _point = point;
+    _swlProtection = swlProtection;
     notifyListeners();
   }
   ///
   Offset get point => _point;
+  ///
+  bool get swlProtection => _swlProtection;
 }

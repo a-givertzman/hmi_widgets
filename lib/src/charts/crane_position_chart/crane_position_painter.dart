@@ -9,11 +9,17 @@ class CranePositionPainter extends CustomPainter {
   final DrawingController _drawingController;
   final int code;
   final Size size;
+  final Color _indicatorColor;
+  final Color _alarmIndicatorColor;
   ///
   CranePositionPainter({
     required DrawingController drawingController,
+    required Color indicatorColor, 
+    required Color alarmIndicatorColor,
     required this.size,
-  }) :
+  }) : 
+    _alarmIndicatorColor = alarmIndicatorColor, 
+    _indicatorColor = indicatorColor,
     _drawingController = drawingController,
     code = Random().nextInt(1000),
     super(repaint: drawingController);
@@ -64,7 +70,9 @@ class CranePositionPainter extends CustomPainter {
       //   paint,
       // );
     Paint paint = Paint()
-      ..color = Colors.yellow
+      ..color = _drawingController.swlProtection 
+        ? _alarmIndicatorColor 
+        : _indicatorColor
       // ..strokeCap = StrokeCap.round
       ..strokeWidth = 0.5;
     canvas.drawLine(
@@ -80,8 +88,20 @@ class CranePositionPainter extends CustomPainter {
     final points = [
       Offset(_drawingController.point.dx, _drawingController.point.dy),
     ];
+    if(_drawingController.swlProtection) {
+      paint = Paint()
+        ..color = _alarmIndicatorColor
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 10.0;
+      canvas.drawPoints(
+        PointMode.points, 
+        points, 
+        paint,
+      );
+    }
+    
     paint = Paint()
-      ..color = Colors.yellow
+      ..color = _indicatorColor
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
     canvas.drawPoints(
