@@ -62,10 +62,10 @@ class StatusIndicatorWidget extends StatelessWidget {
     final padding = const Setting('padding').toDouble;
     final mainAxisSize = _spreadBetween ? MainAxisSize.max : MainAxisSize.min;
     final inbetweenSpace = _spreadBetween ? Expanded(
-      child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: padding)
-        ),
-    ) 
+        child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: padding)
+          ),
+      ) 
       : SizedBox(width: padding); 
     if (alignment == Alignment.centerLeft) {
       return Row(
