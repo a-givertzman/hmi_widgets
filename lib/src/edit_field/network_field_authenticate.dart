@@ -7,6 +7,7 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
   Future<AuthResult> networkFieldAuthenticate(
     BuildContext context, 
     AppUserStacked users,
+    Authenticate auth,
   ) {
     const _debug = true;
     final flushBarDuration = Duration(
@@ -17,6 +18,7 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
         builder: (context) => AuthDialog(
           key: UniqueKey(),
           currentUser: users.peek,
+          auth: auth,
           flushBarDuration: flushBarDuration,
         ),
         settings: const RouteSettings(name: "/authDialog"),

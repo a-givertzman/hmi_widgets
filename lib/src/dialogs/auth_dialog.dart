@@ -6,20 +6,24 @@ import 'package:hmi_networking/hmi_networking.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
+  final Authenticate _auth;
   final Duration? _flushBarDuration;
   ///
   const AuthDialog({
     Key? key,
     AppUserSingle? currentUser,
+    required Authenticate auth,
     Duration? flushBarDuration,
   }) : 
     _currentUser = currentUser,
+    _auth = auth,
     _flushBarDuration = flushBarDuration,
     super(key: key);
   //
   @override
   // ignore: no_logic_in_create_state
   State<AuthDialog> createState() => _AuthDialogState(
+    auth: _auth,
     currentUser: _currentUser,
     flushbarDuration: _flushBarDuration,
   );
@@ -36,7 +40,9 @@ class _AuthDialogState extends State<AuthDialog> {
   _AuthDialogState({
     AppUserSingle? currentUser,
     Duration? flushbarDuration,
+    required Authenticate auth,
   }) :
+    _auth = auth,
     _currentUser = currentUser,
     _flushBarDuration = flushbarDuration;
 
@@ -45,9 +51,6 @@ class _AuthDialogState extends State<AuthDialog> {
   void initState() {
     _userLogin = const UserLogin(value: '');
     _userPass = UserPassword(value: '');
-    _auth = Authenticate(
-      user: AppUserSingle(),
-    );
     super.initState();
   }
   //
@@ -176,12 +179,12 @@ class _AuthDialogState extends State<AuthDialog> {
         AuthResult(
           authenticated: false, 
           message: const Localized('Canceled by user').v, 
-          user: AppUserSingle(remote: DataSet.empty()),
+          user: _auth.getUser().clear(),
         ),
       );
     } else {
-      final currentUser = _currentUser;
-      if ((currentUser != null) && (_userLogin.value() == '${currentUser['login']}')) {
+      final currentUser = _currentUser?.info;
+      if ((currentUser != null) && (_userLogin.value() == currentUser.login)) {
         FlushbarHelper.createError(
           duration: flushBarDuration,
           title: const Localized('Authentication').v,
