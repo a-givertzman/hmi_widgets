@@ -190,12 +190,14 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
       )
         .exec(value)
         .then((responseValue) {
-          setState(() {
-            _state.setSaved();
-            if (responseValue.hasError) {
-              _state.setChanged();
-            }
-          });
+          if (mounted) {
+            setState(() {
+              _state.setSaved();
+              if (responseValue.hasError) {
+                _state.setChanged();
+              }
+            });
+          }
         });
     }
   }
@@ -257,7 +259,12 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     if (users != null) {
       final user = users.peek;
       if (user.exists()) {
-        if (_allowedGroups.contains(user.userGroup().value)) {
+        final userGroups = user.userGroups();
+        if(
+          _allowedGroups.any(
+            (allowedGroup) => userGroups.contains(allowedGroup),
+          )
+        ) {
           _accessAllowed = true;
           return;
         }
