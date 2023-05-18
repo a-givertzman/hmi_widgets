@@ -85,28 +85,24 @@ class CranePositionPainter extends CustomPainter {
       Offset(size.width, _drawingController.point.dy),
       paint,
     );
-    final points = [
-      Offset(_drawingController.point.dx, _drawingController.point.dy),
-    ];
+    final pointCenter = Offset(_drawingController.point.dx, _drawingController.point.dy);
     if(_drawingController.swlProtection) {
       paint = Paint()
         ..color = _alarmIndicatorColor
-        ..strokeCap = StrokeCap.round
-        ..strokeWidth = 10.0;
-      canvas.drawPoints(
-        PointMode.points, 
-        points, 
-        paint,
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(
+        pointCenter,
+        5.0,
+        paint
       );
     }
     
     paint = Paint()
-      ..color = _indicatorColor
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-    canvas.drawPoints(
-      PointMode.points, 
-      points, 
+        ..color = _indicatorColor
+        ..style = PaintingStyle.fill;
+    canvas.drawCircle(
+      pointCenter,
+      2.5,
       paint,
     );
   }
