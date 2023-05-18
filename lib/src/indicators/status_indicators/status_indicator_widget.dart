@@ -13,6 +13,7 @@ class StatusIndicatorWidget extends StatelessWidget {
   final double? _width;
   final double? _height;
   final bool _disabled;
+  final bool _spreadBetween;
   ///
   const StatusIndicatorWidget({
     Key? key,
@@ -21,8 +22,10 @@ class StatusIndicatorWidget extends StatelessWidget {
     Alignment alignment = Alignment.centerLeft,
     double? width,
     double? height,
-    bool disabled = false,
+    bool disabled = false, 
+    bool spreadBetween = false,
   }) : 
+    _spreadBetween = spreadBetween, 
     _indicator = indicator,
     _caption = caption,
     _alignment = alignment,
@@ -57,14 +60,21 @@ class StatusIndicatorWidget extends StatelessWidget {
   ///
   Widget _buildIndicatorWidget(Widget indicator, Widget? caption, Alignment alignment) {
     final padding = const Setting('padding').toDouble;
+    final mainAxisSize = _spreadBetween ? MainAxisSize.max : MainAxisSize.min;
+    final inbetweenSpace = _spreadBetween ? Expanded(
+        child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: padding)
+          ),
+      ) 
+      : SizedBox(width: padding); 
     if (alignment == Alignment.centerLeft) {
       return Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: mainAxisSize,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           indicator,
           if (caption != null) ...[
-            SizedBox(width: padding),
+            inbetweenSpace,
             caption,
           ],
         ],
@@ -72,12 +82,12 @@ class StatusIndicatorWidget extends StatelessWidget {
     }
     if (alignment == Alignment.centerRight) {
       return Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: mainAxisSize,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (caption != null) ...[
             caption,
-            SizedBox(width: padding),
+            inbetweenSpace,
           ],
           indicator,
         ],
