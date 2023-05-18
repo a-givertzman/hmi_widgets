@@ -76,7 +76,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
             drawingController: _drawingController,
             size: size,
             indicatorColor: Colors.yellow,
-            alarmIndicatorColor: Theme.of(context).stateColors.alarmHighLevel,
+            alarmIndicatorColor: Theme.of(context).stateColors.alarm,
           ),
         ),
       // RepaintBoundary(
