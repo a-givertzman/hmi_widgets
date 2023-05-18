@@ -17,7 +17,10 @@ extension AppThemeData on ThemeData {
   StateColors get stateColors => StateColors(
     error: brightness == Brightness.light
       ? light_theme.errorColor
-      : dark_theme.errorColor, 
+      : dark_theme.errorColor,
+    alarm: brightness == Brightness.light
+      ? light_theme.alarmClass3Color
+      : dark_theme.alarmClass3Color,
     obsolete: brightness == Brightness.light
       ? light_theme.obsoleteStatusColor
       : dark_theme.obsoleteStatusColor, 
@@ -47,7 +50,7 @@ extension AppThemeData on ThemeData {
       : dark_theme.activeStateColor,
   );
   AlarmColors get alarmColors => AlarmColors(
-    class1:  brightness == Brightness.light
+    class1: brightness == Brightness.light
       ? light_theme.alarmClass1Color
       : dark_theme.alarmClass1Color, 
     class2: brightness == Brightness.light
