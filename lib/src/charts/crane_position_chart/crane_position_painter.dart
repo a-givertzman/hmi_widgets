@@ -11,15 +11,18 @@ class CranePositionPainter extends CustomPainter {
   final Size size;
   final Color _indicatorColor;
   final Color _alarmIndicatorColor;
+  final Color _invalidColor;
   ///
   CranePositionPainter({
     required DrawingController drawingController,
     required Color indicatorColor, 
     required Color alarmIndicatorColor,
+    required Color invalidColor,
     required this.size,
   }) : 
     _alarmIndicatorColor = alarmIndicatorColor, 
     _indicatorColor = indicatorColor,
+    _invalidColor = invalidColor,
     _drawingController = drawingController,
     code = Random().nextInt(1000),
     super(repaint: drawingController);
@@ -69,10 +72,16 @@ class CranePositionPainter extends CustomPainter {
       //   _points, 
       //   paint,
       // );
-    Paint paint = Paint()
-      ..color = _drawingController.swlProtection 
+    final Color linesColor;
+    if (_drawingController.isPointValid) {
+      linesColor = _drawingController.swlProtection 
         ? _alarmIndicatorColor 
-        : _indicatorColor
+        : _indicatorColor;
+    } else {
+      linesColor = _invalidColor;
+    }
+    Paint paint = Paint()
+      ..color = linesColor
       // ..strokeCap = StrokeCap.round
       ..strokeWidth = 0.5;
     canvas.drawLine(
@@ -85,24 +94,30 @@ class CranePositionPainter extends CustomPainter {
       Offset(size.width, _drawingController.point.dy),
       paint,
     );
-    final pointCenter = Offset(_drawingController.point.dx, _drawingController.point.dy);
+    final points = [Offset(_drawingController.point.dx, _drawingController.point.dy)];
     if(_drawingController.swlProtection) {
       paint = Paint()
-        ..color = _alarmIndicatorColor
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(
-        pointCenter,
-        5.0,
-        paint
+        ..color = _drawingController.isPointValid 
+          ? _alarmIndicatorColor
+          : _invalidColor
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 10.0;
+      canvas.drawPoints(
+        PointMode.points, 
+        points, 
+        paint,
       );
     }
     
     paint = Paint()
-        ..color = _indicatorColor
-        ..style = PaintingStyle.fill;
-    canvas.drawCircle(
-      pointCenter,
-      2.5,
+      ..color = _drawingController.isPointValid 
+        ? _indicatorColor 
+        : _invalidColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0;
+    canvas.drawPoints(
+      PointMode.points, 
+      points, 
       paint,
     );
   }
