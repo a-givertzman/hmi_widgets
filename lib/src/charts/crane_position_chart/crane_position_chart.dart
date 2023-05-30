@@ -49,16 +49,19 @@ class _CranePositionChartState extends State<CranePositionChart> {
     widget._xStream.listen((event) {
       final dx = event.value / widget._xScale;
       _point = Offset(dx, _point.dy);
-      _drawingController.add(_point, _swlProtection);
+      final bool isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection,  isPointValid);
     });
     widget._yStream.listen((event) {
       final dy = event.value / widget._yScale;
       _point = Offset(_point.dx, dy);
-      _drawingController.add(_point, _swlProtection);
+      final bool isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection, isPointValid);
     });
     widget._swlProtectionStream.listen((event) {
       _swlProtection = event.value;
-      _drawingController.add(_point, _swlProtection);
+      final bool isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection, isPointValid);
     });
     super.initState();
   }
@@ -66,6 +69,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
   @override
   Widget build(BuildContext context) {
     final size = Size(widget._width, widget._height);
+    final theme = Theme.of(context);
     return SizedBox(
       width: widget._width,
       height: widget._height,
@@ -76,7 +80,8 @@ class _CranePositionChartState extends State<CranePositionChart> {
             drawingController: _drawingController,
             size: size,
             indicatorColor: Colors.yellow,
-            alarmIndicatorColor: Theme.of(context).stateColors.alarm,
+            alarmIndicatorColor: theme.stateColors.alarm,
+            invalidColor: theme.stateColors.invalid,
           ),
         ),
       // RepaintBoundary(
@@ -90,14 +95,18 @@ class _CranePositionChartState extends State<CranePositionChart> {
 class DrawingController extends ChangeNotifier {
   Offset _point = Offset.zero;
   bool _swlProtection = false;
+  bool _isPointValid = true;
   ///
-  void add(Offset point, bool swlProtection) {
+  void add(Offset point, bool swlProtection, [bool isPointValid = true]) {
     _point = point;
     _swlProtection = swlProtection;
+    _isPointValid = isPointValid;
     notifyListeners();
   }
   ///
   Offset get point => _point;
   ///
   bool get swlProtection => _swlProtection;
+  ///
+  bool get isPointValid => _isPointValid;
 }
