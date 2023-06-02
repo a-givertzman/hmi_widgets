@@ -103,7 +103,7 @@ final Map<AppTheme, ThemeData> appThemes = {
       foregroundColor: light_theme.primaryColor,
     ),
     tabBarTheme: TabBarTheme(
-      indicatorColor: light_theme.primaryColor,
+      indicatorColor: light_theme.activeStateColor,
     ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
@@ -153,7 +153,7 @@ final Map<AppTheme, ThemeData> appThemes = {
       foregroundColor: dark_theme.primaryColor,
     ),
     tabBarTheme: TabBarTheme(
-      indicatorColor: dark_theme.primaryColor,
+      indicatorColor: dark_theme.activeStateColor,
     ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
