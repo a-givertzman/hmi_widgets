@@ -49,19 +49,22 @@ class _CranePositionChartState extends State<CranePositionChart> {
     widget._xStream.listen((event) {
       final dx = event.value / widget._xScale;
       _point = Offset(dx, _point.dy);
-      final bool isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection,  isPointValid);
+      final isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection);
+      _drawingController.isXValid = isPointValid;
     });
     widget._yStream.listen((event) {
       final dy = event.value / widget._yScale;
       _point = Offset(_point.dx, dy);
-      final bool isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection, isPointValid);
+      final isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection);
+      _drawingController.isYValid = isPointValid;
     });
     widget._swlProtectionStream.listen((event) {
       _swlProtection = event.value;
-      final bool isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection, isPointValid);
+      final isPointValid = event.status != DsStatus.invalid;
+      _drawingController.add(_point, _swlProtection);
+      _drawingController.isSwlProtectionValid = isPointValid;
     });
     super.initState();
   }
@@ -95,18 +98,32 @@ class _CranePositionChartState extends State<CranePositionChart> {
 class DrawingController extends ChangeNotifier {
   Offset _point = Offset.zero;
   bool _swlProtection = false;
-  bool _isPointValid = true;
+  bool _isSwlProtectionValid = true;
+  bool _isXValid = true;
+  bool _isYValid = true;
   ///
-  void add(Offset point, bool swlProtection, [bool isPointValid = true]) {
+  void add(Offset point, bool swlProtection) {
     _point = point;
     _swlProtection = swlProtection;
-    _isPointValid = isPointValid;
     notifyListeners();
+  }
+  void set isSwlProtectionValid(bool value) {
+    _isSwlProtectionValid = value;
+  }
+  void set isXValid(bool value) {
+    _isXValid = value;
+  }
+  void set isYValid(bool value) {
+    _isYValid = value;
   }
   ///
   Offset get point => _point;
   ///
   bool get swlProtection => _swlProtection;
   ///
-  bool get isPointValid => _isPointValid;
+  bool get isSwlProtectionValid => _isSwlProtectionValid;
+  ///
+  bool get isXValid => _isXValid;
+  ///
+  bool get isYValid => _isYValid;
 }
