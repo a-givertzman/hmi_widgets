@@ -45,7 +45,7 @@ class CranePositionPainter extends CustomPainter {
       verticalLineColor,
     );
     final Color horizontalLineColor;
-    if (_drawingController.isXValid) {
+    if (_drawingController.isYValid) {
       horizontalLineColor = _drawingController.swlProtection 
         ? _alarmIndicatorColor 
         : _indicatorColor;
