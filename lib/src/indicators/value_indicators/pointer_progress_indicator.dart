@@ -3,21 +3,21 @@ import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class PointerProgressIndicator extends StatelessWidget {
   final double _value;
-  final double _indicatorHeight;
-  final double _pointerWidth;
-  final double _horizontalLineWidth;
+  final double _minHeight;
+  final double _pointerThickness;
+  final double _scaleLineThickness;
   ///
   const PointerProgressIndicator({
     super.key,
     double value = 0,
-    required double indicatorHeight,
-    double pointerWidth = 4, 
-    double horizontalLineWidth = 0.25,
+    required double minHeight,
+    double pointerThickness = 4, 
+    double scaleLineThickness = 0.25,
   }) : 
     _value = value, 
-    _indicatorHeight = indicatorHeight, 
-    _pointerWidth = pointerWidth, 
-    _horizontalLineWidth = horizontalLineWidth;
+    _minHeight = minHeight, 
+    _pointerThickness = pointerThickness, 
+    _scaleLineThickness = scaleLineThickness;
   //
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class PointerProgressIndicator extends StatelessWidget {
     final blockedColor = theme.stateColors.alarmLowLevel;
     final currentColor = (_value == 0 || _value == 1) ? blockedColor : defaultColor;
     return SizedBox(
-      height: _indicatorHeight,
+      height: _minHeight,
       child: Stack(
         children: [
           Column(
@@ -34,24 +34,24 @@ class PointerProgressIndicator extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: _horizontalLineWidth,
+                height: _scaleLineThickness,
                 color: currentColor,
               ),
             ],
           ),
           LayoutBuilder(
             builder: (context, contraints) {
-              final leftOffset = (contraints.maxWidth - _pointerWidth) * _value;
+              final leftOffset = (contraints.maxWidth - _pointerThickness) * _value;
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(width: leftOffset),
                   Container(
-                    width: _pointerWidth,
+                    width: _pointerThickness,
                     decoration:  BoxDecoration(
                       color: currentColor,
-                      borderRadius: BorderRadius.circular(_pointerWidth/2),
+                      borderRadius: BorderRadius.circular(_pointerThickness/2),
                     ),
                   ),
                 ],
