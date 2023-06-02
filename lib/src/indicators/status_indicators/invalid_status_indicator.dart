@@ -44,7 +44,7 @@ class InvalidStatusIndicator extends StatelessWidget {
             stream: _stream,
             // initialData: DsDataPoint(type: DsDataType.int, path: '', name: '', value: 0, status: DsStatus.obsolete(), timestamp: DateTime.now().toIso8601String()),
             builder: (context, snapshot) {
-              Color color = _statusColors.error;
+              Color color = _statusColors.alarm;
               if (snapshot.hasData) {
                 final point = snapshot.data;
                 if (point != null) {

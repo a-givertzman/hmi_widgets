@@ -112,8 +112,8 @@ class CircularValueIndicator extends StatelessWidget {
         double value = 0;
         String valueText = '';
         Color color = Theme.of(context).stateColors.on;
-        final lowColor = _lowColor ?? Theme.of(context).stateColors.lowLevel;
-        final highColor = _highColor ?? Theme.of(context).stateColors.highLevel;
+        final lowColor = _lowColor ?? Theme.of(context).stateColors.alarm;
+        final highColor = _highColor ?? Theme.of(context).stateColors.alarm;
         final invalidValueColor = Theme.of(context).stateColors.invalid;
         if (snapshot.hasError) {
           color = invalidValueColor;
