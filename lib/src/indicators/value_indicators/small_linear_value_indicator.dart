@@ -74,7 +74,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
                         case IndicationStyle.pointer:
                           return PointerProgressIndicator(
                             value: value,
-                            indicatorHeight: indicatorHeight,
+                            minHeight: indicatorHeight,
                           );
                       }
                     },
