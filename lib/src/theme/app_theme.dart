@@ -93,7 +93,7 @@ final Map<AppTheme, ThemeData> appThemes = {
       surface: light_theme.surfaceColor, 
       onSurface: light_theme.onSurfaceColor, 
       error: light_theme.errorColor, 
-      onError: light_theme.onErrorColor, 
+      onError: light_theme.onErrorColor,
     ),
     cardTheme: const CardTheme(
       elevation: cardThemeElevation,
@@ -101,6 +101,9 @@ final Map<AppTheme, ThemeData> appThemes = {
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: light_theme.cardColor,
       foregroundColor: light_theme.primaryColor,
+    ),
+    tabBarTheme: TabBarTheme(
+      indicatorColor: light_theme.primaryColor,
     ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
@@ -148,6 +151,9 @@ final Map<AppTheme, ThemeData> appThemes = {
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: dark_theme.cardColor,
       foregroundColor: dark_theme.primaryColor,
+    ),
+    tabBarTheme: TabBarTheme(
+      indicatorColor: dark_theme.primaryColor,
     ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
