@@ -30,104 +30,76 @@ class CranePositionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     log(_debug, '[$CranePositionPainter.paint]');
-    // final points_ = [
-    //   Offset.zero,
-    //   Offset(size.width, 0),
-    //   Offset(0, size.height),
-    //   Offset(size.width, size.height),
-    // ];
-    // Paint paint = Paint()
-    //   ..color = Colors.yellow
-    //   ..strokeCap = StrokeCap.round
-    //   ..strokeWidth = 5.0;
-    // canvas.drawPoints(
-    //   PointMode.points, 
-    //   points_, 
-    //   paint,
-    // );
-
-    // paint = Paint();
-    //   // ..color = Colors.blueGrey[100]!;
-    // canvas.drawRect(
-    //   Rect.fromPoints(Offset.zero, Offset(size.width, size.height)), 
-    //   paint,
-    // );
-
-    // const g1 = LinearGradient(colors: [
-    //   Colors.blue,
-    //   Colors.green,
-    //   Colors.yellow,
-    //   Colors.red,
-    // ],);
-    // Paint paint = Paint()
-    //   ..shader = g1.createShader(
-    //     Rect.fromPoints(Offset.zero, Offset(size.width, size.height)),
-    //   );
-      // paint = Paint()
-      //   ..color = Colors.orange
-      //   ..strokeCap = StrokeCap.round
-      //   ..strokeWidth = 5.0;
-      // canvas.drawPoints(
-      //   PointMode.points, 
-      //   _points, 
-      //   paint,
-      // );
-    final Color linesColor;
-    if (_drawingController.isPointValid) {
-      linesColor = _drawingController.swlProtection 
+    final Color verticalLineColor;
+    if (_drawingController.isXValid) {
+      verticalLineColor = _drawingController.swlProtection 
         ? _alarmIndicatorColor 
         : _indicatorColor;
     } else {
-      linesColor = _invalidColor;
+      verticalLineColor = _invalidColor;
     }
-    Paint paint = Paint()
-      ..color = linesColor
-      // ..strokeCap = StrokeCap.round
-      ..strokeWidth = 0.5;
-    canvas.drawLine(
+    _drawLine(
+      canvas, 
       Offset(_drawingController.point.dx, 0), 
-      Offset(_drawingController.point.dx, size.height), 
-      paint,
+      Offset(_drawingController.point.dx, size.height),
+      verticalLineColor,
     );
-    canvas.drawLine(
+    final Color horizontalLineColor;
+    if (_drawingController.isXValid) {
+      horizontalLineColor = _drawingController.swlProtection 
+        ? _alarmIndicatorColor 
+        : _indicatorColor;
+    } else {
+      horizontalLineColor = _invalidColor;
+    }
+    _drawLine(
+      canvas, 
       Offset(0, _drawingController.point.dy),
       Offset(size.width, _drawingController.point.dy),
-      paint,
+      horizontalLineColor,
     );
-    final points = [
-      Offset(_drawingController.point.dx, _drawingController.point.dy),
-    ];
+    final pointLocation = Offset(_drawingController.point.dx, _drawingController.point.dy);
     if(_drawingController.swlProtection) {
-      paint = Paint()
-        ..color = _drawingController.isPointValid 
+      _drawPoint(
+        canvas, 
+        pointLocation, 
+        _drawingController.isSwlProtectionValid 
           ? _alarmIndicatorColor
-          : _invalidColor
-        ..strokeCap = StrokeCap.round
-        ..strokeWidth = 10.0;
-      canvas.drawPoints(
-        PointMode.points, 
-        points, 
-        paint,
+          : _invalidColor, 
+        10.0,
       );
     }
-    
-    paint = Paint()
-      ..color = _drawingController.isPointValid 
+    _drawPoint(
+      canvas, 
+      pointLocation, 
+      _drawingController.isSwlProtectionValid 
         ? _indicatorColor 
-        : _invalidColor
+        : _invalidColor,
+      5.0,
+    );
+  }
+  ///
+  void _drawLine(Canvas canvas, Offset start, Offset end, Color color) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 0.5;
+    canvas.drawLine(start, end, paint);
+  }
+  ///
+  void _drawPoint(Canvas canvas, Offset location, Color color, double strokeWidth) {
+    final paint = Paint()
+      ..color = color
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
+      ..strokeWidth = strokeWidth;
     canvas.drawPoints(
       PointMode.points, 
-      points, 
+      [location], 
       paint,
     );
   }
   //
   @override
   bool shouldRepaint(covariant CranePositionPainter oldDelegate) {
-    // return true;
     return (oldDelegate.code != code) || (oldDelegate.size != size);
-    // throw UnimplementedError();
   }
 }
