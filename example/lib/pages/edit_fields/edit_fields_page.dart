@@ -13,11 +13,11 @@ class EditFieldsPage extends StatelessWidget {
         title: const Text('Edit Fields'),
       ),
       body: ListView(
-        children: [
+        children: const [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
-              children: const [
+              children: [
                 Text('Date Edit Field'),
                 SizedBox(
                   width: 300,
@@ -27,9 +27,9 @@ class EditFieldsPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
-              children: const [
+              children: [
                 Text('Network Edit Field'),
                 SizedBox(
                   width: 300,
@@ -41,7 +41,7 @@ class EditFieldsPage extends StatelessWidget {
             ),
           ),
           Column(
-            children: const [
+            children: [
               Text('Network Dropdown Form Field'),
               SizedBox(
                 width: 300,
