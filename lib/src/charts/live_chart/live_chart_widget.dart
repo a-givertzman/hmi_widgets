@@ -82,6 +82,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late final Timer _autoScrollDelayTimer;
   bool _isAutoScrollStarted = false;
   bool _showLegend = true;
+  bool _isRedraw = false;
   ///
   _LiveChartWidgetState({
     required double? minY,
@@ -120,7 +121,8 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
       final elapsedX = elapsed.inMilliseconds;
       _maxX = _startMaxX + elapsedX;
       _minX = _startMinX + elapsedX;
-      if (mounted) setState(() {return;});
+      _isRedraw = !_isRedraw;
+      if (mounted && _isRedraw) setState(() {return;});
     });
     _autoScrollDelayTimer = Timer(_autoScrollDelay, () {
       _isAutoScrollStarted = true;
@@ -135,8 +137,10 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
       final xValue = DateTime.parse(event.timestamp).millisecondsSinceEpoch.toDouble();
       final yValue = event.value;
       _points[eventName]!.add(FlSpot(xValue, yValue));
-      if (_points[eventName]!.length > _axesData[eventName]!.bufferLength) {
-        _points[eventName]!.removeAt(0);
+      final eventbufferLength = _axesData[eventName]!.bufferLength;
+      final clearLength = (eventbufferLength / 5.0).round();
+      if (_points[eventName]!.length > eventbufferLength) {
+        _points[eventName]!.removeRange(0, clearLength);
       }
       if(!_isAutoScrollStarted) setState(() {return;});
     });
