@@ -72,7 +72,6 @@ class SmallLinearValueIndicator extends StatelessWidget {
                       final value = snapshotValue == null 
                         ? 0.0 
                         : (max(snapshotValue, _min) - _min) / delta;
-                      print('LINEAR INDICATOR VALUE: ${value}');
                       switch(_indicationStyle) {
                         case IndicationStyle.bar:
                           return LinearProgressIndicator(
