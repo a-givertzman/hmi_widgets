@@ -14,6 +14,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
   final Widget? _caption;
   final String _valueUnit;
   final double _textIndicatorWidth;
+  final double _min;
   final double _max;
   final Stream<DsDataPoint<num>> _stream;
   final IndicationStyle _indicationStyle;
@@ -22,12 +23,14 @@ class SmallLinearValueIndicator extends StatelessWidget {
     super.key,
     required Stream<DsDataPoint<num>> stream,
     required double max,
+    double min = 0.0,
     Widget? caption,
     String valueUnit = '',
     double textIndicatorWidth = 55, 
     IndicationStyle indicationStyle = IndicationStyle.pointer,
   }) : _indicationStyle = indicationStyle, 
     _stream = stream,
+    _min = min,
     _max = max,
     _caption = caption,
     _valueUnit = valueUnit,
@@ -35,6 +38,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
+    final delta = (_max - _min).abs();
     final caption = _caption;
     final padding = const Setting('padding').toDouble;
     final smallPadding = const Setting('smallPadding').toDouble;
@@ -63,7 +67,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
                     stream: _stream,
                     builder:(context, snapshot) {
                       final indicatorHeight = smallPadding * 3;
-                      final value = (snapshot.data?.value.toDouble() ?? 0.0) / _max;
+                      final value = ((snapshot.data?.value.toDouble() ?? 0.0) - _min) / delta;
                       switch(_indicationStyle) {
                         case IndicationStyle.bar:
                           return LinearProgressIndicator(
