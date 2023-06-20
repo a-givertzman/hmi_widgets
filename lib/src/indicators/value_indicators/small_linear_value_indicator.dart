@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
@@ -67,7 +68,11 @@ class SmallLinearValueIndicator extends StatelessWidget {
                     stream: _stream,
                     builder:(context, snapshot) {
                       final indicatorHeight = smallPadding * 3;
-                      final value = ((snapshot.data?.value.toDouble() ?? 0.0) - _min) / delta;
+                      final snapshotValue = snapshot.data?.value.toDouble();
+                      final value = snapshotValue == null 
+                        ? 0.0 
+                        : (max(snapshotValue, _min) - _min) / delta;
+                      print('LINEAR INDICATOR VALUE: ${value}');
                       switch(_indicationStyle) {
                         case IndicationStyle.bar:
                           return LinearProgressIndicator(
