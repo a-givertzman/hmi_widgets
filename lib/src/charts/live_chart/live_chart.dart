@@ -44,7 +44,7 @@ class LiveChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LineChart(
-      swapAnimationDuration: Duration.zero,
+      duration: Duration.zero,
       LineChartData(
         minX: _minX,
         maxX: _maxX,
@@ -87,7 +87,7 @@ class LiveChart extends StatelessWidget {
               getDotPainter: (spot, xPercentage, bar, index) {
                   return FlDotCirclePainter(
                   radius: axisData.dotRadius,
-                  color: bar.color,
+                  color: bar.color ?? Colors.green,
                   strokeWidth: 0,
                 );
               },
