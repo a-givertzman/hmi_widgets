@@ -130,8 +130,8 @@ class SmallLinearValueIndicator extends StatelessWidget {
   bool _isAlarm(double currentValue) {
     final low = _low;
     final high = _high;
-    final isAlarmLow = low != null && currentValue - low < 0;
-    final isAlarmHigh = high != null && currentValue - high > 0;
+    final isAlarmLow = low != null && currentValue <= low;
+    final isAlarmHigh = high != null && currentValue >= high;
     return isAlarmLow || isAlarmHigh;
   }
 }
