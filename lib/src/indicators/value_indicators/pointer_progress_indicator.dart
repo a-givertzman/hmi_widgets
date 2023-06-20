@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 class PointerProgressIndicator extends StatelessWidget {
   final double _value;
   final double _minHeight;
   final double _pointerThickness;
   final double _scaleLineThickness;
+  final Color? _color;
   ///
   const PointerProgressIndicator({
     super.key,
-    double value = 0,
     required double minHeight,
+    double value = 0,
+    Color? color,
     double pointerThickness = 4, 
     double scaleLineThickness = 0.25,
   }) : 
-    _value = value, 
+    _value = value,
+    _color = color,
     _minHeight = minHeight, 
     _pointerThickness = pointerThickness, 
     _scaleLineThickness = scaleLineThickness;
@@ -23,8 +25,7 @@ class PointerProgressIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final defaultColor = theme.colorScheme.onBackground;
-    final blockedColor = theme.stateColors.alarmLowLevel;
-    final currentColor = (_value == 0 || _value == 1) ? blockedColor : defaultColor;
+    final currentColor = _color ?? defaultColor;
     return SizedBox(
       height: _minHeight,
       child: Stack(
