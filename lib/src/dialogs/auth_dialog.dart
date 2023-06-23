@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_networking/hmi_networking.dart';
+import 'package:hmi_widgets/src/flushbar/flushbar.dart';
+import 'package:hmi_widgets/src/flushbar/show_flushbar.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
@@ -185,11 +187,17 @@ class _AuthDialogState extends State<AuthDialog> {
     } else {
       final currentUser = _currentUser?.info;
       if ((currentUser != null) && (_userLogin.value() == currentUser.login)) {
-        FlushbarHelper.createError(
-          duration: flushBarDuration,
-          title: const Localized('Authentication').v,
-          message: const Localized('User already authenticated').v,
-        ).show(context);
+        ShowFlushBar(
+          FlushBar.error(
+            const Localized('User already authenticated').v,
+            duration: flushBarDuration,
+          ),
+        ).on(context);
+        // FlushbarHelper.createError(
+        //   duration: flushBarDuration,
+        //   title: const Localized('Authentication').v,
+        //   message: const Localized('User already authenticated').v,
+        // ).show(context);
         return ;
       }
       if (_userLogin.validate().valid() && _userPass.validate().valid()) {
@@ -197,11 +205,17 @@ class _AuthDialogState extends State<AuthDialog> {
           .then((authResult) {
             if (authResult.authenticated) {
               final flushBarDurationOnSucces = flushBarDuration * 0.2;
-              FlushbarHelper.createSuccess(
-                duration: flushBarDurationOnSucces,
-                title: const Localized('Authentication').v,
-                message: authResult.message,
-              ).show(context);
+              ShowFlushBar(
+                FlushBar.info(
+                  authResult.message,
+                  duration: flushBarDurationOnSucces,
+                ),
+              ).on(context);
+              // FlushbarHelper.createSuccess(
+              //   duration: flushBarDurationOnSucces,
+              //   title: const Localized('Authentication').v,
+              //   message: authResult.message,
+              // ).show(context);
               Future.delayed(flushBarDurationOnSucces)
                 .then((_) {
                   Navigator.of(context).pop<AuthResult>(authResult);

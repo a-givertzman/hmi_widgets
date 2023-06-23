@@ -1,5 +1,6 @@
 import 'package:example/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 ///
@@ -24,6 +25,7 @@ Future<void> main() async {
       const TextFile.asset('assets/configs/app_ui_settings_config.json'),
     ),
   );
+  debugSemanticsDisableAnimations = false;
   runApp(const MyApp());
 }
 ///
@@ -37,6 +39,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'HMI Widgets Demo',
       theme: ThemeData.dark(),
+        // snackBarTheme: const SnackBarThemeData(
+        //   backgroundColor: Colors.black,
+        // ),
       home: const HomePage(),
     );
   }

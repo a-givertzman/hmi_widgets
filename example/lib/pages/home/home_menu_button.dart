@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 ///
-class HomeMenuButton extends StatelessWidget {
+class MenuButton extends StatelessWidget {
   final String text;
   final void Function()? onPressed;
-  const HomeMenuButton({
+  const MenuButton({
     Key? key,
     required this.text,
     this.onPressed,
