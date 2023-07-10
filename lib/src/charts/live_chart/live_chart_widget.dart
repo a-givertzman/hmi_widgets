@@ -21,6 +21,7 @@ class LiveChartWidget extends StatefulWidget {
   final double? _maxX;
   final double? _yInterval;
   final double? _xInterval;
+  final LiveChartMarkup? _markup;
   final List<LiveAxis> _axes;
   final Duration _autoScrollDelay;
   ///
@@ -33,6 +34,7 @@ class LiveChartWidget extends StatefulWidget {
     double? maxX,
     double? xInterval,
     double? yInterval,
+    LiveChartMarkup? markup,
     double legendWidth = 200,
     Duration autoScrollDelay = const Duration(seconds: 0),
   }) : 
@@ -43,6 +45,7 @@ class LiveChartWidget extends StatefulWidget {
     _maxX = maxX,
     _xInterval = xInterval,
     _yInterval = yInterval,
+    _markup = markup,
     _legendWidth = legendWidth,
     _autoScrollDelay = autoScrollDelay;
   //
@@ -55,6 +58,7 @@ class LiveChartWidget extends StatefulWidget {
     maxX: _maxX,
     xInterval: _xInterval,
     yInterval: _yInterval,
+    markup: _markup,
     legendWidth: _legendWidth,
     autoScrollDelay: _autoScrollDelay,
   );
@@ -74,6 +78,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late double _startMaxX;
   final double? _xInterval;
   final double? _yInterval;
+  final LiveChartMarkup? _markup;
   final Map<String, LiveAxis> _axesData = {};
   final Duration _autoScrollDelay;
   late final Map<String, List<FlSpot>> _points;
@@ -90,6 +95,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     required double? maxX,
     required double? yInterval,
     required double? xInterval,
+    required LiveChartMarkup? markup,
     required List<LiveAxis> axes,
     required double legendWidth,
     required Duration autoScrollDelay,
@@ -100,6 +106,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     _maxX = maxX,
     _xInterval = xInterval,
     _yInterval = yInterval,
+    _markup = markup,
     _legendWidth = legendWidth,
     _autoScrollDelay = autoScrollDelay 
   {
@@ -211,6 +218,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
               maxY: _maxY,
               yInterval: _yInterval,
               xInterval: _xInterval ?? (_maxX! - _minX!) / 6.0,
+              markup: _markup,
               axesData: _axesData,
               points: _points,
             ),

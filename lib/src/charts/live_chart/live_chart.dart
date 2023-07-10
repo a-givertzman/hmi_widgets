@@ -3,7 +3,41 @@ import 'package:flutter/material.dart';
 import 'live_axis.dart';
 import 'x_title.dart';
 import 'y_title.dart';
+///
+class LiveChartLinesMarkup {
+  final int? _dashLength;
+  final int? _dashSpasing;
+  final double _strokeWidth;
+  final Color? _color;
+  ///
+  const LiveChartLinesMarkup({
+    int? dashLength,
+    int? dashSpasing,
+    Color? color,
+    double strokeWidth = 0.5,
+  }) : 
+    _dashLength = dashLength,
+    _dashSpasing = dashSpasing,
+    _strokeWidth = strokeWidth,
+    _color = color,
+    // XNOR, true if both conditions have same values
+    assert(!((dashLength == null) ^ (dashSpasing == null)));
 
+  FlLine toLineData(BuildContext context) => FlLine(
+    color: _color ?? Theme.of(context).colorScheme.primary.withOpacity(0.4),
+    strokeWidth: _strokeWidth,
+    dashArray: _dashLength != null && _dashSpasing != null 
+      ? [_dashLength!, _dashSpasing!] 
+      : [],
+  );
+}
+///
+class LiveChartMarkup {
+  final LiveChartLinesMarkup? verticalLines;
+  final LiveChartLinesMarkup? horizontalLines;
+  ///
+  const LiveChartMarkup(this.verticalLines, this.horizontalLines);
+}
 ///
 /// Chart that draws multiple signals:
 /// - point values taken from [points] Map<String, List<FlSpot>>,
@@ -15,6 +49,7 @@ class LiveChart extends StatelessWidget {
   final double? _maxY;
   final double? _yInterval;
   final double? _xInterval;
+  final LiveChartMarkup? _markup;
   final Map<String, LiveAxis> _axesData;
   final Map<String, List<FlSpot>> _points;
   ///
@@ -29,6 +64,7 @@ class LiveChart extends StatelessWidget {
     required double? maxY,
     required double? yInterval,
     required double? xInterval,
+    required LiveChartMarkup? markup,
     required Map<String, LiveAxis> axesData,
     required Map<String, List<FlSpot>> points,
   }) : 
@@ -38,6 +74,7 @@ class LiveChart extends StatelessWidget {
     _maxY = maxY, 
     _yInterval = yInterval, 
     _xInterval = xInterval,
+    _markup = markup,
     _axesData = axesData,
     _points = points;
   //
@@ -56,9 +93,9 @@ class LiveChart extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           horizontalInterval: _yInterval,
-          getDrawingHorizontalLine: (_) => _line(context),
+          getDrawingHorizontalLine: (_) => _markup?.horizontalLines?.toLineData(context) ?? _line(context),
           verticalInterval: _xInterval,
-          getDrawingVerticalLine: (_) => _line(context),
+          getDrawingVerticalLine: (_) => _markup?.verticalLines?.toLineData(context) ?? _line(context),
         ),
         titlesData: _titlesData,
       ),
