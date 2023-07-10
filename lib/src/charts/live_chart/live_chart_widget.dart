@@ -8,6 +8,7 @@ import 'package:hmi_widgets/src/charts/live_chart/chart_action_button.dart';
 import 'live_chart.dart';
 import 'live_axis.dart';
 import 'live_chart_legend.dart';
+import 'live_chart_markup.dart';
 import 'pause_switch.dart';
 import 'show_dots_switch.dart';
 import 'show_legend_switch.dart';

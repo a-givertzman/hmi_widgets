@@ -60,6 +60,7 @@ export 'src/charts/crane_position_chart/crane_position_chart.dart';
 export 'src/charts/live_chart/live_chart_widget.dart';
 export 'src/charts/live_chart/live_chart.dart';
 export 'src/charts/live_chart/live_axis.dart';
+export 'src/charts/live_chart/live_chart_markup.dart';
 //
 // Process
 export 'src/process/electrical/drive/ac_drive_widget.dart';
