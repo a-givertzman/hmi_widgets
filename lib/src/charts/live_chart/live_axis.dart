@@ -9,6 +9,7 @@ class LiveAxis {
   final double thickness;
   final double dotRadius;
   final int bufferLength;
+  final double? curveSmoothness;
   bool showDots;
   bool isVisible;
   ///
@@ -22,5 +23,6 @@ class LiveAxis {
     this.bufferLength = 300,
     this.showDots = false,
     this.isVisible = true,
+    this.curveSmoothness,
   });
 }
