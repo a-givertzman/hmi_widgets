@@ -86,6 +86,8 @@ class LiveChart extends StatelessWidget {
             show: axisData.isVisible,
             spots: spots,
             color: axisData.color,
+            preventCurveOverShooting: axisData.curveOvershootingThreshold != null,
+            preventCurveOvershootingThreshold: axisData.curveOvershootingThreshold ?? 0.0,
             isCurved: axisData.curveSmoothness != null,
             curveSmoothness: axisData.curveSmoothness ?? 0.0,
             dotData: FlDotData(

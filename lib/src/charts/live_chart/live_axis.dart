@@ -10,6 +10,7 @@ class LiveAxis {
   final double dotRadius;
   final int bufferLength;
   final double? curveSmoothness;
+  final double? curveOvershootingThreshold;
   bool showDots;
   bool isVisible;
   ///
@@ -24,5 +25,6 @@ class LiveAxis {
     this.showDots = false,
     this.isVisible = true,
     this.curveSmoothness,
+    this.curveOvershootingThreshold,
   });
 }
