@@ -148,7 +148,7 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
                 child: Text(
                   _stateText,
                   style: stateTextStyle.apply(color: color),
-                  textScaleFactor: _stateTextScaleFactor,
+                  textScaler: TextScaler.linear(_stateTextScaleFactor),
                 ),
               ),
             ],

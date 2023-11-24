@@ -182,7 +182,7 @@ class CircularValueIndicator extends StatelessWidget {
           style: textStyle.copyWith(
             color: textStyle.color!.withOpacity(0.7),
           ),
-          textScaleFactor: 0.8 * 0.0168 * _size,
+          textScaler: TextScaler.linear(0.8 * 0.0168 * _size),
         ),
       );
     }
@@ -211,7 +211,7 @@ class CircularValueIndicator extends StatelessWidget {
                   : textStyle,
             child: Text(valueText,
               textAlign: TextAlign.center,
-              textScaleFactor: 1.5 * 0.01618 * _size,
+              textScaler: TextScaler.linear(1.5 * 0.01618 * _size),
             ),
           ),
         ),
