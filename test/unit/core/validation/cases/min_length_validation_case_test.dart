@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/core/validation/cases/min_length_validation_case.dart';
 
 void main() {
@@ -26,12 +27,12 @@ void main() {
         final length = item['length'] as int;
         final string = item['string'] as String;
         final validationCase = MinLengthValidationCase(length);
-        expect(validationCase.isSatisfiedBy(string).hasData, equals(true));
+        expect(validationCase.isSatisfiedBy(string) is Ok, equals(true));
       }
     });
     test('is not satisfied by null', () {
       for(int length = 0; length < 100; length++) {
-        expect(MinLengthValidationCase(length).isSatisfiedBy(null).hasError, equals(true));
+        expect(MinLengthValidationCase(length).isSatisfiedBy(null) is Err, equals(true));
       }
     });
     test('is not satisfied by short strings', () {
@@ -61,7 +62,7 @@ void main() {
         final length = item['length'] as int;
         final string = item['string'] as String;
         final validationCase = MinLengthValidationCase(length);
-        expect(validationCase.isSatisfiedBy(string).hasError, equals(true));
+        expect(validationCase.isSatisfiedBy(string) is Err, equals(true));
       }
     });
     test('constructor asserts on negative values', () {
