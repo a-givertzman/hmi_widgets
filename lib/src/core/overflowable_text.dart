@@ -153,6 +153,7 @@ class OverflowableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textData = data;
+    final textScaler = textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null;
     if (textData != null) {
       return Text(
         textData,
@@ -163,7 +164,7 @@ class OverflowableText extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: overflow,
-        textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null,
+        textScaler: textScaler,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
@@ -180,7 +181,7 @@ class OverflowableText extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: overflow,
-        textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null,
+        textScaler: textScaler,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
