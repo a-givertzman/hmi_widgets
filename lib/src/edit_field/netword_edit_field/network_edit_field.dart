@@ -336,12 +336,15 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         responseTimeout: _responseTimeout,
       ).exec(value).then((responseValue) {
         setState(() {
-          if (responseValue.hasError) {
-            _savingState = OperationState.undefined;
-            _editingState = EditingState.changed;
-          } else {
-            _savingState = OperationState.success;
-            _editingState = EditingState.notChanged;
+          switch (responseValue) {
+            case Ok(value: _):
+              _savingState = OperationState.success;
+              _editingState = EditingState.notChanged;
+              break;
+            case Err(error: _):
+              _savingState = OperationState.undefined;
+              _editingState = EditingState.changed;
+              break;
           }
         });
       });
