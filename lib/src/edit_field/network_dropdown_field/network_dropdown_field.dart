@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 import 'oil_data.dart';
@@ -193,7 +194,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
           if (mounted) {
             setState(() {
               _state.setSaved();
-              if (responseValue.hasError) {
+              if (responseValue case Err(error: final _)) {
                 _state.setChanged();
               }
             });

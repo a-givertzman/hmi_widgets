@@ -1,4 +1,5 @@
 import 'cases/validation_case.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 class Validator {
@@ -12,8 +13,8 @@ class Validator {
   String? editFieldValidator(String? value) {
     for (final validationCase in _cases) {
       final result = validationCase.isSatisfiedBy(value);
-      if (result.hasError) {
-        return result.error.message;
+      if (result case Err(:final error)) {
+        return error.message;
       }
     }
     return null;

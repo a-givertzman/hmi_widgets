@@ -1,6 +1,6 @@
-import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 abstract class ValidationCase {
   ///
-  Result<void> isSatisfiedBy(String? value);
+  ResultF<void> isSatisfiedBy(String? value);
 }

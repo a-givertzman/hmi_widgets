@@ -4,7 +4,7 @@ version: 1.0.0+1
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -20,7 +20,10 @@ dependencies:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
       ref: master
-  fl_chart: ^0.55.1
+  fl_chart:
+    git:
+      url: https://github.com/a-givertzman/fl_chart.git
+      ref: master
   another_flushbar: ^1.12.29
 
 dev_dependencies:

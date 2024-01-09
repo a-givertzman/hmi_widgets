@@ -1,6 +1,7 @@
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 
 ///
@@ -253,33 +254,36 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   /// validating if the value can be parsed in to T (int / double)
   String? _valueValidator(value) {
     final result = _parseValue(value, fractionDigits: _fractionDigits);
-    return result.hasError ? const Localized('Invalid date value').v : null;
+    return switch(result) {
+      Ok() => null,
+      Err() => const Localized('Invalid date value').v,
+    };
   }
   ///
   void _onEditingComplete() {
     _log.debug('[._onEditingComplete]');
-    _parseValue(_editingController.text, fractionDigits: _fractionDigits).fold(
-      onData: (numValue) {
-        if ('${numValue}' != _initValue) {
-          _log.debug('[.build._onEditingComplete] new numValue: ${numValue}\t_initValue: $_initValue');
-          _sendValue(_dsClient, _writeTagName, _responseTagName, numValue);
+    switch(_parseValue(_editingController.text, fractionDigits: _fractionDigits)) {
+      case Ok(:final value):
+        if ('${value}' != _initValue) {
+          _log.debug('[.build._onEditingComplete] new numValue: ${value}\t_initValue: $_initValue');
+          _sendValue(_dsClient, _writeTagName, _responseTagName, value);
         }
-      }, 
-      onError: (failure) {
-        _log.debug('[.build._onEditingComplete] error: ${failure.message}');
-      },
-    );
+        break;
+      case Err(:final error):
+        _log.debug('[.build._onEditingComplete] error: ${error.message}');
+        break;
+    }
   }
   ///
   /// Parses string into T (int / double)
-  Result<T> _parseValue(String value, {int fractionDigits = 0}) {
+  ResultF<T> _parseValue(String value, {int fractionDigits = 0}) {
     if (T == int) {
       return _textToInt(value);
     } else if (T == double) {
       return _textToFixedDouble(value, fractionDigits);
     } else {
-      return Result<T>(
-        error: Failure.convertion(
+      return Err(
+        Failure.convertion(
           message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "${_editingController.text}" can`t be converted', 
           stackTrace: StackTrace.current
         ),
@@ -287,24 +291,25 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     }
   }
   ///
-  Result<T> _textToInt(String value) {
+  ResultF<T> _textToInt(String value) {
     final intValue = int.tryParse(value);
     return intValue != null 
-      ? Result<T>(data: intValue as T) 
-      : Result<T>(
-        error: Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
-          stackTrace: StackTrace.current),
+      ? Ok(intValue as T) 
+      : Err(
+          Failure.convertion(
+            message: 'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
+            stackTrace: StackTrace.current,
+          ),
         );
   }
   ///
-  Result<T> _textToFixedDouble(String value, int fractionDigits) {
+  ResultF<T> _textToFixedDouble(String value, int fractionDigits) {
     final doubleValue = double.tryParse(value);
     if (doubleValue != null) {
-      return Result<T>(data: double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
+      return Ok(double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
     } else {
-      return Result<T>(
-        error: Failure.convertion(
+      return Err(
+        Failure.convertion(
           message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "$value" can`t be converted into double', 
           stackTrace: StackTrace.current,
         ),
@@ -331,12 +336,15 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         responseTimeout: _responseTimeout,
       ).exec(value).then((responseValue) {
         setState(() {
-          if (responseValue.hasError) {
-            _savingState = OperationState.undefined;
-            _editingState = EditingState.changed;
-          } else {
-            _savingState = OperationState.success;
-            _editingState = EditingState.notChanged;
+          switch (responseValue) {
+            case Ok(value: _):
+              _savingState = OperationState.success;
+              _editingState = EditingState.notChanged;
+              break;
+            case Err(error: _):
+              _savingState = OperationState.undefined;
+              _editingState = EditingState.changed;
+              break;
           }
         });
       });

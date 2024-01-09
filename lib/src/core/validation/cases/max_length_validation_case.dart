@@ -1,4 +1,4 @@
-import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'validation_case.dart';
 ///
@@ -10,12 +10,12 @@ class MaxLengthValidationCase implements ValidationCase {
     _maxLength = maxLength;
   //
   @override
-  Result<void> isSatisfiedBy(String? value) {
+  ResultF<void> isSatisfiedBy(String? value) {
     if (value != null && value.length <= _maxLength) {
-      return Result(data: true);
+      return Ok(true);
     }
-    return Result(
-      error: Failure(
+    return Err(
+      Failure(
         message: 'Too many characters', 
         stackTrace: StackTrace.current,
       ),

@@ -63,7 +63,7 @@ class OverflowableText extends StatelessWidget {
   /// the specified font size.
   ///
   /// The value given to the constructor as textScaleFactor. If null, will
-  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
+  /// use the [MediaQueryData.textScaler] obtained from the ambient
   /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
   final double? textScaleFactor;
 
@@ -153,6 +153,7 @@ class OverflowableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textData = data;
+    final textScaler = textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null;
     if (textData != null) {
       return Text(
         textData,
@@ -163,7 +164,7 @@ class OverflowableText extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: overflow,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
@@ -180,7 +181,7 @@ class OverflowableText extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: overflow,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
