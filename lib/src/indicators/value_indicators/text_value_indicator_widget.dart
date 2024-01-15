@@ -141,7 +141,7 @@ class TextIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         _caption,
-        SizedBox(height: const Setting('smallPadding').toDouble),
+        // SizedBox(height: const Setting('smallPadding').toDouble),
         _indicator,
       ],
     );
