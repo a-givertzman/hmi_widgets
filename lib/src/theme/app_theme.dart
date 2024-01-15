@@ -75,6 +75,7 @@ final Map<AppTheme, ThemeData> appThemes = {
   ///
   /// Light theme of entire application
   AppTheme.light: ThemeData(
+    typography: Typography.material2018(),
     brightness: Brightness.light,
     // scaffoldBackgroundColor: lightTheme.backgroundColor,
     primaryColor: light_theme.primaryColor,
@@ -123,6 +124,7 @@ final Map<AppTheme, ThemeData> appThemes = {
   ///
   /// Dark theme of entire application
   AppTheme.dark: ThemeData(
+    typography: Typography.material2018(),
     brightness: Brightness.dark,
     // scaffoldBackgroundColor: backgroundColor,
     primaryColor: dark_theme.primaryColor,
