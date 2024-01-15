@@ -75,6 +75,7 @@ class DropDownControlButton extends StatefulWidget {
 
 ///
 class _DropDownControlButtonState extends State<DropDownControlButton> with TickerProviderStateMixin {
+  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   final _log = Log('$_DropDownControlButtonState')..level = LogLevel.debug;
   final _state = NetworkOperationState(isLoading: true);
   final double? _width;
@@ -154,7 +155,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   Widget build(BuildContext context) {
     final width = _width;
     final height = _height;
-    final backgroundColor = Theme.of(context).colorScheme.primary;
     final textColor = Theme.of(context).colorScheme.onPrimary;
     return StreamBuilder<Null>(
       stream: _streamController.stream,
@@ -163,77 +163,89 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         bool _isDisabled = _isDisabledStream?.value ?? _isDisabledStream?.initialValue ?? false;
         _log.debug('[.build] _lastSelectedValue: $_lastSelectedValue');
         _log.debug('[.build] isDisabled: $_isDisabled');
-        return PopupMenuButtonCustom<int>(
-          // color: backgroundColor,
-          offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
-          enabled: !_isDisabled,
-          tooltip: _tooltip,
-          child: Stack(
-            children: [
-              ColorFiltered(
-                colorFilter: ColorFilters.disabled(context, _isDisabled),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  width: _width,
-                  height: _height,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
-                    },
-                  ),
-                ),
-              ),
-              if (_state.isLoading || _state.isSaving) Positioned.fill(
-                child: Container(
-                  color: Theme.of(context).colorScheme.background.withOpacity(0.7),
-                  alignment: Alignment.center,
-                  child: CupertinoActivityIndicator(
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          itemBuilder: (context) {
-            return _items.map((index , item) {
+        return Tooltip(
+          message: _tooltip,
+          child: MenuAnchor(
+            alignmentOffset: Offset(width != null ? width * 0.7 : 100, 0),
+            childFocusNode: _buttonFocusNode,
+            menuChildren: _items.map((index , item) {
+              final isDisabled = _itemIsDisabled(index);
               return MapEntry(
                 index, 
-                PopupMenuItem<int>(
-                  key: UniqueKey(),
-                  value: index,
-                  enabled: !_itemIsDisabled(index),
-                  onTap: () {
-                    // TODO onTap action to be implemented
+                MenuItemButton(
+                  onPressed: isDisabled 
+                  ? null 
+                  : () {
+                    if (_items.containsKey(index)) {
+                      final sendValue = index;
+                      if (sendValue != _lastSelectedValue) {
+                        _sendValue(_dsClient, _writeTagName, _responseTagName, sendValue);
+                      }
+                    }
                   },
                   child: Text(
                     item,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: _itemIsDisabled(index)
+                      color: isDisabled
                         ? textColor.withOpacity(0.3)
                         : textColor,
                     ),
                   ),
                 ),
               );
-            }).values.toList();
-          },
-          onCanceled: () {
-            _log.debug('[.build] onCanceled');
-          },
-          onSelected: (value) {
-            _log.debug('[.build] onSelected: value: $value');
-            if (_items.containsKey(value)) {
-              final sendValue = value;
-              if (sendValue != _lastSelectedValue) {
-                _sendValue(_dsClient, _writeTagName, _responseTagName, sendValue);
-              }
-            }
-          },
+            }).values.toList(),
+            builder: (BuildContext context, MenuController controller, Widget? child) {
+              return GestureDetector(
+                onTap: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: ElevatedButton(
+                          focusNode: _buttonFocusNode,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            textStyle: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          child: child,
+                          onPressed: (_state.isLoading || _state.isSaving) ? null : () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                        ),
+                      ),
+                      if (_state.isLoading || _state.isSaving) Positioned.fill(
+                      child: Container(
+                        color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+                        alignment: Alignment.center,
+                        child: CupertinoActivityIndicator(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
+                    ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
+              },
+            ),
+          ),
         );
       },
     );
@@ -259,14 +271,13 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
                 offset: Offset(0.0, - (Theme.of(context).textTheme.titleMedium?.fontSize ?? 18) * 0.07 * animationValue),
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.titleMedium?.apply(
-                    color: color.withOpacity(1 - 0.2 * animationValue),
-                  ),
+                  // style: Theme.of(context).textTheme.titleMedium?.apply(
+                  //   color: color.withOpacity(1 - 0.2 * animationValue),
+                  // ),
                 ),
               ),
             ),
         if (selectedItem != null) Center(
-
           child: Text(
             selectedItem,
             style: Theme.of(context).textTheme.titleMedium!.apply(

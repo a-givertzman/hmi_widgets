@@ -106,6 +106,12 @@ final Map<AppTheme, ThemeData> appThemes = {
     tabBarTheme: TabBarTheme(
       indicatorColor: light_theme.activeStateColor,
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: light_theme.primaryColor,
+        foregroundColor: light_theme.onTertiary,
+      ),
+    ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
     //     elevation: MaterialStateProperty.all(cardThemeElevation),
@@ -119,6 +125,11 @@ final Map<AppTheme, ThemeData> appThemes = {
     popupMenuTheme: PopupMenuThemeData(
       color: light_theme.tertiary,
       textStyle: TextStyle(fontSize: 18, color: light_theme.onTertiary),
+    ),
+    menuTheme: MenuThemeData(
+      style: MenuStyle(
+        backgroundColor: MaterialStateProperty.all(light_theme.primaryColor),
+      ),
     ),
   ),
   ///
@@ -157,6 +168,12 @@ final Map<AppTheme, ThemeData> appThemes = {
     tabBarTheme: TabBarTheme(
       indicatorColor: dark_theme.activeStateColor,
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: dark_theme.primaryColor,
+        foregroundColor: dark_theme.onTertiary,
+      ),
+    ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ButtonStyle(
     //     // elevation: MaterialStateProperty.all(cardThemeElevation),
@@ -175,6 +192,11 @@ final Map<AppTheme, ThemeData> appThemes = {
     popupMenuTheme: PopupMenuThemeData(
       color: dark_theme.primaryColor,
       textStyle: TextStyle(fontSize: 18, color: dark_theme.onPrimary),
+    ),
+    menuTheme: MenuThemeData(
+      style: MenuStyle(
+        backgroundColor: MaterialStateProperty.all(dark_theme.primaryColor),
+      ),
     ),
   ),
 };
