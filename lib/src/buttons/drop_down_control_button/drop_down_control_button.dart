@@ -74,7 +74,6 @@ class DropDownControlButton extends StatefulWidget {
 
 ///
 class _DropDownControlButtonState extends State<DropDownControlButton> with TickerProviderStateMixin {
-  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   final _log = Log('$_DropDownControlButtonState')..level = LogLevel.debug;
   final _state = NetworkOperationState(isLoading: true);
   final double? _width;
