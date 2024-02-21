@@ -58,6 +58,7 @@ class PopupMenuButtonCustom<T> extends StatefulWidget {
     this.elevation,
     this.padding = const EdgeInsets.all(8.0),
     this.child,
+    this.customButtonBuilder,
     this.splashRadius,
     this.icon,
     this.iconSize,
@@ -116,6 +117,9 @@ class PopupMenuButtonCustom<T> extends StatefulWidget {
   /// If provided, [child] is the widget used for this button
   /// and the button will utilize an [InkWell] for taps.
   final Widget? child;
+
+  ///
+  final Widget Function(void Function()? onTap)? customButtonBuilder;
 
   /// If provided, the [icon] is used for this button
   /// and the button will behave like an [IconButton].
@@ -286,6 +290,10 @@ class PopupMenuButtonCustomState<T> extends State<PopupMenuButtonCustom<T>> {
         enableFeedback: enableFeedback,
         child: widget.child,
       );
+    }
+    final builder = widget.customButtonBuilder;
+    if (builder != null) {
+      return builder(widget.enabled ? showButtonMenu : null);
     }
     return IconButton(
       icon: widget.icon ?? Icon(Icons.adaptive.more),

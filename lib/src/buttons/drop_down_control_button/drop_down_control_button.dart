@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/core/color_filters.dart';
-import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
+import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
@@ -163,89 +162,76 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         bool _isDisabled = _isDisabledStream?.value ?? _isDisabledStream?.initialValue ?? false;
         _log.debug('[.build] _lastSelectedValue: $_lastSelectedValue');
         _log.debug('[.build] isDisabled: $_isDisabled');
-        return Tooltip(
-          message: _tooltip,
-          child: MenuAnchor(
-            alignmentOffset: Offset(width != null ? width * 0.7 : 100, 0),
-            childFocusNode: _buttonFocusNode,
-            menuChildren: _items.map((index , item) {
-              final isDisabled = _itemIsDisabled(index);
+        return PopupMenuButtonCustom<int>(
+          offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
+          enabled: !_isDisabled,
+          tooltip: _tooltip,
+          customButtonBuilder: (onTap) {
+            return Stack(
+              children: [
+                ColorFiltered(
+                  colorFilter: ColorFilters.disabled(context, _isDisabled),
+                  child: SizedBox(
+                    width: _width,
+                    height: _height,
+                    child: ElevatedButton(
+                      onPressed: onTap, 
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                if (_state.isLoading || _state.isSaving) Positioned.fill(
+                  child: Container(
+                    color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+                    alignment: Alignment.center,
+                    child: CupertinoActivityIndicator(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+          itemBuilder: (context) {
+            return _items.map((index , item) {
               return MapEntry(
                 index, 
-                MenuItemButton(
-                  onPressed: isDisabled 
-                  ? null 
-                  : () {
-                    if (_items.containsKey(index)) {
-                      final sendValue = index;
-                      if (sendValue != _lastSelectedValue) {
-                        _sendValue(_dsClient, _writeTagName, _responseTagName, sendValue);
-                      }
-                    }
+                PopupMenuItem<int>(
+                  key: UniqueKey(),
+                  value: index,
+                  enabled: !_itemIsDisabled(index),
+                  onTap: () {
+                    // TODO onTap action to be implemented
                   },
                   child: Text(
                     item,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: isDisabled
+                      color: _itemIsDisabled(index)
                         ? textColor.withOpacity(0.3)
                         : textColor,
                     ),
                   ),
                 ),
               );
-            }).values.toList(),
-            builder: (BuildContext context, MenuController controller, Widget? child) {
-              return GestureDetector(
-                onTap: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                child: SizedBox(
-                  width: width,
-                  height: height,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: ElevatedButton(
-                          focusNode: _buttonFocusNode,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            textStyle: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          child: child,
-                          onPressed: (_state.isLoading || _state.isSaving) ? null : () {
-                            if (controller.isOpen) {
-                              controller.close();
-                            } else {
-                              controller.open();
-                            }
-                          },
-                        ),
-                      ),
-                      if (_state.isLoading || _state.isSaving) Positioned.fill(
-                      child: Container(
-                        color: Theme.of(context).colorScheme.background.withOpacity(0.7),
-                        alignment: Alignment.center,
-                        child: CupertinoActivityIndicator(
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                      ),
-                    ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
-              },
-            ),
-          ),
+            }).values.toList();
+          },
+          onCanceled: () {
+            _log.debug('[.build] onCanceled');
+          },
+          onSelected: (value) {
+            _log.debug('[.build] onSelected: value: $value');
+            if (_items.containsKey(value)) {
+              final sendValue = value;
+              if (sendValue != _lastSelectedValue) {
+                _sendValue(_dsClient, _writeTagName, _responseTagName, sendValue);
+              }
+            }
+          },
         );
       },
     );
