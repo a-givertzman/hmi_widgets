@@ -8,6 +8,7 @@ class CircularFabWidget extends StatefulWidget {
   final int _fwdAnimationDuration;
   final int _revAnimationDuration;
   final double? _radius;
+  final ShapeBorder? _shape;
   ///
   const CircularFabWidget({
     Key? key,
@@ -17,6 +18,7 @@ class CircularFabWidget extends StatefulWidget {
     int fwdAnimationDuration = 120,
     int revAnimationDuration = 50,
     double? radius,
+    ShapeBorder? shape,
   }) : 
     _icon = icon,
     _children = children,
@@ -24,6 +26,7 @@ class CircularFabWidget extends StatefulWidget {
     _fwdAnimationDuration = fwdAnimationDuration,
     _revAnimationDuration = revAnimationDuration,
     _radius = radius,
+    _shape = shape,
     super(key: key);
   //
   @override
@@ -35,6 +38,7 @@ class CircularFabWidget extends StatefulWidget {
     fwdAnimationDuration: _fwdAnimationDuration,    
     revAnimationDuration: _revAnimationDuration,
     radius: _radius,
+    shape: _shape,
   );
 }
 
@@ -46,6 +50,7 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
   final int _fwdAnimationDuration;
   final int _revAnimationDuration;
   final double? _radius;
+  final ShapeBorder? _shape;
   late AnimationController _animationController;
   ///
   _CircularFabWidgetState({
@@ -55,13 +60,15 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
     required int fwdAnimationDuration,
     required int revAnimationDuration,
     double? radius,
+    ShapeBorder? shape,
   }):
     _icon = icon,
     _children = children,
     _buttonSize = buttonSize,
     _fwdAnimationDuration = fwdAnimationDuration,
     _revAnimationDuration = revAnimationDuration,
-    _radius = radius;
+    _radius = radius,
+    _shape = shape;
   //
   @override
   void initState() {
@@ -76,6 +83,7 @@ class _CircularFabWidgetState extends State<CircularFabWidget> with TickerProvid
   @override
   Widget build(BuildContext context) {
     final menuButton = FloatingActionButton(
+      shape: _shape,
       key: UniqueKey(),
       heroTag: UniqueKey(),
       // elevation: 1.0,
@@ -170,6 +178,7 @@ class FlowMenuDelegate extends FlowDelegate {
             ? max(_animationController.value, 0.9)
             : max(_animationController.value, 0.5),)
           ..translate(-_buttonSize / 2, -_buttonSize / 2),
+        opacity: isLastItem ? 1.0 : _animationController.value,
       );
     }
   }
