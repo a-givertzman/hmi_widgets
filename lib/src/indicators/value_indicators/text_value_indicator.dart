@@ -111,7 +111,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
         Text(
           value.toStringAsFixed(_fractionDigits),
           style: _textStyle.apply(color: color),
-          textScaler: TextScaler.linear(1.5),
+          textScaler: TextScaler.linear(1.3),
         ),
         ..._buildUnitText(_valueUnit, color),
       ],
@@ -125,7 +125,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
         Text(
           _valueUnit,
           style: _unitTextStyle.apply(color: color),
-          textScaler: TextScaler.linear(1.5),
+          textScaler: TextScaler.linear(1.3),
         ),
       ];
     }

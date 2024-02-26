@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/core/color_filters.dart';
-import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
+import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
@@ -154,7 +153,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   Widget build(BuildContext context) {
     final width = _width;
     final height = _height;
-    final backgroundColor = Theme.of(context).colorScheme.primary;
     final textColor = Theme.of(context).colorScheme.onPrimary;
     return StreamBuilder<Null>(
       stream: _streamController.stream,
@@ -164,41 +162,40 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         _log.debug('[.build] _lastSelectedValue: $_lastSelectedValue');
         _log.debug('[.build] isDisabled: $_isDisabled');
         return PopupMenuButtonCustom<int>(
-          // color: backgroundColor,
           offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
           enabled: !_isDisabled,
           tooltip: _tooltip,
-          child: Stack(
-            children: [
-              ColorFiltered(
-                colorFilter: ColorFilters.disabled(context, _isDisabled),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  width: _width,
-                  height: _height,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
-                    },
-                  ),
-                ),
-              ),
-              if (_state.isLoading || _state.isSaving) Positioned.fill(
-                child: Container(
-                  color: Theme.of(context).colorScheme.background.withOpacity(0.7),
-                  alignment: Alignment.center,
-                  child: CupertinoActivityIndicator(
-                    color: Theme.of(context).colorScheme.onBackground,
+          customButtonBuilder: (onTap) {
+            return Stack(
+              children: [
+                ColorFiltered(
+                  colorFilter: ColorFilters.disabled(context, _isDisabled),
+                  child: SizedBox(
+                    width: _width,
+                    height: _height,
+                    child: ElevatedButton(
+                      onPressed: onTap, 
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return _buildButtonIcon(_lastSelectedValue, textColor, _animationController.value);
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+                if (_state.isLoading || _state.isSaving) Positioned.fill(
+                  child: Container(
+                    color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+                    alignment: Alignment.center,
+                    child: CupertinoActivityIndicator(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
           itemBuilder: (context) {
             return _items.map((index , item) {
               return MapEntry(
@@ -257,16 +254,10 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
               scale: 1 - 0.2 * animationValue,
               child: Transform.translate(
                 offset: Offset(0.0, - (Theme.of(context).textTheme.titleMedium?.fontSize ?? 18) * 0.07 * animationValue),
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium?.apply(
-                    color: color.withOpacity(1 - 0.2 * animationValue),
-                  ),
-                ),
+                child: Text(label),
               ),
             ),
         if (selectedItem != null) Center(
-
           child: Text(
             selectedItem,
             style: Theme.of(context).textTheme.titleMedium!.apply(
@@ -276,20 +267,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         ),
       ],
     );
-        // return Text(
-        //   '${_items[value]}',
-        //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-        //     color: color,
-        //   ),
-        // );
-      // }
-    // }
-    // return Text(
-    //   '$_label',
-    //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-    //     color: color,
-    //   ),
-    // );
   }
   ///
   void _sendValue(DsClient? dsClient, DsPointName? writeTagName, String? responseTagName, int? newValue) {
