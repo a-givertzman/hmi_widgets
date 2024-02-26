@@ -254,12 +254,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
               scale: 1 - 0.2 * animationValue,
               child: Transform.translate(
                 offset: Offset(0.0, - (Theme.of(context).textTheme.titleMedium?.fontSize ?? 18) * 0.07 * animationValue),
-                child: Text(
-                  label,
-                  // style: Theme.of(context).textTheme.titleMedium?.apply(
-                  //   color: color.withOpacity(1 - 0.2 * animationValue),
-                  // ),
-                ),
+                child: Text(label),
               ),
             ),
         if (selectedItem != null) Center(
@@ -272,20 +267,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         ),
       ],
     );
-        // return Text(
-        //   '${_items[value]}',
-        //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-        //     color: color,
-        //   ),
-        // );
-      // }
-    // }
-    // return Text(
-    //   '$_label',
-    //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-    //     color: color,
-    //   ),
-    // );
   }
   ///
   void _sendValue(DsClient? dsClient, DsPointName? writeTagName, String? responseTagName, int? newValue) {
