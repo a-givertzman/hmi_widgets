@@ -2,6 +2,7 @@ name: hmi_widgets
 description: A Flutter package helps to visualize states, values, changes and other artefacts from technological processes.
 version: 0.0.1
 homepage: https://github.com/a-givertzman/hmi_widgets
+publish_to: none
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -10,14 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  lint: ^1.10.0
-  mockito: ^5.3.0
-  another_flushbar: ^1.12.29
-  # flutter_lints: ^2.0.0
   fl_chart:
     git:
       url: https://github.com/a-givertzman/fl_chart.git
@@ -30,6 +23,14 @@ dev_dependencies:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
       ref: master
+  another_flushbar: ^1.12.29
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lint: ^1.10.0
+  mockito: ^5.3.0
+  # flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
