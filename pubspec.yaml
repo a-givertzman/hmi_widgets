@@ -1,6 +1,6 @@
 name: hmi_widgets
 description: A Flutter package helps to visualize states, values, changes and other artefacts from technological processes.
-version: 0.0.1
+version: 1.0.0
 homepage: https://github.com/a-givertzman/hmi_widgets
 publish_to: none
 
@@ -14,15 +14,15 @@ dependencies:
   fl_chart:
     git:
       url: https://github.com/a-givertzman/fl_chart.git
-      ref: master
+      ref: 0.63.0+1
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: master
+      ref: 1.0.0
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: master
+      ref: 1.0.0 
   another_flushbar: ^1.12.29
 
 dev_dependencies:
