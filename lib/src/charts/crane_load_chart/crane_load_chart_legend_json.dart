@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/src/core/result_new/result.dart';
 ///
 class CraneLoadChartLegendJson {
   final JsonList<Map<String, dynamic>> _jsonList;
@@ -11,6 +12,12 @@ class CraneLoadChartLegendJson {
   ///
   Future<Map<String, List<List<dynamic>>>> get decoded {
     return _jsonList.decoded
+      .then((result) {
+        return switch(result) {
+          Ok(:final value) => value,
+          Err(:final error) => throw error,
+        };
+      })
       .then(
         (list) => list.fold<Map<String, List<List<dynamic>>>>(
           {

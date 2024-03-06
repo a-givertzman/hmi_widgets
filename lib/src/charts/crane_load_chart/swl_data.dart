@@ -1,4 +1,5 @@
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 class SwlData {
   static final _log = const Log('SwlData')..level = LogLevel.debug;
@@ -34,6 +35,12 @@ class SwlData {
   ///
   Future<List<double>> _loadAsset(TextFile textFile) {
     return textFile.content
+      .then((result) {
+        return switch(result) {
+          Ok(:final value) => value,
+          Err(:final error) => throw error,
+        };
+      })
       .then((value) {
         final doubleList = _parseStringList(
           value.replaceAll('\n', ';').replaceAll(',', '.').trim().split(';'),

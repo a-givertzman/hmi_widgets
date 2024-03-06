@@ -22,7 +22,7 @@ dependencies:
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: 1.0.0 
+      ref: 1.0.0
   another_flushbar: ^1.12.29
 
 dev_dependencies:

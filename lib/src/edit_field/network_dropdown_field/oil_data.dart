@@ -1,4 +1,5 @@
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 /// Reads oil names and spec data for [SettingsPage] - HPU 
 /// from assets json file
@@ -16,6 +17,12 @@ class OilData {
   Future<List<String>> names() async {
     if (_data.isEmpty) {
       await _jsonMap.decoded
+      .then((result) {
+        return switch(result) {
+          Ok(:final value) => value,
+          Err(:final error) => throw error,
+        };
+      })
       .then((value) => _data.addAll(value))
       .onError((error, stackTrace) {
         throw Failure.unexpected(
