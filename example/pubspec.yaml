@@ -15,15 +15,11 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: master
+      ref: 1.0.0
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: master
-  fl_chart:
-    git:
-      url: https://github.com/a-givertzman/fl_chart.git
-      ref: master
+      ref: 1.0.0
   another_flushbar: ^1.12.29
 
 dev_dependencies:

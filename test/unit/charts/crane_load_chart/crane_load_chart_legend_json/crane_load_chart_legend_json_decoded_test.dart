@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 import 'fake_json_list.dart';
 void main() {
@@ -61,7 +62,7 @@ void main() {
       for (final config in validLegendConfigs) {
         final list = config['list'] as List<Map<String, dynamic>>;
         final legendJson = CraneLoadChartLegendJson(
-          jsonList: FakeJsonList(list),
+          jsonList: FakeJsonList(Ok(list)),
         );
         final decodedLegend = await legendJson.decoded;
         expect(
@@ -106,7 +107,7 @@ void main() {
       ];
       for (final invalidConfig in invalidJsonConfigs) {
         final legendData = CraneLoadChartLegendJson(
-          jsonList: FakeJsonList(invalidConfig),
+          jsonList: FakeJsonList(Ok(invalidConfig)),
         );
         expect(
           legendData.decoded,
