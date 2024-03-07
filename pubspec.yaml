@@ -14,7 +14,7 @@ dependencies:
   fl_chart:
     git:
       url: https://github.com/a-givertzman/fl_chart.git
-      ref: 0.63.0+1
+      ref: 0.63.0+2
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
