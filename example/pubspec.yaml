@@ -1,6 +1,6 @@
 name: example
 description: Usage example for hmi_widgets package.
-version: 1.0.0+1
+version: 1.0.1
 publish_to: 'none'
 
 environment:
@@ -19,7 +19,7 @@ dependencies:
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: 1.0.0
+      ref: 1.1.0
   another_flushbar: ^1.12.29
 
 dev_dependencies:
