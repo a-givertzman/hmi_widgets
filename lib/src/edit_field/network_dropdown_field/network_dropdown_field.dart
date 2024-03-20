@@ -188,6 +188,8 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
         pointName: writeTagName, 
         response: responseTagName,
         responseTimeout: _responseTimeout,
+        cot: DsCot.act,
+        responseCots: [DsCot.actCon, DsCot.actErr],
       )
         .exec(value)
         .then((responseValue) {

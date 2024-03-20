@@ -64,7 +64,7 @@ class DropDownControlButton extends StatefulWidget {
       if (tagName != null) {
         return BufferedStream<DsDataPoint<int>>(
           dsClient.streamInt(tagName),
-          initValue: DsDataPoint(type: DsDataType.integer, name: DsPointName('/test/test/test/test'), value: -1, status: DsStatus.ok, timestamp: DsTimeStamp.now().toString()),
+          initValue: DsDataPoint(type: DsDataType.integer, name: DsPointName('/test/test/test/test'), value: -1, status: DsStatus.ok, cot: DsCot.inf, timestamp: DsTimeStamp.now().toString()),
         );
       }
     }
@@ -277,6 +277,8 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         dsClient: dsClient, 
         pointName: writeTagName, 
         response: responseTagName,
+        cot: DsCot.act,
+        responseCots: [DsCot.actCon, DsCot.actErr],
       )
         .exec(value)
         .then((responseValue) {

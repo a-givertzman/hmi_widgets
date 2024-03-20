@@ -334,6 +334,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
         pointName: writeTagName,
         response: responseTagName,
         responseTimeout: _responseTimeout,
+        cot: DsCot.act,
+        responseCots: [DsCot.actCon, DsCot.actErr],
       ).exec(value).then((responseValue) {
         setState(() {
           switch (responseValue) {
