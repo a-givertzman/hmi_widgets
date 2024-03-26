@@ -332,7 +332,6 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       DsSend<T>(
         dsClient: dsClient,
         pointName: writeTagName,
-        response: responseTagName,
         responseTimeout: _responseTimeout,
         cot: DsCot.act,
         responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],

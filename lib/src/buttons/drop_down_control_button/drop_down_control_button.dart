@@ -276,7 +276,6 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       DsSend<int>(
         dsClient: dsClient, 
         pointName: writeTagName, 
-        response: responseTagName,
         cot: DsCot.act,
         responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
       )
