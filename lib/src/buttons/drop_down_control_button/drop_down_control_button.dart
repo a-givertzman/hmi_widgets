@@ -278,7 +278,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         pointName: writeTagName, 
         response: responseTagName,
         cot: DsCot.act,
-        responseCots: [DsCot.actCon, DsCot.actErr],
+        responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
       )
         .exec(value)
         .then((responseValue) {

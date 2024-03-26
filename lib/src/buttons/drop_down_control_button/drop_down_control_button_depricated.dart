@@ -306,7 +306,7 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
         pointName: writeTagName, 
         response: responseTagName,
         cot: DsCot.act,
-        responseCots: [DsCot.actCon, DsCot.actErr],
+        responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
       )
         .exec(value)
         .then((responseValue) {
