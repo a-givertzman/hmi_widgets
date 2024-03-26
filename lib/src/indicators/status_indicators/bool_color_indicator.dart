@@ -61,7 +61,7 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
     _invalidValueColor = Theme.of(context).stateColors.invalid;
     return StreamBuilder<DsDataPoint<bool>>(
       initialData: DsDataPoint<bool>(
-        type: DsDataType.bool, name: DsPointName('/test'), value: false, status: DsStatus.obsolete, timestamp: '',
+        type: DsDataType.bool, name: DsPointName('/test'), value: false, status: DsStatus.obsolete, cot: DsCot.inf, timestamp: '',
       ),
       stream: _stream,
       builder: (context, snapshot) {
