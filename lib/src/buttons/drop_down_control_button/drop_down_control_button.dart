@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
+enum DisplayLoadingWhile {
+  writeTagResponsed,
+  responseTagResponded,
+}
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
@@ -14,6 +18,7 @@ class DropDownControlButton extends StatefulWidget {
   final DsClient? _dsClient;
   final DsPointName? _writeTagName;
   final String? _responseTagName;
+  final DisplayLoadingWhile _loadingWhile;
   final Map<int, String> _items;
   final String? _tooltip;
   final String? _label;
@@ -30,6 +35,7 @@ class DropDownControlButton extends StatefulWidget {
     required Map<int, String> items,
     String? tooltip,
     String? label,
+    DisplayLoadingWhile loadingWhile = DisplayLoadingWhile.responseTagResponded,
   }) : 
     _disabledStream = disabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -41,6 +47,7 @@ class DropDownControlButton extends StatefulWidget {
     _items = items,
     _tooltip = tooltip,
     _label = label,
+    _loadingWhile = loadingWhile,
     super(key: key);
   //
   @override
@@ -57,6 +64,7 @@ class DropDownControlButton extends StatefulWidget {
     items: _items,
     tooltip: _tooltip,
     label: _label,
+    loadingWhile: _loadingWhile,
   );
   ///
   BufferedStream<DsDataPoint<int>>? _buildResponseSTream(DsClient? dsClient, String? tagName) {
@@ -91,6 +99,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   final StreamController<Null> _streamController = StreamController<Null>();
+  final DisplayLoadingWhile _loadingWhile;
   ///
   _DropDownControlButtonState({
     required BufferedStream<bool>? isDisabledStream,
@@ -104,6 +113,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required Map<int, String> items,
     required String? tooltip,
     required String? label,
+    required DisplayLoadingWhile loadingWhile,
   }) :
     _isDisabledStream = isDisabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -116,6 +126,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     _items = items,
     _tooltip = tooltip,
     _label = label,
+    _loadingWhile = loadingWhile,
     super();
   //
   @override
@@ -137,7 +148,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       _itemDisabledSuscriptions.add(itemDisabledSuscription);
     });
     final responseStream = _responseStream;
-    responseStream?.stream.listen((event) { 
+    responseStream?.stream.listen((event) {
       if (_state.isLoading) {
         _state.setLoaded();
       }
@@ -275,14 +286,18 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       if (mounted) setState(() => _state.setSaving());
       DsSend<int>(
         dsClient: dsClient, 
-        pointName: writeTagName, 
+        pointName: writeTagName,
+        response: switch(_loadingWhile) {
+          DisplayLoadingWhile.writeTagResponsed => null,
+          DisplayLoadingWhile.responseTagResponded => _responseTagName,
+        },
         cot: DsCot.act,
         responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
       )
-        .exec(value)
-        .then((responseValue) {
-          if (mounted) setState(() => _state.setSaved());
-        });
+      .exec(value)
+      .then((responseValue) {
+        if (mounted) setState(() => _state.setSaved());
+      });
     }
   }  
   //
