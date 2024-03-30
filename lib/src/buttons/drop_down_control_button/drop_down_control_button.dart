@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
-enum DisplayLoadingWhile {
+enum DisplayLoadingUntil {
   writeTagResponsed,
   responseTagResponded,
 }
@@ -18,7 +18,7 @@ class DropDownControlButton extends StatefulWidget {
   final DsClient? _dsClient;
   final DsPointName? _writeTagName;
   final String? _responseTagName;
-  final DisplayLoadingWhile _loadingWhile;
+  final DisplayLoadingUntil _loadingWhile;
   final Map<int, String> _items;
   final String? _tooltip;
   final String? _label;
@@ -35,7 +35,7 @@ class DropDownControlButton extends StatefulWidget {
     required Map<int, String> items,
     String? tooltip,
     String? label,
-    DisplayLoadingWhile loadingWhile = DisplayLoadingWhile.responseTagResponded,
+    DisplayLoadingUntil loadingWhile = DisplayLoadingUntil.responseTagResponded,
   }) : 
     _disabledStream = disabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -99,7 +99,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   final StreamController<Null> _streamController = StreamController<Null>();
-  final DisplayLoadingWhile _loadingWhile;
+  final DisplayLoadingUntil _loadingWhile;
   ///
   _DropDownControlButtonState({
     required BufferedStream<bool>? isDisabledStream,
@@ -113,7 +113,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required Map<int, String> items,
     required String? tooltip,
     required String? label,
-    required DisplayLoadingWhile loadingWhile,
+    required DisplayLoadingUntil loadingWhile,
   }) :
     _isDisabledStream = isDisabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -288,11 +288,14 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         dsClient: dsClient, 
         pointName: writeTagName,
         response: switch(_loadingWhile) {
-          DisplayLoadingWhile.writeTagResponsed => null,
-          DisplayLoadingWhile.responseTagResponded => _responseTagName,
+          DisplayLoadingUntil.writeTagResponsed => null,
+          DisplayLoadingUntil.responseTagResponded => _responseTagName,
         },
         cot: DsCot.act,
-        responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
+        responseCots: switch(_loadingWhile) {
+          DisplayLoadingUntil.writeTagResponsed => [DsCot.actCon, DsCot.actErr],
+          DisplayLoadingUntil.responseTagResponded => [DsCot.inf],
+        },
       )
       .exec(value)
       .then((responseValue) {
