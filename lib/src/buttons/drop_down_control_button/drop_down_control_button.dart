@@ -7,7 +7,7 @@ import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 enum LoadingUntil {
   writeTagResponsed,
-  responseTagResponded,
+  responseTagResponsed,
 }
 ///
 /// Кнопка посылает значение bool / int / real в DsClient
@@ -36,7 +36,7 @@ class DropDownControlButton extends StatefulWidget {
     required Map<int, String> items,
     String? tooltip,
     String? label,
-    LoadingUntil loadingUntil = LoadingUntil.responseTagResponded,
+    LoadingUntil loadingUntil = LoadingUntil.responseTagResponsed,
   }) : 
     _disabledStream = disabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -290,12 +290,12 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
         pointName: writeTagName,
         response: switch(_loadingUntil) {
           LoadingUntil.writeTagResponsed => null,
-          LoadingUntil.responseTagResponded => _responseTagName,
+          LoadingUntil.responseTagResponsed => _responseTagName,
         },
         cot: DsCot.act,
         responseCots: switch(_loadingUntil) {
           LoadingUntil.writeTagResponsed => [DsCot.actCon, DsCot.actErr],
-          LoadingUntil.responseTagResponded => [DsCot.inf],
+          LoadingUntil.responseTagResponsed => [DsCot.inf],
         },
       )
       .exec(value)
