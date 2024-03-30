@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
-enum DisplayLoadingUntil {
+///
+enum LoadingUntil {
   writeTagResponsed,
   responseTagResponded,
 }
@@ -18,7 +19,7 @@ class DropDownControlButton extends StatefulWidget {
   final DsClient? _dsClient;
   final DsPointName? _writeTagName;
   final String? _responseTagName;
-  final DisplayLoadingUntil _loadingWhile;
+  final LoadingUntil _loadingUntil;
   final Map<int, String> _items;
   final String? _tooltip;
   final String? _label;
@@ -35,7 +36,7 @@ class DropDownControlButton extends StatefulWidget {
     required Map<int, String> items,
     String? tooltip,
     String? label,
-    DisplayLoadingUntil loadingWhile = DisplayLoadingUntil.responseTagResponded,
+    LoadingUntil loadingUntil = LoadingUntil.responseTagResponded,
   }) : 
     _disabledStream = disabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -47,7 +48,7 @@ class DropDownControlButton extends StatefulWidget {
     _items = items,
     _tooltip = tooltip,
     _label = label,
-    _loadingWhile = loadingWhile,
+    _loadingUntil = loadingUntil,
     super(key: key);
   //
   @override
@@ -64,7 +65,7 @@ class DropDownControlButton extends StatefulWidget {
     items: _items,
     tooltip: _tooltip,
     label: _label,
-    loadingWhile: _loadingWhile,
+    loadingUntil: _loadingUntil,
   );
   ///
   BufferedStream<DsDataPoint<int>>? _buildResponseSTream(DsClient? dsClient, String? tagName) {
@@ -99,7 +100,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   final StreamController<Null> _streamController = StreamController<Null>();
-  final DisplayLoadingUntil _loadingWhile;
+  final LoadingUntil _loadingUntil;
   ///
   _DropDownControlButtonState({
     required BufferedStream<bool>? isDisabledStream,
@@ -113,7 +114,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required Map<int, String> items,
     required String? tooltip,
     required String? label,
-    required DisplayLoadingUntil loadingWhile,
+    required LoadingUntil loadingUntil,
   }) :
     _isDisabledStream = isDisabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -126,7 +127,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     _items = items,
     _tooltip = tooltip,
     _label = label,
-    _loadingWhile = loadingWhile,
+    _loadingUntil = loadingUntil,
     super();
   //
   @override
@@ -287,14 +288,14 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       DsSend<int>(
         dsClient: dsClient, 
         pointName: writeTagName,
-        response: switch(_loadingWhile) {
-          DisplayLoadingUntil.writeTagResponsed => null,
-          DisplayLoadingUntil.responseTagResponded => _responseTagName,
+        response: switch(_loadingUntil) {
+          LoadingUntil.writeTagResponsed => null,
+          LoadingUntil.responseTagResponded => _responseTagName,
         },
         cot: DsCot.act,
-        responseCots: switch(_loadingWhile) {
-          DisplayLoadingUntil.writeTagResponsed => [DsCot.actCon, DsCot.actErr],
-          DisplayLoadingUntil.responseTagResponded => [DsCot.inf],
+        responseCots: switch(_loadingUntil) {
+          LoadingUntil.writeTagResponsed => [DsCot.actCon, DsCot.actErr],
+          LoadingUntil.responseTagResponded => [DsCot.inf],
         },
       )
       .exec(value)
