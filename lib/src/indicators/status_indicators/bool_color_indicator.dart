@@ -36,7 +36,7 @@ class BoolColorIndicator extends StatefulWidget {
 
 ///
 class _BoolColorIndicatorState extends State<BoolColorIndicator> {
-  static const _debug = true;
+  static const _log = Log('_BoolColorIndicatorState');
   final Stream<DsDataPoint<bool>>? _stream;
   final Color? _trueColor;
   final Color? _falseColor;
@@ -95,19 +95,19 @@ class _BoolColorIndicatorState extends State<BoolColorIndicator> {
     final trueColor = _trueColor ?? Theme.of(context).stateColors.on;
     final falseColor = _falseColor ?? Theme.of(context).stateColors.off;
     Color? color;
-    // log(_debug, '[$_BoolColorIndicatorState._buildColor] snapshot: ', snapshot);
+    // _log.debug('[._buildColor] snapshot: $snapshot');
     if (snapshot.hasError) {
       color = _invalidValueColor;
-      log(_debug, '[$_BoolColorIndicatorState._buildColor] snapshot.error: ', snapshot.error);
+      _log.debug('[._buildColor] snapshot.error: ${snapshot.error}');
     } else if (snapshot.hasData) {
       final point = snapshot.data;
       if (point != null) {
         color = point.value ? trueColor : falseColor;
       } else {
-        log(_debug, '[$_BoolColorIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+        _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
       }
     } else {
-      log(_debug, '[$_BoolColorIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
     }
     return color;
   }

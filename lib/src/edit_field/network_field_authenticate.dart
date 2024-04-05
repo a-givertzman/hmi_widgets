@@ -9,7 +9,7 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
     AppUserStacked users,
     Authenticate auth,
   ) {
-    const _debug = true;
+    const _log = Log('networkFieldAuthenticate');
     final flushBarDuration = Duration(
       milliseconds: const Setting('flushBarDurationMedium').toInt,
     );
@@ -24,7 +24,7 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
         settings: const RouteSettings(name: "/authDialog"),
       ),
     ).then((authResult) {
-      log(_debug, '[_authenticate] authResult: ', authResult);
+      _log.debug( 'authResult: $authResult');
       final result = authResult;
       if (result != null) {
         if (result.authenticated) {

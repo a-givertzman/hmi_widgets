@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
 class CraneLoadPointPainter extends CustomPainter {
-  static const _debug = false;
+  static const _log = Log('CraneLoadPointPainter');
   final Map<int, String> _xAxis;
   final Map<int, String> _yAxis;
   final bool _showGrrid;
@@ -39,9 +39,7 @@ class CraneLoadPointPainter extends CustomPainter {
   //
   @override
   void paint(Canvas canvas, Size size) {
-    log(_debug, '[$CraneLoadPointPainter.paint]');
-    log(_debug, '[$CraneLoadPointPainter.paint] xAxis: ', _xAxis);
-    log(_debug, '[$CraneLoadPointPainter.paint] yAxis: ', _yAxis);
+    _log.debug('[.paint] xAxis: $_xAxis | yAxis: $_yAxis');
     _drawBackgroundRect(canvas, size);
     _drawXaxis(canvas, size);
     _drawYaxis(canvas, size);

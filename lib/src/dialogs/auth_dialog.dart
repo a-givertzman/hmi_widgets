@@ -31,7 +31,7 @@ class AuthDialog extends StatefulWidget {
 
 ///
 class _AuthDialogState extends State<AuthDialog> {
-  static const _debug = true;
+  static const _log = Log('_AuthDialogState');
   final AppUserSingle? _currentUser;
   final Duration? _flushBarDuration;
   late Authenticate _auth;
@@ -56,7 +56,7 @@ class _AuthDialogState extends State<AuthDialog> {
   //
   @override
   Widget build(BuildContext context) {
-    log(_debug, '[_AuthDialogState.build]');
+    _log.debug('[.build]');
     const paddingValue = 13.0;
     return Scaffold(
       // ignoring: true,
@@ -173,7 +173,7 @@ class _AuthDialogState extends State<AuthDialog> {
     final flushBarDuration = _flushBarDuration ?? Duration(
       milliseconds: const Setting('flushBarDurationMedium').toInt,
     );
-    log(_debug, '[_AuthDialogState._onComplete] cancel: $cancel');
+    _log.debug('[._onComplete] cancel: $cancel');
     if (cancel) {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
@@ -216,7 +216,7 @@ class _AuthDialogState extends State<AuthDialog> {
           });
       } else {
         final message = _buildWrongLoginPassMessage();
-        log(_debug, '[_AuthDialogState._onComplete] message: $message');
+        _log.debug('[._onComplete] message: $message');
         FlushbarHelper.createError(
           duration: flushBarDuration,
           title: const Localized('Authentication').v,

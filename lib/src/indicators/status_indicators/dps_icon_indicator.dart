@@ -51,7 +51,7 @@ class DpsIconIndicator extends StatefulWidget {
 
 ///
 class _DpsIconIndicatorState extends State<DpsIconIndicator> {
-  static const _debug = true;
+  static const _log = Log('_DpsIconIndicatorState');
   late DsDataStreamExtract<int> _extractDsDataStream;
   final Stream<DsDataPoint<int>>? _inputStream;
   final Widget? _posUndefinedIcon;
@@ -168,10 +168,10 @@ class _DpsIconIndicatorState extends State<DpsIconIndicator> {
           );
         }
       } else {
-        log(_debug, '[$_DpsIconIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+        _log.debug( '[$_DpsIconIndicatorState._build] snapshot.connectionState: ${snapshot.connectionState}');
       }
     } else {
-      log(_debug, '[$_DpsIconIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
     }
     return posUndefinedIcon ?? _undefinedIconDefault(context, color);
   }

@@ -33,7 +33,7 @@ class SpsIconIndicator extends StatefulWidget {
 
 ///
 class _SpsIconIndicatorState extends State<SpsIconIndicator> {
-  static const _debug = true;
+  static const _log = Log('_SpsIconIndicatorState');
   final Stream<DsDataPoint<bool>>? _stream;
   final Icon? _trueIcon;
   final Icon? _falseIcon;
@@ -87,10 +87,11 @@ class _SpsIconIndicatorState extends State<SpsIconIndicator> {
           return falseIcon ?? _falseIconDefault(context, color);
         }
       } else {
-        log(_debug, '[$_SpsIconIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+        _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
       }
     } else {
-      log(_debug, '[$_SpsIconIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
+
     }
     return falseIcon ?? _falseIconDefault(context, color);
   }

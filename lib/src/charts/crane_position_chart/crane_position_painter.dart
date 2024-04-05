@@ -5,7 +5,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 import 'crane_position_chart.dart';
 ///
 class CranePositionPainter extends CustomPainter {
-  static const _debug = false;
+  static const _log = Log('CranePositionPainter');
   final DrawingController _drawingController;
   final int code;
   final Size size;
@@ -29,7 +29,7 @@ class CranePositionPainter extends CustomPainter {
   //
   @override
   void paint(Canvas canvas, Size size) {
-    log(_debug, '[$CranePositionPainter.paint]');
+    _log.debug('[.paint]');
     final Color verticalLineColor;
     if (_drawingController.isXValid) {
       verticalLineColor = _drawingController.swlProtection 
