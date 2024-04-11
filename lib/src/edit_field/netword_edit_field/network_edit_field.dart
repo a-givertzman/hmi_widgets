@@ -21,7 +21,7 @@ class NetworkEditField<T> extends StatefulWidget {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final int _responseTimeout;
+  final Duration _responseTimeout;
   final void Function(BuildContext)? _onUnauthorizedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
@@ -43,7 +43,7 @@ class NetworkEditField<T> extends StatefulWidget {
     String? unitText,
     double width = 230.0,
     showApplyButton = false,
-    int responseTimeout = 5,
+    Duration responseTimeout = const Duration(seconds: 5),
     void Function(BuildContext)? onUnauthorizedEdit,
   }) : 
     _allowedGroups = allowedGroups,
@@ -99,7 +99,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
   final String? _unitText;
   final double _width;
   final bool _showApplyButton;
-  final int _responseTimeout;
+  final Duration _responseTimeout;
   final void Function(BuildContext) _onUnauthorizedEdit;
   String _initValue = '';
   ///
@@ -115,7 +115,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     required String? unitText,
     required double width,
     required bool showApplyButton,
-    required int responseTimeout,
+    required Duration responseTimeout,
     void Function(BuildContext)? onUnauthorizedEdit,
   }) : 
     assert(T == int || T == double, 'Generic <T> must be int or double.'),

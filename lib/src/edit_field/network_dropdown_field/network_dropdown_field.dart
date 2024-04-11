@@ -18,7 +18,7 @@ class NetworkDropdownFormField extends StatefulWidget {
   final String? _labelText;
   final double _width;
   final OilData _oilData;
-  final int _responseTimeout;
+  final Duration _responseTimeout;
   final void Function(BuildContext)? _onUnauthorizedEdit;
   ///
   /// - [writeTagName] - the name of DataServer tag to send value
@@ -38,7 +38,7 @@ class NetworkDropdownFormField extends StatefulWidget {
     double width = 350.0,
     void Function(BuildContext)? onUnauthorizedEdit,
     required OilData oilData,
-    int responseTimeout = 5,
+    Duration responseTimeout = const Duration(seconds: 5),
   }) : 
     _allowedGroups = allowedGroups,
     _users = users,
@@ -80,7 +80,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
   final String? _labelText;
   final double _width;
   void Function(BuildContext) _onUnauthorizedEdit;
-  final int _responseTimeout;
+  final Duration _responseTimeout;
   bool _accessAllowed = false;
   int? _dropdownValue;
   int? _initValue;
@@ -95,7 +95,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
     required String? labelText,
     required double width,
     required OilData oilData,
-    required int responseTimeout,
+    required Duration responseTimeout,
     void Function(BuildContext)? onUnauthorizedEdit,
   }) :
     _allowedGroups = allowedGroups,
