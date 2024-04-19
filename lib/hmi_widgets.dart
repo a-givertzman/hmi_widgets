@@ -28,6 +28,7 @@ export 'src/buttons/drop_down_control_button/drop_down_control_button.dart';
 //
 // Popups
 export 'src/popups/popup_menu_button/popup_menu_button_custom.dart';
+export 'src/popups/bottom_message/bottom_message.dart';
 //
 // Indicators
 //     Status indicators
