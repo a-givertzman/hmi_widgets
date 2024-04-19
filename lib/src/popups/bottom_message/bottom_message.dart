@@ -12,13 +12,13 @@ class BottomMessage {
   final _MessageType _type;
   final Duration _displayDuration;
   final String? _title;
-  final String _message;
+  final String? _message;
   ///
   const BottomMessage._({
     required _MessageType type,
     required Duration displayDuration,
     String? title,
-    required String message,
+    String? message,
   }) : 
     _type = type,
     _displayDuration = displayDuration,
@@ -28,7 +28,7 @@ class BottomMessage {
   const BottomMessage.confirmation({
     Duration displayDuration = const Duration(milliseconds: 500),
     String? title,
-    required String message,
+    String? message,
   }) : this._(
     type: _MessageType.confirmation,
     displayDuration: displayDuration,
@@ -39,7 +39,7 @@ class BottomMessage {
   const BottomMessage.info({
     Duration displayDuration = const Duration(milliseconds: 500),
     String? title,
-    required String message,
+    String? message,
   }) : this._(
     type: _MessageType.info,
     displayDuration: displayDuration,
@@ -50,7 +50,7 @@ class BottomMessage {
   const BottomMessage.warning({
     Duration displayDuration = const Duration(milliseconds: 500),
     String? title,
-    required String message,
+    String? message,
   }) : this._(
     type: _MessageType.warning,
     displayDuration: displayDuration,
@@ -61,7 +61,7 @@ class BottomMessage {
   const BottomMessage.error({
     Duration displayDuration = const Duration(milliseconds: 500),
     String? title,
-    required String message,
+    String? message,
   }) : this._(
     type: _MessageType.error,
     displayDuration: displayDuration,
@@ -70,7 +70,9 @@ class BottomMessage {
   );
   ///
   void show(BuildContext context) {
+    const iconSize = 30.0;
     final title = _title;
+    final message = _message;
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -82,18 +84,22 @@ class BottomMessage {
           children: [
             switch(_type) {
               _MessageType.confirmation => const Icon(
+                size: iconSize,
                 Icons.check_circle_outline_rounded,
                 color: Colors.greenAccent,
               ),
               _MessageType.info => const Icon(
+                size: iconSize,
                 Icons.info_outline_rounded,
                 color: Colors.blueAccent,
               ),
               _MessageType.warning => const Icon(
+                size: iconSize,
                 Icons.warning_amber_rounded,
                 color: Colors.yellowAccent,
               ),
               _MessageType.error => const Icon(
+                size: iconSize,
                 Icons.error_outline_rounded,
                 color: Colors.redAccent,
               ),
@@ -103,8 +109,9 @@ class BottomMessage {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if(title != null)
-                  Text(title, style: theme.textTheme.titleMedium),
-                Text(_message, style: theme.textTheme.bodyMedium),
+                  Text(title, style: theme.textTheme.titleLarge),
+                if(message != null)
+                Text(message, style: theme.textTheme.bodySmall),
               ],
             ),
           ],
