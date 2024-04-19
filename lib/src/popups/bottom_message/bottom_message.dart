@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_app_settings.dart';
 ///
 enum _MessageType {
   confirmation,
@@ -70,9 +71,13 @@ class BottomMessage {
   ///
   void show(BuildContext context) {
     final title = _title;
+    final theme = Theme.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        showCloseIcon: true,
         duration: _displayDuration,
+        backgroundColor: theme.colorScheme.surface,
+        closeIconColor: theme.colorScheme.primary,
         content: Row(
           children: [
             switch(_type) {
@@ -93,11 +98,13 @@ class BottomMessage {
                 color: Colors.redAccent,
               ),
             },
+            SizedBox(width: const Setting('blockPadding').toDouble),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if(title != null)
-                  Text(title),
-                Text(_message)
+                  Text(title, style: theme.textTheme.titleMedium),
+                Text(_message, style: theme.textTheme.bodyMedium),
               ],
             ),
           ],
