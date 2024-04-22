@@ -5,6 +5,11 @@ import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
+enum LoadingUntil {
+  writeTagResponded,
+  responseTagResponded,
+}
+///
 /// Кнопка посылает значение bool / int / real в DsClient
 class DropDownControlButton extends StatefulWidget {
   final BufferedStream<bool>? _disabledStream;
@@ -14,6 +19,7 @@ class DropDownControlButton extends StatefulWidget {
   final DsClient? _dsClient;
   final DsPointName? _writeTagName;
   final String? _responseTagName;
+  final LoadingUntil _loadingUntil;
   final Map<int, String> _items;
   final String? _tooltip;
   final String? _label;
@@ -30,6 +36,7 @@ class DropDownControlButton extends StatefulWidget {
     required Map<int, String> items,
     String? tooltip,
     String? label,
+    LoadingUntil loadingUntil = LoadingUntil.responseTagResponded,
   }) : 
     _disabledStream = disabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -41,6 +48,7 @@ class DropDownControlButton extends StatefulWidget {
     _items = items,
     _tooltip = tooltip,
     _label = label,
+    _loadingUntil = loadingUntil,
     super(key: key);
   //
   @override
@@ -57,6 +65,7 @@ class DropDownControlButton extends StatefulWidget {
     items: _items,
     tooltip: _tooltip,
     label: _label,
+    loadingUntil: _loadingUntil,
   );
   ///
   BufferedStream<DsDataPoint<int>>? _buildResponseSTream(DsClient? dsClient, String? tagName) {
@@ -64,7 +73,7 @@ class DropDownControlButton extends StatefulWidget {
       if (tagName != null) {
         return BufferedStream<DsDataPoint<int>>(
           dsClient.streamInt(tagName),
-          initValue: DsDataPoint(type: DsDataType.integer, name: DsPointName('/test/test/test/test'), value: -1, status: DsStatus.ok, timestamp: DsTimeStamp.now().toString()),
+          initValue: DsDataPoint(type: DsDataType.integer, name: DsPointName('/test/test/test/test'), value: -1, status: DsStatus.ok, cot: DsCot.inf, timestamp: DsTimeStamp.now().toString()),
         );
       }
     }
@@ -91,6 +100,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
   final Map<int, bool> _itemsDisabled = {};
   late AnimationController _animationController;
   final StreamController<Null> _streamController = StreamController<Null>();
+  final LoadingUntil _loadingUntil;
   ///
   _DropDownControlButtonState({
     required BufferedStream<bool>? isDisabledStream,
@@ -104,6 +114,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     required Map<int, String> items,
     required String? tooltip,
     required String? label,
+    required LoadingUntil loadingUntil,
   }) :
     _isDisabledStream = isDisabledStream,
     _itemsDisabledStreams = itemsDisabledStreams,
@@ -116,6 +127,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
     _items = items,
     _tooltip = tooltip,
     _label = label,
+    _loadingUntil = loadingUntil,
     super();
   //
   @override
@@ -137,7 +149,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       _itemDisabledSuscriptions.add(itemDisabledSuscription);
     });
     final responseStream = _responseStream;
-    responseStream?.stream.listen((event) { 
+    responseStream?.stream.listen((event) {
       if (_state.isLoading) {
         _state.setLoaded();
       }
@@ -275,13 +287,21 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
       if (mounted) setState(() => _state.setSaving());
       DsSend<int>(
         dsClient: dsClient, 
-        pointName: writeTagName, 
-        response: responseTagName,
+        pointName: writeTagName,
+        response: switch(_loadingUntil) {
+          LoadingUntil.writeTagResponded => null,
+          LoadingUntil.responseTagResponded => _responseTagName,
+        },
+        cot: DsCot.act,
+        responseCots: switch(_loadingUntil) {
+          LoadingUntil.writeTagResponded => [DsCot.actCon, DsCot.actErr],
+          LoadingUntil.responseTagResponded => [DsCot.inf],
+        },
       )
-        .exec(value)
-        .then((responseValue) {
-          if (mounted) setState(() => _state.setSaved());
-        });
+      .exec(value)
+      .then((responseValue) {
+        if (mounted) setState(() => _state.setSaved());
+      });
     }
   }  
   //

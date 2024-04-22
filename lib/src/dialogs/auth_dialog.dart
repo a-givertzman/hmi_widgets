@@ -1,8 +1,8 @@
-import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_networking/hmi_networking.dart';
+import 'package:hmi_widgets/src/popups/bottom_message/bottom_message.dart';
 ///
 class AuthDialog extends StatefulWidget {
   final AppUserSingle? _currentUser;
@@ -31,7 +31,7 @@ class AuthDialog extends StatefulWidget {
 
 ///
 class _AuthDialogState extends State<AuthDialog> {
-  static const _debug = true;
+  static const _log = Log('_AuthDialogState');
   final AppUserSingle? _currentUser;
   final Duration? _flushBarDuration;
   late Authenticate _auth;
@@ -56,7 +56,7 @@ class _AuthDialogState extends State<AuthDialog> {
   //
   @override
   Widget build(BuildContext context) {
-    log(_debug, '[_AuthDialogState.build]');
+    _log.debug('[.build]');
     const paddingValue = 13.0;
     return Scaffold(
       // ignoring: true,
@@ -173,7 +173,7 @@ class _AuthDialogState extends State<AuthDialog> {
     final flushBarDuration = _flushBarDuration ?? Duration(
       milliseconds: const Setting('flushBarDurationMedium').toInt,
     );
-    log(_debug, '[_AuthDialogState._onComplete] cancel: $cancel');
+    _log.debug('[._onComplete] cancel: $cancel');
     if (cancel) {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
@@ -185,8 +185,8 @@ class _AuthDialogState extends State<AuthDialog> {
     } else {
       final currentUser = _currentUser?.info;
       if ((currentUser != null) && (_userLogin.value() == currentUser.login)) {
-        FlushbarHelper.createError(
-          duration: flushBarDuration,
+        BottomMessage.error(
+          displayDuration: flushBarDuration,
           title: const Localized('Authentication').v,
           message: const Localized('User already authenticated').v,
         ).show(context);
@@ -197,8 +197,8 @@ class _AuthDialogState extends State<AuthDialog> {
           .then((authResult) {
             if (authResult.authenticated) {
               final flushBarDurationOnSucces = flushBarDuration * 0.2;
-              FlushbarHelper.createSuccess(
-                duration: flushBarDurationOnSucces,
+              BottomMessage.confirmation(
+                displayDuration: flushBarDurationOnSucces,
                 title: const Localized('Authentication').v,
                 message: authResult.message,
               ).show(context);
@@ -207,8 +207,8 @@ class _AuthDialogState extends State<AuthDialog> {
                   Navigator.of(context).pop<AuthResult>(authResult);
                 });
             } else {
-              FlushbarHelper.createError(
-                duration: flushBarDuration,
+              BottomMessage.error(
+                displayDuration: flushBarDuration,
                 title: const Localized('Authentication').v,
                 message: authResult.message,
               ).show(context);
@@ -216,9 +216,9 @@ class _AuthDialogState extends State<AuthDialog> {
           });
       } else {
         final message = _buildWrongLoginPassMessage();
-        log(_debug, '[_AuthDialogState._onComplete] message: $message');
-        FlushbarHelper.createError(
-          duration: flushBarDuration,
+        _log.debug('[._onComplete] message: $message');
+        BottomMessage.error(
+          displayDuration: flushBarDuration,
           title: const Localized('Authentication').v,
           message: message,
         ).show(context);

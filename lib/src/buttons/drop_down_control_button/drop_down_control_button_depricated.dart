@@ -62,7 +62,7 @@ class DropDownControlButtonDepricated extends StatefulWidget {
 
 ///
 class _DropDownControlButtonState extends State<DropDownControlButtonDepricated> with TickerProviderStateMixin {
-  static const _debug = true;
+  static const _log = Log('_DropDownControlButtonState');
   final _state = NetworkOperationState(isLoading: true);
   final double? _width;
   final double? _height;
@@ -117,7 +117,7 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
     if (itemsDisabledStreams != null) {
       itemsDisabledStreams.forEach((index, itemDisabledStream) {
         final itemDisabledSuscription = itemDisabledStream.listen((event) {
-          log(_debug, '[$_DropDownControlButtonState.initState] index: $index\tevent: $event');
+          _log.debug('[.initState] index: $index\tevent: $event');
           _itemsDisabled[index] = event;
         });
         _itemDisabledSuscriptions.add(itemDisabledSuscription);
@@ -157,7 +157,7 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
           _lastSelectedValue = point?.value ?? _lastSelectedValue;
           _isDisabled = snapshots.data?.value2 ?? _isDisabled;
         }
-        log(_debug, '$_DropDownControlButtonState.build isDisabled: ', _isDisabled);
+        _log.debug('.build isDisabled: $_isDisabled');
         return PopupMenuButtonCustom<int>(
           // color: backgroundColor,
           offset: Offset(width != null ? width * 0.7 : 100, height ?? 0),
@@ -218,10 +218,10 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
             }).values.toList();
           },
           onCanceled: () {
-            log(_debug, '[$_DropDownControlButtonState] onCanceled');
+            _log.debug('[$_DropDownControlButtonState] onCanceled');
           },
           onSelected: (value) {
-            log(_debug, '[$_DropDownControlButtonState] onSelected: ', value);
+            _log.debug('[$_DropDownControlButtonState] onSelected: $value');
             if (_items.containsKey(value)) {
               final sendValue = value;
               if (sendValue != _lastSelectedValue) {
@@ -304,7 +304,8 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
       DsSend<int>(
         dsClient: dsClient, 
         pointName: writeTagName, 
-        response: responseTagName,
+        cot: DsCot.act,
+        responseCots: [DsCot.actCon, DsCot.actErr, DsCot.inf],
       )
         .exec(value)
         .then((responseValue) {

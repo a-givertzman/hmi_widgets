@@ -12,6 +12,7 @@ Stream<DsDataPoint<T>> getRandomDataPointStream<T>(
       name: DsPointName('/test'),
       value: randomDelegate(random),
       status: DsStatus.ok,
+      cot: DsCot.inf,
       timestamp: DsTimeStamp.now().toString(),
     ),
     duration: duration,

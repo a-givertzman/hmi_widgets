@@ -37,7 +37,7 @@ class TextValueIndicator extends StatefulWidget {
 }
 ///
 class _TextValueIndicatorState extends State<TextValueIndicator> {
-  static const _debug = true;
+  static const _log = Log('_TextValueIndicatorState');
   final Stream<DsDataPoint<num>>? _stream;
   final int _fractionDigits;
   final String _valueUnit;
@@ -74,7 +74,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
     _unitTextStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
     return StreamBuilder<DsDataPoint<num>>(
       initialData: DsDataPoint<num>(
-        type: DsDataType.bool, name: DsPointName('/test'), value: 0.0, status: DsStatus.obsolete, timestamp: '',
+        type: DsDataType.bool, name: DsPointName('/test'), value: 0.0, status: DsStatus.obsolete, cot: DsCot.inf, timestamp: '',
       ),
       stream: _stream,
       builder: (context, snapshot) {
@@ -91,7 +91,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
     num value = _value;
     if (snapshot.hasError) {
       color = _stateColors.invalid;
-      log(_debug, '[$_TextValueIndicatorState._buildValueText] snapshot.error: ', snapshot.error);
+      _log.debug('[._buildValueText] snapshot.error: ${snapshot.error}');
     } else if (snapshot.hasData) {
       final point = snapshot.data;
       if (point != null) {
@@ -99,10 +99,10 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
         _value = value;
         color = _buildColor(color, value);
       } else {
-        log(_debug, '[$_TextValueIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+        _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
       }
     } else {
-      log(_debug, '[$_TextValueIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
     }
     return Row(
       mainAxisSize: MainAxisSize.min,

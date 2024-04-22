@@ -39,7 +39,7 @@ class ControlButtonIndicator extends StatefulWidget {
 
 ///
 class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with TickerProviderStateMixin {
-  static const _debug = false;
+  static const _log = Log('_ControlButtonIndicatorState');
   final Stream<DsDataPoint<num>>? _stream;
   final List<String> _stateValues;
   final String? _caption;
@@ -66,7 +66,7 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
     _stateColor = stateColor,
     _captionColor = captionColor,
     super() {
-      log(_debug, '[$_ControlButtonIndicatorState]');
+      _log.debug('[$_ControlButtonIndicatorState]');
     }
   //
   @override
@@ -114,15 +114,15 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
               }
             }
           } else {
-            log(_debug, '[$_ControlButtonIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+            _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
           }
         } else {
-          log(_debug, '[$_ControlButtonIndicatorState._build] snapshot.connectionState: ', snapshot.connectionState);
+          _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
         }
         final fontSize = stateTextStyle.fontSize;
         final stateTextHeight = stateTextStyle.height;
         final boxHeight = stateTextHeight ?? (fontSize != null ? fontSize * 1.5 : 18);
-        // log(_debug, '[$_ControlButtonIndicatorState._build] boxHeight: ', boxHeight);
+        // _log.debug('[._build] boxHeight: $boxHeight');
         return SizedBox(
           height: boxHeight * 1.0 + padding * 2,
           child: Stack(
