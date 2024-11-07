@@ -21,7 +21,7 @@ class ShowDotsSwitch extends StatelessWidget {
         shape: CircleBorder(),
       ),
       child: IconButton(
-        tooltip: _isOn ? const Localized('Draw lines').v : const Localized('Draw dots').v,
+        tooltip: _isOn ? 'Draw lines'.loc : 'Draw dots'.loc,
         onPressed: () => _onChanged(!_isOn), 
         color: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(_isOn ? Icons.timeline : Icons.more_horiz),

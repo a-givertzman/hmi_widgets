@@ -22,7 +22,7 @@ class ShowLegendSwitch extends StatelessWidget {
         shape: CircleBorder(),
       ),
       child: IconButton(
-        tooltip: _isOn ? const Localized('Hide legend').v : const Localized('Show legend').v,
+        tooltip: _isOn ? 'Hide legend'.loc : 'Show legend'.loc,
         onPressed: () => _onChanged(!_isOn), 
         color: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.legend_toggle),

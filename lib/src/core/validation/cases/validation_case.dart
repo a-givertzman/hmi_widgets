@@ -1,4 +1,5 @@
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
+
 ///
 abstract class ValidationCase {
   ///

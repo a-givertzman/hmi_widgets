@@ -72,7 +72,7 @@ class _AuthDialogState extends State<AuthDialog> {
               // padding: const EdgeInsets.all(paddingValue * 2),
               children: [
                 Text(
-                  const Localized('Please authenticate to continue...').v,
+                  'Please authenticate to continue...'.loc,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: paddingValue),
@@ -92,7 +92,7 @@ class _AuthDialogState extends State<AuthDialog> {
                             Icons.account_circle,
                           ),
                           prefixStyle: Theme.of(context).textTheme.bodyMedium,
-                          labelText: const Localized('Your login').v,
+                          labelText: 'Your login'.loc,
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           errorMaxLines: 3,
                         ),
@@ -141,7 +141,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, true);
                       },
                       child: Text(
-                        const Localized('Cancel').v,
+                        'Cancel'.loc,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -153,7 +153,7 @@ class _AuthDialogState extends State<AuthDialog> {
                         _onComplete(context, false);
                       },
                       child: Text(
-                        const Localized('Next').v,
+                        'Next'.loc,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -178,7 +178,7 @@ class _AuthDialogState extends State<AuthDialog> {
       Navigator.of(context).pop<AuthResult>(
         AuthResult(
           authenticated: false, 
-          message: const Localized('Canceled by user').v, 
+          message: 'Canceled by user'.loc, 
           user: _auth.getUser().clear(),
         ),
       );
@@ -187,8 +187,8 @@ class _AuthDialogState extends State<AuthDialog> {
       if ((currentUser != null) && (_userLogin.value() == currentUser.login)) {
         BottomMessage.error(
           displayDuration: flushBarDuration,
-          title: const Localized('Authentication').v,
-          message: const Localized('User already authenticated').v,
+          title: 'Authentication'.loc,
+          message: 'User already authenticated'.loc,
         ).show(context);
         return ;
       }
@@ -199,7 +199,7 @@ class _AuthDialogState extends State<AuthDialog> {
               final flushBarDurationOnSucces = flushBarDuration * 0.2;
               BottomMessage.confirmation(
                 displayDuration: flushBarDurationOnSucces,
-                title: const Localized('Authentication').v,
+                title: 'Authentication'.loc,
                 message: authResult.message,
               ).show(context);
               Future.delayed(flushBarDurationOnSucces)
@@ -209,7 +209,7 @@ class _AuthDialogState extends State<AuthDialog> {
             } else {
               BottomMessage.error(
                 displayDuration: flushBarDuration,
-                title: const Localized('Authentication').v,
+                title: 'Authentication'.loc,
                 message: authResult.message,
               ).show(context);
             }
@@ -219,7 +219,7 @@ class _AuthDialogState extends State<AuthDialog> {
         _log.debug('[._onComplete] message: $message');
         BottomMessage.error(
           displayDuration: flushBarDuration,
-          title: const Localized('Authentication').v,
+          title: 'Authentication'.loc,
           message: message,
         ).show(context);
       }
@@ -230,12 +230,12 @@ class _AuthDialogState extends State<AuthDialog> {
   String _buildWrongLoginPassMessage() {
     final wrongLoginMessage = _userLogin.validate().valid() 
       ? ''
-      : const Localized('Wrong login').v;
+      : 'Wrong login'.loc;
     final wrongPassMessage = _userPass.validate().valid() 
       ? ''
-      : const Localized('Wrong password').v;
+      : 'Wrong password'.loc;
     final andText = (wrongLoginMessage.isNotEmpty && wrongPassMessage.isNotEmpty)
-      ? ' ${const Localized('and')}'
+      ? ' ${'and'.loc}'
       : '';
     return '$wrongLoginMessage$andText$wrongPassMessage';    
   }

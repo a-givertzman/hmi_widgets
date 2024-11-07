@@ -8,6 +8,6 @@ void showUnauthorizedEditingFlushbar(BuildContext context) {
     displayDuration: Duration(
       milliseconds: const Setting('flushBarDurationMedium').toInt,
     ),
-    message: const Localized('Editing is not permitted for current user').v,
+    message: 'Editing is not permitted for current user'.loc,
   ).show(context);
 }

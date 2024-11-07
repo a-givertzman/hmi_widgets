@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 import 'fake_json_list.dart';
 void main() {
