@@ -1,5 +1,8 @@
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_text_file.dart';
+
 ///
 class SwlData {
   static final _log = const Log('SwlData')..level = LogLevel.debug;

@@ -21,7 +21,7 @@ class PauseSwitch extends StatelessWidget {
         shape: CircleBorder(),
       ),
       child: IconButton(
-        tooltip: _isOn ? const Localized('Continue').v : const Localized('Pause').v,
+        tooltip: _isOn ? 'Continue'.loc : 'Pause'.loc,
         onPressed: () => _onChanged(!_isOn), 
         color: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(_isOn ? Icons.play_arrow : Icons.pause),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/src/core/result_new/result.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_json.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 class CraneLoadChartLegendJson {
   final JsonList<Map<String, dynamic>> _jsonList;

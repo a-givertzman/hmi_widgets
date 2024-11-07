@@ -1,5 +1,5 @@
+import 'package:hmi_core/hmi_core_result.dart';
 import 'cases/validation_case.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 class Validator {

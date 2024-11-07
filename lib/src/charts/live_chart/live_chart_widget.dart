@@ -251,7 +251,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                   Padding(
                     padding: EdgeInsets.all(padding),
                     child: ChartActionButton(
-                      tooltip: const Localized('Zoom out').v,
+                      tooltip: 'Zoom out'.loc,
                       icon: Icon(Icons.remove),
                       onPressed: _maxX! - _minX! < _maxXDelta 
                         ? () {
@@ -274,7 +274,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                   Padding(
                     padding: EdgeInsets.all(padding),
                     child: ChartActionButton(
-                      tooltip: const Localized('Zoom in').v,
+                      tooltip: 'Zoom in'.loc,
                       icon: Icon(Icons.add),
                       onPressed: _maxX! - _minX! > _minXDelta 
                         ? () {

@@ -1,8 +1,9 @@
 import 'dart:core';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 import 'oil_data.dart';

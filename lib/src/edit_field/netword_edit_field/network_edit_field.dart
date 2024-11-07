@@ -1,7 +1,11 @@
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_opration_state.dart';
+import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_translate.dart';
 import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
 
 ///
@@ -256,7 +260,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     final result = _parseValue(value, fractionDigits: _fractionDigits);
     return switch(result) {
       Ok() => null,
-      Err() => const Localized('Invalid date value').v,
+      Err() => 'Invalid date value'.loc,
     };
   }
   ///
