@@ -185,10 +185,10 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
               ),
               if (_state.isLoading || _state.isSaving) Positioned.fill(
                 child: Container(
-                  color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
                   alignment: Alignment.center,
                   child: CupertinoActivityIndicator(
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),

@@ -68,7 +68,7 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
             return SizedBox(
               height: _width,
               child: CupertinoActivityIndicator(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             );
           }

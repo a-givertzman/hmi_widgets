@@ -134,7 +134,7 @@ class LinearValueIndicator extends StatelessWidget {
                   value: _valueBasis, 
                   strokeWidth: _strokeWidth,
                   angle: _angle,
-                  color: Theme.of(context).colorScheme.background, 
+                  color: Theme.of(context).colorScheme.surface, 
                 ),
                 ..._buildValueWidgets(
                   context, 
@@ -175,11 +175,11 @@ class LinearValueIndicator extends StatelessWidget {
         // _buildLowDiscreteIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         _buildLowIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         if (_alarmLow != null)
-          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).colorScheme.surface, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildLowIndicatorWidget(context, value, _alarmLow, _strokeWidth, alarmLowColor),
         _buildHighIndicatorWidget(context, value, _high, _strokeWidth, highColor),
         if (_alarmHigh != null)
-          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).colorScheme.surface, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildHighIndicatorWidget(context, value, _alarmHigh, _strokeWidth, alarmHighColor),
         _buildIndicatorWidget(
           value: value, 

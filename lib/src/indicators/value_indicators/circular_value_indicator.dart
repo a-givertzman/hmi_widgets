@@ -94,7 +94,7 @@ class CircularValueIndicator extends StatelessWidget {
                 value: _valueBasis, 
                 strokeWidth: _strokeWidth,
                 angle: _angle,
-                color: Theme.of(context).colorScheme.background, 
+                color: Theme.of(context).colorScheme.surface, 
               ),
               valueBuilder(context, _stream),
             ],

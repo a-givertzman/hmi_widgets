@@ -171,7 +171,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                 } else {
                   return Center(
                     child: CupertinoActivityIndicator(
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   );
                 }
