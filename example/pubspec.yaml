@@ -1,6 +1,6 @@
 name: example
 description: Usage example for hmi_widgets package.
-version: 1.0.3
+version: 1.0.4
 publish_to: "none"
 
 environment:
@@ -15,11 +15,11 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: 2.1.2
+      ref: 2.1.4
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: 1.1.2
+      ref: 1.1.4
 
 dev_dependencies:
   flutter_test:
