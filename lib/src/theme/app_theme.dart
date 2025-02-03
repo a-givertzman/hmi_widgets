@@ -3,19 +3,19 @@ import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
 import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/dark_high_contrast_theme.dart';
-import 'package:hmi_widgets/src/theme/dark_new_theme.dart';
 import 'package:hmi_widgets/src/theme/dark_theme.dart';
+import 'package:hmi_widgets/src/theme/dark_old_theme.dart';
 import 'package:hmi_widgets/src/theme/light_high_contrast_theme.dart';
-import 'package:hmi_widgets/src/theme/light_new_theme.dart';
 import 'package:hmi_widgets/src/theme/light_theme.dart';
+import 'package:hmi_widgets/src/theme/light_old_theme.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
 ///
 enum AppTheme {
+  lightOld,
   light,
-  lightNew,
   lightHighContrast,
+  darkOld,
   dark,
-  darkNew,
   darkHighContrast,
 }
 ///
@@ -27,16 +27,16 @@ extension AppThemeData on ThemeData {
 final Map<AppTheme, ThemeData> appThemes = {
   ///
   /// Light theme of entire application
-  AppTheme.light: lightTheme,
+  AppTheme.lightOld: lightOldTheme,
   ///
   /// Dark theme of entire application
-  AppTheme.dark: darkTheme,
+  AppTheme.darkOld: darkOldTheme,
   ///
-  AppTheme.darkNew: darkNewTheme,
+  AppTheme.dark: darkTheme,
   ///
   AppTheme.darkHighContrast: darkHighContrastTheme,
   ///
-  AppTheme.lightNew: lightNewTheme,
+  AppTheme.light: lightTheme,
   ///
   AppTheme.lightHighContrast: lightHighContrastTheme,
 };
