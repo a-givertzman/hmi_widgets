@@ -14,6 +14,15 @@ export 'src/core/validation/cases/only_digits_validation_case.dart';
 //
 // Theme
 export 'src/theme/app_theme.dart';
+export 'src/theme/color_utils.dart';
+export 'src/theme/alarm_colors_extension.dart';
+export 'src/theme/state_colors_extension.dart';
+export 'src/theme/dark_theme.dart';
+export 'src/theme/dark_new_theme.dart';
+export 'src/theme/dark_high_contrast_theme.dart';
+export 'src/theme/light_theme.dart';
+export 'src/theme/light_new_theme.dart';
+export 'src/theme/light_high_contrast_theme.dart';
 //
 // Dialogs
 export 'src/dialogs/complete_dialog.dart';
