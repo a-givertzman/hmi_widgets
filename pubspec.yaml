@@ -18,7 +18,7 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: 2.1.4
+      ref: 2.1.5
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git

@@ -4,6 +4,8 @@ library hmi_widgets;
 export 'src/core/lazy_loadable.dart';
 export 'src/core/color_filters.dart';
 export 'src/core/overflowable_text.dart';
+export 'src/core/colors/alarm_colors.dart';
+export 'src/core/colors/state_colors.dart';
 //    
 //     Validation
 export 'src/core/validation/validator.dart';
