@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core_alarm_colors.dart';
-import 'package:hmi_core/hmi_core_state_colors.dart';
+import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
 
@@ -59,6 +59,8 @@ final lightNewTheme = ThemeData(
         class4: Color(0xffFD9A01),
         class5: Color(0xffFFCE03),
         class6: Color(0xffFEF001),
+        class7: Colors.white,
+        class8: Colors.white,
       ),
     ),
   ],

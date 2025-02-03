@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core_state_colors.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 ///
 /// Extention to add [StateColors] to [ThemeData]
 class StateColorsExtension extends ThemeExtension<StateColorsExtension> {

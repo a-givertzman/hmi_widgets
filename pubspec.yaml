@@ -22,7 +22,7 @@ dependencies:
   hmi_networking:
     git:
       url: https://github.com/a-givertzman/hmi_networking.git
-      ref: 1.1.4
+      ref: 1.1.5
 
 dev_dependencies:
   flutter_test:

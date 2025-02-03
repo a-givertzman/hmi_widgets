@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core_alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
 /// 
 /// Extention to add [AlarmColors] to [ThemeData]
 class AlarmColorsExtension extends ThemeExtension<AlarmColorsExtension> {
@@ -29,6 +29,8 @@ class AlarmColorsExtension extends ThemeExtension<AlarmColorsExtension> {
         class4: Color.lerp(alarmColors.class4, other.alarmColors.class4, t)!,
         class5: Color.lerp(alarmColors.class5, other.alarmColors.class5, t)!,
         class6: Color.lerp(alarmColors.class6, other.alarmColors.class6, t)!,
+        class7: Color.lerp(alarmColors.class7, other.alarmColors.class7, t)!,
+        class8: Color.lerp(alarmColors.class8, other.alarmColors.class8, t)!,
       ),
     );
   }

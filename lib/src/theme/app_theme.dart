@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
-import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/dark_high_contrast_theme.dart';
 import 'package:hmi_widgets/src/theme/dark_new_theme.dart';
+import 'package:hmi_widgets/src/theme/dark_theme.dart';
 import 'package:hmi_widgets/src/theme/light_high_contrast_theme.dart';
 import 'package:hmi_widgets/src/theme/light_new_theme.dart';
 import 'package:hmi_widgets/src/theme/light_theme.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
-import 'dark_theme.dart';
 ///
 enum AppTheme {
   light,

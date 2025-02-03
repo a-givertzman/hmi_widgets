@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
+import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_point_extracted.dart';
+import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_stream_extract.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
-import 'package:hmi_networking/hmi_networking.dart';
 import 'invalid_status_indicator.dart';
 ///
 /// Double Point status indicator.

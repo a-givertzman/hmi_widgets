@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core_alarm_colors.dart';
-import 'package:hmi_core/hmi_core_state_colors.dart';
+import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
 import 'color_utils.dart';
@@ -55,30 +55,32 @@ final lightTheme = ThemeData(
       backgroundColor: WidgetStateProperty.all(const Color(0xff7C987F)),
     ),
   ),
-  extensions: [
+  extensions: const [
     StateColorsExtension(
       stateColors: StateColors(
-        error: const Color(0xffC0686D),
-        lowLevel: const Color(0xffC0686D),
-        highLevel: const Color(0xffC0686D),
-        alarm: const Color(0xffFD6104),
-        alarmLowLevel: const Color(0xffFD6104),
-        alarmHighLevel: const Color(0xffFD6104),
+        error: Color(0xffC0686D),
+        lowLevel: Color(0xffC0686D),
+        highLevel: Color(0xffC0686D),
+        alarm: Color(0xffFD6104),
+        alarmLowLevel: Color(0xffFD6104),
+        alarmHighLevel: Color(0xffFD6104),
         obsolete: Colors.amber,
         invalid: Colors.purple,
         timeInvalid: Colors.purple,
-        on: const Color(0xff84E4B7),
-        off: const Color(0xffFFFFFF),
+        on: Color(0xff84E4B7),
+        off: Color(0xffFFFFFF),
       ),
     ),
     AlarmColorsExtension(
       alarmColors: AlarmColors(
-        class1: const Color(0xffF00505),
-        class2: const Color(0xffFF2C05),
-        class3: const Color(0xffFD6104),
-        class4: const Color(0xffFD9A01),
-        class5: const Color(0xffFFCE03),
-        class6: const Color(0xffFEF001),
+        class1: Color(0xffF00505),
+        class2: Color(0xffFF2C05),
+        class3: Color(0xffFD6104),
+        class4: Color(0xffFD9A01),
+        class5: Color(0xffFFCE03),
+        class6: Color(0xffFEF001),
+        class7: Colors.white,
+        class8: Colors.white,
       ),
     ),
   ],

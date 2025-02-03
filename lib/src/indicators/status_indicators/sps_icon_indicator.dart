@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Single Point status indicator.
