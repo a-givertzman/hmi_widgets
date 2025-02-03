@@ -22,8 +22,6 @@ final darkTheme = ThemeData(
     onSecondary: const Color(0xff242527),
     tertiary: const Color(0xffB0B1AC),
     onTertiary: const Color(0xff2B2B2B),
-    background: const Color(0xff313131),
-    onBackground: Colors.white,
     surface: const Color(0xff3b3b3b),
     onSurface: Colors.white,
     error: const Color(0xffF9A880),

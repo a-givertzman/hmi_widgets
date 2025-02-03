@@ -22,8 +22,6 @@ final lightTheme = ThemeData(
     onSecondary: const Color(0xff242527),
     tertiary: const Color(0xff98BBFF),
     onTertiary: const Color(0xff3B3B3B),
-    background: const Color(0xffFFFFFF),
-    onBackground: Colors.black,
     surface: const Color(0xffEEF1EF),
     onSurface: Colors.black,
     error: const Color(0xffC0686D),
