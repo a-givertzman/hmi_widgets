@@ -182,7 +182,7 @@ class CircularValueIndicator extends StatelessWidget {
         child: Text(valueUnit,
           textAlign: TextAlign.center,
           style: textStyle.copyWith(
-            color: textStyle.color!.withOpacity(0.7),
+            color: textStyle.color!.withValues(alpha: 0.7),
           ),
           textScaler: TextScaler.linear(0.8 * 0.0168 * _size),
         ),
@@ -235,7 +235,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _relativeValue.relative(_low),
           strokeWidth: strokeWidth,
           angle: _angle,
-          color: _isLow(value) ? lowColor : lowColor.withOpacity(0.3), 
+          color: _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
         ),
       );
     }
@@ -256,7 +256,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _valueBasis - highRelative,
           strokeWidth: strokeWidth,
           angle: (_angle) + 360 * highRelative,
-          color: _isHigh(value) ? highColor : highColor.withOpacity(0.3), 
+          color: _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
         ),
       );
     }

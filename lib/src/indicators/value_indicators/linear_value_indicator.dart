@@ -274,7 +274,7 @@ class LinearValueIndicator extends StatelessWidget {
         strokeWidth: strokeWidth * 0.3,
         x: strokeWidth * 0.7,
         angle: _angle,
-        color: _isLow(value, low) ? lowColor : lowColor.withOpacity(0.4), 
+        color: _isLow(value, low) ? lowColor : lowColor.withValues(alpha: 0.4), 
         backgroundColor: Colors.transparent,
       );
     }
@@ -292,7 +292,7 @@ class LinearValueIndicator extends StatelessWidget {
         strokeWidth: strokeWidth * 0.3,
         x: strokeWidth * 0.7,
         angle: _angle + 180,
-        color: _isHigh(value, high) ? highColor : highColor.withOpacity(0.4), 
+        color: _isHigh(value, high) ? highColor : highColor.withValues(alpha: 0.4), 
         backgroundColor: Colors.transparent,
       );
     }

@@ -200,7 +200,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
                 ),
                 if (_state.isLoading || _state.isSaving) Positioned.fill(
                   child: Container(
-                    color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
+                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.7),
                     alignment: Alignment.center,
                     child: CupertinoActivityIndicator(
                       color: Theme.of(context).colorScheme.onSurface,
@@ -225,7 +225,7 @@ class _DropDownControlButtonState extends State<DropDownControlButton> with Tick
                     item,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: _itemIsDisabled(index)
-                        ? textColor.withOpacity(0.3)
+                        ? textColor.withValues(alpha: 0.3)
                         : textColor,
                     ),
                   ),
