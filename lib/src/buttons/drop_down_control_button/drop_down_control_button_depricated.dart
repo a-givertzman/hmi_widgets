@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_networking/hmi_networking.dart';
-import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/core/color_filters.dart';
 import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
 ///

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_relative_value.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Круговой индикатор значения из потока [stream] <DsDataPoint<double>.
@@ -10,7 +12,7 @@ import 'package:hmi_widgets/src/theme/app_theme.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class CircularValueIndicator extends StatelessWidget {
-  static const _debug = false;
+  static const _log = Log('CircularValueIndicator');
   static const double _valueBasis = 270 / 360;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<num>>? _stream;
@@ -117,15 +119,15 @@ class CircularValueIndicator extends StatelessWidget {
         final invalidValueColor = Theme.of(context).stateColors.invalid;
         if (snapshot.hasError) {
           color = invalidValueColor;
-          log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] error: ${snapshot.error}');
+          _log.debug('[$CircularValueIndicator.build] error: ${snapshot.error}');
         } else if (snapshot.hasData) {
           final dataPoint = snapshot.data;
-          log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
+          _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
           if (dataPoint != null) {
             final nValue = dataPoint.value;
-            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $nValue');
+            _log.debug('[$CircularValueIndicator.build] dataPoint: $nValue');
             value = _relativeValue.relative(nValue.toDouble(), limit: true);
-            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
+            _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
             valueText = nValue.toStringAsFixed(_fractionDigits);
           }
         }

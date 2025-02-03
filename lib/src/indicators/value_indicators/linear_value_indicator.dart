@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_relative_value.dart';
 import 'package:hmi_widgets/src/theme/app_theme.dart';
 ///
 /// Линейный индикатор значения из потока [stream] <DsDataPoint<double>.
@@ -10,7 +12,7 @@ import 'package:hmi_widgets/src/theme/app_theme.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class LinearValueIndicator extends StatelessWidget {
-  static const _debug = true;
+  static const _log = Log('LinearValueIndicator');
   static const double _valueBasis = 1;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<double>> _stream;
@@ -111,7 +113,7 @@ class LinearValueIndicator extends StatelessWidget {
             Color color = Theme.of(context).stateColors.on;
             if (snapshot.hasError) {
               color = Theme.of(context).stateColors.invalid;
-              log(LinearValueIndicator._debug, '[$LinearValueIndicator.build] error: ${snapshot.error}');
+              _log.debug('[$LinearValueIndicator.build] error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               final dataPoint = snapshot.data;
               // log(LinearBarIndicatorV1._debug, '[$LinearBarIndicatorV1.build] dataPoint: $dataPoint');
