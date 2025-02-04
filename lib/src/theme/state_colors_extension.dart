@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/core/colors/state_colors.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
+
 ///
-/// Extention to add [StateColors] to [ThemeData]
+/// Extends [ThemeData] with [StateColors].
+/// 
+/// Add [StateColors] to [ThemeData]:
+/// ```dart
+/// ThemeData(
+///   ...,
+///   extensions: [
+///     StateColorsExtension(
+///       stateColors: StateColors(...),
+///     ),
+///   ],
+/// )
+/// ```
+/// Get [StateColors] from [ThemeData] either by:
+/// ```dart
+/// final stateColors = Theme.of(context).extension<StateColorsExtension>()?.stateColors;
+/// ```
+/// or by importing [AppThemeColors] extension:
+/// ```dart
+/// import 'package:hmi_widgets/hmi_widgets.dart';
+/// final stateColors = Theme.of(context).stateColors;
+/// ```
 class StateColorsExtension extends ThemeExtension<StateColorsExtension> {
   ///
   final StateColors stateColors;
   ///
-  /// Extention to add [StateColors] to [ThemeData]
   const StateColorsExtension({required this.stateColors});
   //
   @override

@@ -3,7 +3,7 @@ import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/indicators/status_indicators/dps_icon_indicator.dart';
 import 'package:hmi_widgets/src/indicators/status_indicators/invalid_status_indicator.dart';
 import 'package:hmi_widgets/src/indicators/status_indicators/status_indicator_widget.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 
 ///
 class AcDriveWidget extends StatelessWidget {

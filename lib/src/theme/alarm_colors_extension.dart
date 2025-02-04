@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 /// 
-/// Extention to add [AlarmColors] to [ThemeData]
+/// Extends [ThemeData] with [AlarmColors].
+/// 
+/// Add [AlarmColors] to [ThemeData]:
+/// ```dart
+/// ThemeData(
+///   ...,
+///   extensions: [
+///     AlarmColorsExtension(
+///       alarmColors: AlarmColors(...),
+///     ),
+///   ],
+/// )
+/// ```
+/// Get [AlarmColors] from [ThemeData] either by:
+/// ```dart
+/// final alarmColors = Theme.of(context).extension<AlarmColorsExtension>()?.alarmColors;
+/// ```
+/// or by importing [AppThemeColors] extension:
+/// ```dart
+/// import 'package:hmi_widgets/hmi_widgets.dart';
+/// final alarmColors = Theme.of(context).alarmColors;
+/// ```
 class AlarmColorsExtension extends ThemeExtension<AlarmColorsExtension> {
   ///
   final AlarmColors alarmColors;
   ///
-  /// Extention to add [AlarmColors] to [ThemeData] 
   const AlarmColorsExtension({required this.alarmColors});
   //
   @override

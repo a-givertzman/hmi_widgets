@@ -7,7 +7,7 @@ import 'package:hmi_networking/hmi_networking.dart';
 import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_point_extracted.dart';
 import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_stream_extract.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 import 'oil_data.dart';
 
 ///

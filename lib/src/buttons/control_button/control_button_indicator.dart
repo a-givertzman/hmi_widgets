@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_entities.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 
 ///
 class ControlButtonIndicator extends StatefulWidget {
