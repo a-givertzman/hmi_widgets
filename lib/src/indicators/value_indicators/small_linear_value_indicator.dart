@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 import 'pointer_progress_indicator.dart';
 import 'text_value_indicator.dart';
 ///

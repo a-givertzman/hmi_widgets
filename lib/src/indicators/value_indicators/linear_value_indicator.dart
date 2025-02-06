@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_relative_value.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 ///
 /// Линейный индикатор значения из потока [stream] <DsDataPoint<double>.
 /// Значение в потоке может изменяться в диапазоне [min]...[max].
@@ -10,7 +12,7 @@ import 'package:hmi_widgets/src/theme/app_theme.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class LinearValueIndicator extends StatelessWidget {
-  static const _debug = true;
+  static const _log = Log('LinearValueIndicator');
   static const double _valueBasis = 1;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<double>> _stream;
@@ -111,7 +113,7 @@ class LinearValueIndicator extends StatelessWidget {
             Color color = Theme.of(context).stateColors.on;
             if (snapshot.hasError) {
               color = Theme.of(context).stateColors.invalid;
-              log(LinearValueIndicator._debug, '[$LinearValueIndicator.build] error: ${snapshot.error}');
+              _log.debug('[$LinearValueIndicator.build] error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               final dataPoint = snapshot.data;
               // log(LinearBarIndicatorV1._debug, '[$LinearBarIndicatorV1.build] dataPoint: $dataPoint');
@@ -134,7 +136,7 @@ class LinearValueIndicator extends StatelessWidget {
                   value: _valueBasis, 
                   strokeWidth: _strokeWidth,
                   angle: _angle,
-                  color: Theme.of(context).colorScheme.background, 
+                  color: Theme.of(context).colorScheme.surface, 
                 ),
                 ..._buildValueWidgets(
                   context, 
@@ -175,11 +177,11 @@ class LinearValueIndicator extends StatelessWidget {
         // _buildLowDiscreteIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         _buildLowIndicatorWidget(context, value, _low, _strokeWidth, lowColor),
         if (_alarmLow != null)
-          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _relativeValue.relative(_alarmLow), angle: _angle, color: Theme.of(context).colorScheme.surface, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildLowIndicatorWidget(context, value, _alarmLow, _strokeWidth, alarmLowColor),
         _buildHighIndicatorWidget(context, value, _high, _strokeWidth, highColor),
         if (_alarmHigh != null)
-          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).colorScheme.background, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
+          _buildIndicatorWidget(value: _valueBasis - _relativeValue.relative(_alarmHigh), angle: _angle + 180, color: Theme.of(context).colorScheme.surface, strokeWidth: _strokeWidth * 0.3, x: _strokeWidth * 0.7, backgroundColor: Colors.transparent),
         _buildHighIndicatorWidget(context, value, _alarmHigh, _strokeWidth, alarmHighColor),
         _buildIndicatorWidget(
           value: value, 
@@ -272,7 +274,7 @@ class LinearValueIndicator extends StatelessWidget {
         strokeWidth: strokeWidth * 0.3,
         x: strokeWidth * 0.7,
         angle: _angle,
-        color: _isLow(value, low) ? lowColor : lowColor.withOpacity(0.4), 
+        color: _isLow(value, low) ? lowColor : lowColor.withValues(alpha: 0.4), 
         backgroundColor: Colors.transparent,
       );
     }
@@ -290,7 +292,7 @@ class LinearValueIndicator extends StatelessWidget {
         strokeWidth: strokeWidth * 0.3,
         x: strokeWidth * 0.7,
         angle: _angle + 180,
-        color: _isHigh(value, high) ? highColor : highColor.withOpacity(0.4), 
+        color: _isHigh(value, high) ? highColor : highColor.withValues(alpha: 0.4), 
         backgroundColor: Colors.transparent,
       );
     }

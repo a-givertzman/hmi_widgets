@@ -2,10 +2,12 @@ import 'dart:core';
 import 'package:hmi_core/hmi_core_entities.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
-import 'package:hmi_networking/hmi_networking.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_networking/hmi_networking.dart';
+import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_point_extracted.dart';
+import 'package:hmi_widgets/src/core/ds_data_stream_extract/ds_data_stream_extract.dart';
 import 'package:hmi_widgets/src/edit_field/show_unauthorized_editing_flushbar.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 import 'oil_data.dart';
 
 ///
@@ -168,7 +170,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
               ),
               suffixIcon: _buildSufixIcon(),
               filled: true,
-              fillColor: Theme.of(context).colorScheme.background,
+              fillColor: Theme.of(context).colorScheme.surface,
             ),
             alignment: AlignmentDirectional.centerEnd,
             items: _buildDropdownMenuItems(context, _oilNames, _dropMenuItemWidth), 

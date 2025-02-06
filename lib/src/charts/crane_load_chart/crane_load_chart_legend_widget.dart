@@ -52,7 +52,7 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
               ),
               itemBuilder: (_, i) => Container(
                 padding:  EdgeInsets.symmetric(vertical: padding * 0.5, horizontal: padding),
-                color: colors.elementAt(i).withOpacity(0.3),
+                color: colors.elementAt(i).withValues(alpha: 0.3),
                 child: Text(
                   '${names.elementAt(i)}',
                   softWrap: false,
@@ -68,7 +68,7 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
             return SizedBox(
               height: _width,
               child: CupertinoActivityIndicator(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             );
           }

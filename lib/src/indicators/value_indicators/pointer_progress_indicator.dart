@@ -24,7 +24,7 @@ class PointerProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final defaultColor = theme.colorScheme.onBackground;
+    final defaultColor = theme.colorScheme.onSurface;
     final currentColor = _color ?? defaultColor;
     return SizedBox(
       height: _minHeight,

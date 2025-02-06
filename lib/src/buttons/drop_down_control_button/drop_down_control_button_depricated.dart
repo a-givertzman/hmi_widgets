@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_networking/hmi_networking.dart';
-import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_widgets/src/core/color_filters.dart';
 import 'package:hmi_widgets/src/popups/popup_menu_button/popup_menu_button_custom.dart';
 ///
@@ -185,10 +186,10 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
               ),
               if (_state.isLoading || _state.isSaving) Positioned.fill(
                 child: Container(
-                  color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.7),
                   alignment: Alignment.center,
                   child: CupertinoActivityIndicator(
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -209,7 +210,7 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
                     item,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: _itemIsDisabled(index)
-                        ? textColor.withOpacity(0.3)
+                        ? textColor.withValues(alpha: 0.3)
                         : textColor,
                     ),
                   ),
@@ -255,7 +256,7 @@ class _DropDownControlButtonState extends State<DropDownControlButtonDepricated>
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.titleMedium?.apply(
-                    color: color.withOpacity(1 - 0.2 * animationValue),
+                    color: color.withValues(alpha: 1 - 0.2 * animationValue),
                   ),
                 ),
               ),

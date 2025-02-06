@@ -30,7 +30,7 @@ class LiveChartLegend extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: padding * 0.5),
               child: Container(
-                color: axisData.color.withOpacity(0.5),
+                color: axisData.color.withValues(alpha: 0.5),
                 child: Row(
                   children: [
                     Padding(

@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_relative_value.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 ///
 /// Круговой индикатор значения из потока [stream] <DsDataPoint<double>.
 /// Значение в потоке может изменяться в диапазоне [min]...[max].
@@ -10,7 +12,7 @@ import 'package:hmi_widgets/src/theme/app_theme.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class CircularValueIndicator extends StatelessWidget {
-  static const _debug = false;
+  static const _log = Log('CircularValueIndicator');
   static const double _valueBasis = 270 / 360;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<num>>? _stream;
@@ -94,7 +96,7 @@ class CircularValueIndicator extends StatelessWidget {
                 value: _valueBasis, 
                 strokeWidth: _strokeWidth,
                 angle: _angle,
-                color: Theme.of(context).colorScheme.background, 
+                color: Theme.of(context).colorScheme.surface, 
               ),
               valueBuilder(context, _stream),
             ],
@@ -117,15 +119,15 @@ class CircularValueIndicator extends StatelessWidget {
         final invalidValueColor = Theme.of(context).stateColors.invalid;
         if (snapshot.hasError) {
           color = invalidValueColor;
-          log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] error: ${snapshot.error}');
+          _log.debug('[$CircularValueIndicator.build] error: ${snapshot.error}');
         } else if (snapshot.hasData) {
           final dataPoint = snapshot.data;
-          log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
+          _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
           if (dataPoint != null) {
             final nValue = dataPoint.value;
-            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $nValue');
+            _log.debug('[$CircularValueIndicator.build] dataPoint: $nValue');
             value = _relativeValue.relative(nValue.toDouble(), limit: true);
-            log(CircularValueIndicator._debug, '[$CircularValueIndicator.build] dataPoint: $dataPoint');
+            _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
             valueText = nValue.toStringAsFixed(_fractionDigits);
           }
         }
@@ -180,7 +182,7 @@ class CircularValueIndicator extends StatelessWidget {
         child: Text(valueUnit,
           textAlign: TextAlign.center,
           style: textStyle.copyWith(
-            color: textStyle.color!.withOpacity(0.7),
+            color: textStyle.color!.withValues(alpha: 0.7),
           ),
           textScaler: TextScaler.linear(0.8 * 0.0168 * _size),
         ),
@@ -233,7 +235,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _relativeValue.relative(_low),
           strokeWidth: strokeWidth,
           angle: _angle,
-          color: _isLow(value) ? lowColor : lowColor.withOpacity(0.3), 
+          color: _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
         ),
       );
     }
@@ -254,7 +256,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _valueBasis - highRelative,
           strokeWidth: strokeWidth,
           angle: (_angle) + 360 * highRelative,
-          color: _isHigh(value) ? highColor : highColor.withOpacity(0.3), 
+          color: _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
         ),
       );
     }

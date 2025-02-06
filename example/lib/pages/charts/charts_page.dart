@@ -28,7 +28,7 @@ class ChartsPage extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   child: CraneLoadChart(
@@ -39,7 +39,7 @@ class ChartsPage extends StatelessWidget {
                     ).asBroadcastStream(),
                     xAxisValue: 5.0, 
                     yAxisValue: 5.0,
-                    backgroundColor: Theme.of(context).colorScheme.background, 
+                    backgroundColor: Theme.of(context).colorScheme.surface, 
                     swlDataCache: SwlDataCache(
                       swlDataConverter: SwlDataConverter(
                         height: _height, 

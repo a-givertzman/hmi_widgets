@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core.dart';
-import 'package:hmi_widgets/src/theme/app_theme.dart';
+import 'package:hmi_core/hmi_core_entities.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 
 ///
 class ControlButtonIndicator extends StatefulWidget {
@@ -88,7 +89,7 @@ class _ControlButtonIndicatorState extends State<ControlButtonIndicator> with Ti
     final stream = _stream;
     final caption = _caption;
     Color? color = _stateColor ?? Theme.of(context).colorScheme.onTertiary;
-    final captionColor = _captionColor ?? color.withOpacity(0.7);// colorShiftLightness(color, 1.2);
+    final captionColor = _captionColor ?? color.withValues(alpha: 0.7);// colorShiftLightness(color, 1.2);
     const padding = 8.0;
     final stateTextStyle = Theme.of(context).textTheme.bodyLarge ?? const TextStyle(fontSize: 16);
     final captionTextStyle = stateTextStyle;
