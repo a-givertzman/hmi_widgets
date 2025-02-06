@@ -18,16 +18,16 @@ class StateColors {
   /// Used for indication of DsDataPoint with timeInvalid Status.
   final Color timeInvalid;
   ///
-  /// Used for indication of low metric values.
+  /// Used for indication of low metric values. Used to inform about dangerous, but not critical value level.
   final Color lowLevel;
   ///
-  /// Used for indication of abnormally low metric values.
+  /// Used for indication of abnormally low metric values. Used to inform about critical emergency value level.
   final Color alarmLowLevel;
   ///
-  /// Used for indication of high metric values.
+  /// Used for indication of high metric values. Used to inform about dangerous, but not critical value level.
   final Color highLevel;
   ///
-  /// Used for indication of abnormally high metric values.
+  /// Used for indication of abnormally high metric values. Used to inform about critical emergency value level.
   final Color alarmHighLevel;
   ///
   /// Used for indication that something is turned off.
