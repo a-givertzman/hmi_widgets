@@ -7,20 +7,26 @@ class CranePositionChart extends StatefulWidget {
   final Stream<DsDataPoint<double>> _xStream;
   final Stream<DsDataPoint<double>> _yStream;
   final Stream<DsDataPoint<bool>> _swlProtectionStream;
+  final Color _color;
   final double _width;
   final double _height;
   final double rawWidth;
   final double rawHeight;
   final double _xScale;
   final double _yScale;
+  final double _positionPointDiameter;
+  final double _indicationStrokeWidth;
   ///
   const CranePositionChart({
-    Key? key,
+    super.key,
     required Stream<DsDataPoint<double>> xStream,
     required Stream<DsDataPoint<double>> yStream,
     required Stream<DsDataPoint<bool>> swlProtectionStream,
     required double width,
     required double height,
+    required Color color,
+    required double positionPointDiameter,
+    required double indicationStrokeWidth,
     required this.rawWidth,
     required this.rawHeight,
   }) : 
@@ -29,9 +35,11 @@ class CranePositionChart extends StatefulWidget {
     _swlProtectionStream = swlProtectionStream,
     _width = width,
     _height = height,
+    _color = color,
+    _positionPointDiameter = positionPointDiameter,
+    _indicationStrokeWidth = indicationStrokeWidth,
     _xScale = rawWidth / width,
-    _yScale = rawHeight / height,
-    super(key: key);
+    _yScale = rawHeight / height;
   //
   @override
   State<CranePositionChart> createState() => _CranePositionChartState();
@@ -77,14 +85,15 @@ class _CranePositionChartState extends State<CranePositionChart> {
       width: widget._width,
       height: widget._height,
       child: CustomPaint(
-          // isComplex: true,
           size: size,
           foregroundPainter: CranePositionPainter(
             drawingController: _drawingController,
             size: size,
-            indicatorColor: Colors.yellow,
+            indicatorColor: widget._color,
             alarmIndicatorColor: theme.stateColors.alarm,
             invalidColor: theme.stateColors.invalid,
+            pointDiameter: widget._positionPointDiameter,
+            indicationStrokeWidth: widget._indicationStrokeWidth,
           ),
         ),
       // RepaintBoundary(
@@ -107,10 +116,10 @@ class DrawingController extends ChangeNotifier {
     _swlProtection = swlProtection;
     notifyListeners();
   }
-  void set isSwlProtectionValid(bool value) {
+  set isSwlProtectionValid(bool value) {
     _isSwlProtectionValid = value;
   }
-  void set isXValid(bool value) {
+  set isXValid(bool value) {
     _isXValid = value;
   }
   void set isYValid(bool value) {

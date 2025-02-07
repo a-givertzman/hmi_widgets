@@ -12,12 +12,16 @@ class CranePositionPainter extends CustomPainter {
   final Color _indicatorColor;
   final Color _alarmIndicatorColor;
   final Color _invalidColor;
+  final double _pointDiameter;
+  final double _indicationStrokeWidth;
   ///
   CranePositionPainter({
     required DrawingController drawingController,
     required Color indicatorColor, 
     required Color alarmIndicatorColor,
     required Color invalidColor,
+    required double pointDiameter,
+    required double indicationStrokeWidth,
     required this.size,
   }) : 
     _alarmIndicatorColor = alarmIndicatorColor, 
@@ -25,6 +29,8 @@ class CranePositionPainter extends CustomPainter {
     _invalidColor = invalidColor,
     _drawingController = drawingController,
     code = Random().nextInt(1000),
+    _pointDiameter = pointDiameter,
+    _indicationStrokeWidth = indicationStrokeWidth,
     super(repaint: drawingController);
   //
   @override
@@ -66,7 +72,7 @@ class CranePositionPainter extends CustomPainter {
         _drawingController.isSwlProtectionValid 
           ? _alarmIndicatorColor
           : _invalidColor, 
-        10.0,
+        _pointDiameter + _indicationStrokeWidth*2,
       );
     }
     _drawPoint(
@@ -75,7 +81,7 @@ class CranePositionPainter extends CustomPainter {
       _drawingController.isSwlProtectionValid 
         ? _indicatorColor 
         : _invalidColor,
-      5.0,
+      _pointDiameter,
     );
   }
   ///
