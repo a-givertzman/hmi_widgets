@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/gradient_colors.dart';
 import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
+import 'package:hmi_widgets/src/theme/chart_colors_extension.dart';
 
 final darkTheme = ThemeData(
   typography: Typography.material2021(),
@@ -53,14 +55,32 @@ final darkTheme = ThemeData(
     ),
     AlarmColorsExtension(
       alarmColors: AlarmColors(
-        class1: Color(0xffF00505),
-        class2: Color(0xffFF2C05),
-        class3: Color(0xffFD6104),
-        class4: Color(0xffFD9A01),
-        class5: Color(0xffFFCE03),
-        class6: Color(0xffFEF001),
+        class1: Color(0xFFF00505),
+        class2: Color(0xFFFF2C05),
+        class3: Color(0xFFFD6104),
+        class4: Color(0xFFFD9A01),
+        class5: Color(0xFFFFCE03),
+        class6: Color(0xFFFEF001),
         class7: Colors.white,
         class8: Colors.white,
+      ),
+    ),
+    ChartColorsExtension(
+      gradientColors: GradientColors(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF452B00),
+            Color(0xFF633F00),
+            Color(0xFFF5BD6F),
+            Color(0xFFFFDDB3),
+          ],
+          stops: [
+            0.0,
+            0.35,
+            0.69,
+            1.0,
+          ],
+        ),
       ),
     ),
   ],
