@@ -20,6 +20,7 @@ class GradientColors {
   /// Get multiple equally spaced colors from a gradient.
   /// [count] - desired count of sampled colors.
   List<Color> sampleMany(int count) {
+    assert(count > 0);
     final gradientStops = gradient.stops ?? _generateStops(gradient.colors.length);
     final sampleStops = _generateStops(count);
     return sampleStops
@@ -29,6 +30,9 @@ class GradientColors {
   ///
   /// Get equally spaced stops.
   List<double> _generateStops(int colorsCount) {
+    if (colorsCount == 1) {
+      return [0.0];
+    }
     final step = 1.0 / (colorsCount - 1);
     return List.generate(
       colorsCount,

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
+import 'package:hmi_widgets/src/core/colors/gradient_colors.dart';
 import 'fake_json_list.dart';
 void main() {
   group('CraneLoadChartLegendJson decoded', () {
@@ -23,8 +24,8 @@ void main() {
             [-1.0, -2.0],
           ],
           'colors': const [
-            [Color(0), ],
-            [Color(1), Color(2)],
+            [Colors.white, ],
+            [Colors.white, Colors.black],
           ],
           'names': const [
             ['abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшъыьэюя'],
@@ -50,8 +51,19 @@ void main() {
             [4999.0, 5000.0, 7000.0, 23000.0],
           ],
           'colors': const [
-            [Color(0xFF42A5F5), Color(0xffaa5577), Color(0xff115577)],
-            [Color(0xFF42A5F5), Color(0xffaa5577), Color(0xffcc5577), Color(0xffee5577)],
+            [
+              Colors.white,
+              Color.from(alpha: 1.0, red: 0.5647, green: 0.7941, blue: 0.9765),
+              Colors.black,
+            ],
+            [
+              Colors.white,
+              Color.from(alpha: 1.0, red: 0.1294, green: 0.5882, blue: 0.9529),
+              Colors.white,
+              Colors.black,
+            ],
+            // [Color(0xFF42A5F5), Color(0xffaa5577), Color(0xff115577)],
+            // [Color(0xFF42A5F5), Color(0xffaa5577), Color(0xffcc5577), Color(0xffee5577)],
           ],
           'names': const [
             ['blank', '5 t', '20 t'],
@@ -61,8 +73,14 @@ void main() {
       ];
       for (final config in validLegendConfigs) {
         final list = config['list'] as List<Map<String, dynamic>>;
+        final linearGradientColors = [Colors.red, Colors.blue, Colors.white, Colors.black];
         final legendJson = CraneLoadChartLegendJson(
           jsonList: FakeJsonList(Ok(list)),
+          gradientColors: GradientColors(
+            gradient: LinearGradient(
+              colors: linearGradientColors,
+            ),
+          ),
         );
         final decodedLegend = await legendJson.decoded;
         expect(
@@ -107,6 +125,9 @@ void main() {
       ];
       for (final invalidConfig in invalidJsonConfigs) {
         final legendData = CraneLoadChartLegendJson(
+          gradientColors: GradientColors(
+            gradient: LinearGradient(colors: []),
+          ),
           jsonList: FakeJsonList(Ok(invalidConfig)),
         );
         expect(

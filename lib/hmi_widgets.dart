@@ -6,6 +6,7 @@ export 'src/core/color_filters.dart';
 export 'src/core/overflowable_text.dart';
 export 'src/core/colors/alarm_colors.dart';
 export 'src/core/colors/state_colors.dart';
+export 'src/core/colors/gradient_colors.dart';
 //    
 //     Validation
 export 'src/core/validation/validator.dart';
@@ -19,6 +20,7 @@ export 'src/theme/app_theme.dart';
 export 'src/theme/color_utils.dart';
 export 'src/theme/alarm_colors_extension.dart';
 export 'src/theme/state_colors_extension.dart';
+export 'src/theme/chart_colors_extension.dart';
 export 'src/theme/app_theme_colors_extension.dart';
 export 'src/theme/dark_old_theme.dart';
 export 'src/theme/dark_theme.dart';
