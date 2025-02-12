@@ -31,7 +31,7 @@ class GradientColors {
   /// Get equally spaced stops.
   List<double> _generateStops(int colorsCount) {
     if (colorsCount == 1) {
-      return [0.0];
+      return [0.5];
     }
     final step = 1.0 / (colorsCount - 1);
     return List.generate(
@@ -42,9 +42,12 @@ class GradientColors {
   }
   ///
   Color _computeColor(double stop, List<double> gradientStops) {
-    final rightBorder = gradientStops.indexed.firstWhere((gradientStop) => stop <= gradientStop.$2);
-    final leftIndex = rightBorder.$1 - 1;
-    final leftBorder = gradientStops.indexed.elementAt(leftIndex > 0 ? leftIndex : 0);
+    final indexedGradientStops = gradientStops.indexed.toList();
+    int rightBorderIndex = indexedGradientStops.firstWhere((gradientStop) => stop <= gradientStop.$2).$1;
+    rightBorderIndex = rightBorderIndex > 0 ? rightBorderIndex : 1;
+    final leftBorderIndex = rightBorderIndex - 1;
+    final rightBorder = indexedGradientStops[rightBorderIndex];
+    final leftBorder = indexedGradientStops[leftBorderIndex];
     final relativeStop = (stop - leftBorder.$2) / (rightBorder.$2 - leftBorder.$2);
     return Color.lerp(
       gradient.colors[leftBorder.$1],

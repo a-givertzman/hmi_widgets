@@ -6,6 +6,13 @@ import 'package:hmi_widgets/src/charts/crane_load_chart/crane_load_chart_legend_
 import 'package:hmi_widgets/src/core/colors/gradient_colors.dart';
 import 'fake_json_list.dart';
 void main() {
+  void _expectColors(List<List<Color>> actual, List<List<Color>> expected) {
+    // ignore: deprecated_member_use
+    final actualInts = actual.map((list) => list.map((color) => color.value).toList()).toList();
+    // ignore: deprecated_member_use
+    final expectedInts = expected.map((list) => list.map((color) => color.value).toList()).toList();
+    expect(actualInts, expectedInts, reason: 'Invalid colors conversion');
+  }
   group('CraneLoadChartLegendJson decoded', () {
     test('returns valid data on valid JsonList', () async {
       final validLegendConfigs = [
@@ -24,7 +31,7 @@ void main() {
             [-1.0, -2.0],
           ],
           'colors': const [
-            [Colors.white, ],
+            [Color.from(alpha: 1.0, red: 0.5, green: 0.5, blue: 0.5), ],
             [Colors.white, Colors.black],
           ],
           'names': const [
@@ -53,13 +60,13 @@ void main() {
           'colors': const [
             [
               Colors.white,
-              Color.from(alpha: 1.0, red: 0.5647, green: 0.7941, blue: 0.9765),
+              Color.from(alpha: 1.0, red: 0.5, green: 0.5, blue: 0.5),
               Colors.black,
             ],
             [
               Colors.white,
-              Color.from(alpha: 1.0, red: 0.1294, green: 0.5882, blue: 0.9529),
-              Colors.white,
+              Color.from(alpha: 1.0000, red: 2/3, green: 2/3, blue: 2/3),
+              Color.from(alpha: 1.0000, red: 1/3, green: 1/3, blue: 1/3),
               Colors.black,
             ],
             // [Color(0xFF42A5F5), Color(0xffaa5577), Color(0xff115577)],
@@ -73,7 +80,7 @@ void main() {
       ];
       for (final config in validLegendConfigs) {
         final list = config['list'] as List<Map<String, dynamic>>;
-        final linearGradientColors = [Colors.red, Colors.blue, Colors.white, Colors.black];
+        final linearGradientColors = [Colors.white, Colors.black];
         final legendJson = CraneLoadChartLegendJson(
           jsonList: FakeJsonList(Ok(list)),
           gradientColors: GradientColors(
@@ -88,11 +95,15 @@ void main() {
           config['limits'],
           reason: 'Invalid limits conversion',
         );
-        expect(
-          decodedLegend['colors'],
-          config['colors'],
-          reason: 'Invalid colors conversion'
+        _expectColors(
+          decodedLegend['colors'] as List<List<Color>>,
+          config['colors'] as List<List<Color>>,
         );
+        // expect(
+        //   decodedLegend['colors'],
+        //   config['colors'],
+        //   reason: 'Invalid colors conversion'
+        // );
         expect(
           decodedLegend['names'], 
           config['names'],
