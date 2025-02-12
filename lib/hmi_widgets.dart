@@ -72,6 +72,7 @@ export 'src/charts/crane_load_chart/swl_data.dart';
 export 'src/charts/crane_load_chart/crane_load_chart_legend_data.dart';
 export 'src/charts/crane_load_chart/crane_load_chart_legend_json.dart';
 export 'src/charts/crane_load_chart/crane_load_chart_data.dart';
+export 'src/charts/crane_load_chart/crane_load_point_painter.dart';
 export 'src/charts/crane_position_chart/crane_position_chart.dart';
 export 'src/charts/live_chart/live_chart_widget.dart';
 export 'src/charts/live_chart/live_chart.dart';
