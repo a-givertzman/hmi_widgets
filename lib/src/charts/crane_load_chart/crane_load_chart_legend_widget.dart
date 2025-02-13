@@ -6,26 +6,26 @@ import 'package:hmi_core/hmi_core_app_settings.dart';
 class CraneLoadChartLegendWidget extends StatelessWidget {
   final SwlDataCache _swlDataCache;
   final double _width;
-  final TextAlign? _textAlign;
   final int _swlIndex;
   final Setting _padding;
   final Setting _margin;
+  final double _colorMarkSize;
   ///
   const CraneLoadChartLegendWidget({
     Key? key,
     required SwlDataCache swlDataCache,
     required int swlIndex,
     required double width,
+    double colorMarkSize = 10,
     Setting padding = const Setting('padding', factor: 0.5),
     Setting margin = const Setting('padding', factor: 0.5),
-    TextAlign? textAlign
   }) : 
     _swlDataCache = swlDataCache,
     _width = width,
     _padding = padding,
     _margin = margin,
-    _textAlign = textAlign,
     _swlIndex = swlIndex, 
+    _colorMarkSize = colorMarkSize,
     super(key: key);
   //
   @override
@@ -50,16 +50,33 @@ class CraneLoadChartLegendWidget extends StatelessWidget {
                 vertical: padding, 
                 horizontal: _margin.toDouble,
               ),
-              itemBuilder: (_, i) => Container(
-                padding:  EdgeInsets.symmetric(vertical: padding * 0.5, horizontal: padding),
-                color: colors.elementAt(i).withValues(alpha: 0.3),
-                child: Text(
-                  '${names.elementAt(i)}',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  textAlign: _textAlign,
-                ),
-              ), 
+              itemBuilder: (context, i) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: _colorMarkSize,
+                    height: _colorMarkSize,
+                    decoration: BoxDecoration(
+                      color: colors.elementAt(i),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 0.5,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${names.elementAt(i)}',
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: DefaultTextStyle.of(context).style.copyWith(
+                      leadingDistribution: TextLeadingDistribution.even,
+                    ),
+                    maxLines: 1,
+                  ),
+                ],
+              ),
               separatorBuilder: (_, __) => SizedBox(height: padding), 
               itemCount: names.length,
             );
