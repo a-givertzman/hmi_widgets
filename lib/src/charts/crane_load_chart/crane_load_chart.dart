@@ -19,6 +19,8 @@ class CraneLoadChart extends StatefulWidget {
   final SwlDataCache _swlDataCache;
   final Color backgroundColor;
   final Color? _axisColor;
+  final Color? _gridColor;
+  final GridStyle? _gridType;
   final double _pointSize;
   final double _legendWidth;
   ///
@@ -31,7 +33,9 @@ class CraneLoadChart extends StatefulWidget {
     bool showGrid = false,
     required this.backgroundColor,
     double pointSize = 1.0,
-    Color? axisColor, 
+    Color? axisColor,
+    Color? gridColor,
+    GridStyle? gridType,
     required SwlDataCache swlDataCache,
     required double legendWidth,
   }) : 
@@ -40,7 +44,9 @@ class CraneLoadChart extends StatefulWidget {
     _yAxisValue = yAxisValue,
     _showGrid = showGrid,
     _swlDataCache = swlDataCache,  
-    _axisColor = axisColor, 
+    _axisColor = axisColor,
+    _gridColor = gridColor,
+    _gridType = gridType,
     _pointSize = pointSize,
     _legendWidth = legendWidth,
     super(key: key);
@@ -51,6 +57,8 @@ class CraneLoadChart extends StatefulWidget {
     swlDataCache: _swlDataCache,
     swlIndexStream: _swlIndexStream,
     axisColor: _axisColor,
+    gridColor: _gridColor,
+    gridType: _gridType,
     pointSize: _pointSize,
     rawWidth: _swlDataCache.rawWidth,
     rawHeight: _swlDataCache.rawHeight,
@@ -72,6 +80,8 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   final Map<int, String> _yAxis;
   final double _pointSize;
   final Color? _axisColor;
+  final Color? _gridColor;
+  final GridStyle? _gridType;
   final SwlDataCache _swlDataCache;
   final double _legendWidth;
   final bool _showGrid;
@@ -82,6 +92,8 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required SwlDataCache swlDataCache,
     required Stream<DsDataPoint<int>>? swlIndexStream,
     required Color? axisColor,
+    required Color? gridColor,
+    required GridStyle? gridType,
     required double pointSize,
     required double rawWidth,
     required double rawHeight,
@@ -95,6 +107,8 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   _swlDataCache = swlDataCache,
   _swlIndexPointStream = swlIndexStream,
   _axisColor = axisColor,
+  _gridColor = gridColor,
+  _gridType = gridType,
   _pointSize = pointSize,
   _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
   _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
@@ -150,6 +164,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     stream: _swlIndexStream,
                     initialData: _swlIndex,
                     builder: (context, snapshot) {
+                      final onSurfaceColor = Theme.of(context).colorScheme.onSurface;
                       return CustomPaint(
                         isComplex: true,
                         // willChange: false,
@@ -161,12 +176,14 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                           points: points,
                           colors: colors[_swlIndex],
                           size: size,
-                          axisColor: _axisColor ?? Theme.of(context).colorScheme.primary,
+                          axisColor: _axisColor ?? onSurfaceColor,
+                          gridColor: _gridColor ?? onSurfaceColor,
+                          gridType: _gridType ?? GridStyle.straight,
                           backgroundColor: widget.backgroundColor,
                           pointSize: _pointSize,
                         ),
                       );
-                    }
+                    },
                   );
                 } else {
                   return Center(
@@ -175,7 +192,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                     ),
                   );
                 }
-              }
+              },
             ),
           ),
           Positioned(
@@ -190,7 +207,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                   swlIndex: _swlIndex,
                   width: _legendWidth,
                 );
-              }
+              },
             ),
           ),
         ],

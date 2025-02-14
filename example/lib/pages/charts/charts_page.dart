@@ -49,6 +49,7 @@ class ChartsPage extends StatelessWidget {
                         legendData: DelayedCraneLoadChartLegendData(
                           delay: const Duration(milliseconds: 500),
                           legendJson: CraneLoadChartLegendJson(
+                            gradientColors: Theme.of(context).chartColors,
                             jsonList: JsonList.fromTextFile(
                               const TextFile.asset('assets/configs/legend.json'),
                             ),

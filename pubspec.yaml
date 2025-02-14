@@ -1,6 +1,6 @@
 name: hmi_widgets
 description: A Flutter package helps to visualize states, values, changes and other artefacts from technological processes.
-version: 1.1.0
+version: 1.1.1
 homepage: https://github.com/a-givertzman/hmi_widgets
 publish_to: none
 

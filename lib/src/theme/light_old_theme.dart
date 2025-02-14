@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_widgets/src/core/colors/alarm_colors.dart';
+import 'package:hmi_widgets/src/core/colors/gradient_colors.dart';
 import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/alarm_colors_extension.dart';
+import 'package:hmi_widgets/src/theme/chart_colors_extension.dart';
 import 'package:hmi_widgets/src/theme/state_colors_extension.dart';
 import 'color_utils.dart';
 ///
@@ -58,29 +60,47 @@ final lightOldTheme = ThemeData(
   extensions: const [
     StateColorsExtension(
       stateColors: StateColors(
-        error: Color(0xffC0686D),
-        lowLevel: Color(0xffC0686D),
-        highLevel: Color(0xffC0686D),
-        alarm: Color(0xffFD6104),
-        alarmLowLevel: Color(0xffFD6104),
-        alarmHighLevel: Color(0xffFD6104),
+        error: Color(0xFFC0686D),
+        lowLevel: Color(0xFFC0686D),
+        highLevel: Color(0xFFC0686D),
+        alarm: Color(0xFFFD6104),
+        alarmLowLevel: Color(0xFFFD6104),
+        alarmHighLevel: Color(0xFFFD6104),
         obsolete: Colors.amber,
         invalid: Colors.purple,
         timeInvalid: Colors.purple,
-        on: Color(0xff84E4B7),
-        off: Color(0xffFFFFFF),
+        on: Color(0xFF84E4B7),
+        off: Color(0xFFFFFFFF),
       ),
     ),
     AlarmColorsExtension(
       alarmColors: AlarmColors(
-        class1: Color(0xffF00505),
-        class2: Color(0xffFF2C05),
-        class3: Color(0xffFD6104),
-        class4: Color(0xffFD9A01),
-        class5: Color(0xffFFCE03),
-        class6: Color(0xffFEF001),
+        class1: Color(0xFFF00505),
+        class2: Color(0xFFFF2C05),
+        class3: Color(0xFFFD6104),
+        class4: Color(0xFFFD9A01),
+        class5: Color(0xFFFFCE03),
+        class6: Color(0xFFFEF001),
         class7: Colors.white,
         class8: Colors.white,
+      ),
+    ),
+    ChartColorsExtension(
+      gradientColors: GradientColors(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFFBDBDBD),
+            Color(0xFF64B5F6),
+            Color(0xFF81C784),
+            Color(0xFFFFA726),
+          ],
+          stops: [
+            0.0,
+            0.35,
+            0.69,
+            1.0,
+          ],
+        ),
       ),
     ),
   ],
