@@ -22,6 +22,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
   final Stream<DsDataPoint<num>> _stream;
   final IndicationStyle _indicationStyle;
   final Color? _defaultColor;
+  final Color? _alarmColor;
   ///
   const SmallLinearValueIndicator({
     super.key,
@@ -35,6 +36,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
     double textIndicatorWidth = 55, 
     IndicationStyle indicationStyle = IndicationStyle.pointer,
     Color? defaultColor,
+    Color? alarmColor,
   }) : _indicationStyle = indicationStyle, 
     _stream = stream,
     _min = min,
@@ -44,7 +46,8 @@ class SmallLinearValueIndicator extends StatelessWidget {
     _caption = caption,
     _valueUnit = valueUnit,
     _textIndicatorWidth = textIndicatorWidth,
-    _defaultColor = defaultColor;
+    _defaultColor = defaultColor,
+    _alarmColor = alarmColor;
   //
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
     final padding = const Setting('padding').toDouble;
     final smallPadding = const Setting('smallPadding').toDouble;
     final theme = Theme.of(context);
-    final alarmColor = theme.stateColors.alarm;
+    final alarmColor = _alarmColor ?? theme.stateColors.alarm;
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
