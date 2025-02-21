@@ -57,75 +57,72 @@ class SmallLinearValueIndicator extends StatelessWidget {
     final smallPadding = const Setting('smallPadding').toDouble;
     final theme = Theme.of(context);
     final alarmColor = _alarmColor ?? theme.stateColors.alarm;
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: smallPadding, 
-          horizontal: padding,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if(caption != null)
-              ...[
-                caption, 
-                SizedBox(height: smallPadding),
-              ],
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: StreamBuilder<DsDataPoint<num>>(
-                    stream: _stream,
-                    builder:(context, snapshot) {
-                      final indicatorHeight = smallPadding * 3;
-                      final snapshotValue = min(
-                        max(
-                          snapshot.data?.value.toDouble() ?? _min,
-                          _min,
-                        ), 
-                        _max,
-                      );
-                      final percantage = (snapshotValue - _min) / delta;
-                      final isAlarm = _isAlarm(snapshotValue);
-                      switch(_indicationStyle) {
-                        case IndicationStyle.bar:
-                          return LinearProgressIndicator(
-                            value: percantage,
-                            minHeight: indicatorHeight,
-                            color: isAlarm ? alarmColor : _defaultColor,
-                          );
-                        case IndicationStyle.pointer:
-                          return PointerProgressIndicator(
-                            value: percantage,
-                            minHeight: indicatorHeight,
-                            color: isAlarm ? alarmColor : _defaultColor,
-                          );
-                      }
-                    },
-                  ),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: smallPadding, 
+        horizontal: padding,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if(caption != null)
+            ...[
+              caption, 
+              SizedBox(height: smallPadding),
+            ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: StreamBuilder<DsDataPoint<num>>(
+                  stream: _stream,
+                  builder:(context, snapshot) {
+                    final indicatorHeight = smallPadding * 3;
+                    final snapshotValue = min(
+                      max(
+                        snapshot.data?.value.toDouble() ?? _min,
+                        _min,
+                      ), 
+                      _max,
+                    );
+                    final percantage = (snapshotValue - _min) / delta;
+                    final isAlarm = _isAlarm(snapshotValue);
+                    switch(_indicationStyle) {
+                      case IndicationStyle.bar:
+                        return LinearProgressIndicator(
+                          value: percantage,
+                          minHeight: indicatorHeight,
+                          color: isAlarm ? alarmColor : _defaultColor,
+                        );
+                      case IndicationStyle.pointer:
+                        return PointerProgressIndicator(
+                          value: percantage,
+                          minHeight: indicatorHeight,
+                          color: isAlarm ? alarmColor : _defaultColor,
+                        );
+                    }
+                  },
                 ),
-                SizedBox(width: smallPadding),
-                SizedBox(
-                  width: _textIndicatorWidth,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Spacer(),
-                      TextValueIndicator(
-                        stream: _stream,
-                        valueUnit: _valueUnit,
-                      ),
-                    ],
-                  ),
+              ),
+              SizedBox(width: smallPadding),
+              SizedBox(
+                width: _textIndicatorWidth,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    TextValueIndicator(
+                      stream: _stream,
+                      valueUnit: _valueUnit,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
