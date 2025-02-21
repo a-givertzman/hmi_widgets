@@ -218,7 +218,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   /// Creates names of grid axis anchors  
   static Map<int, String> _buildAxisLabelTexts(double rawSize, double axisValue, double scale) {
     final axis = <int, String>{};
-    final count = (rawSize / axisValue).round();
+    final count = (rawSize / axisValue).round() + 1;
     for (int i = 0; i < count; i++) {
       final rawDx = i * axisValue;
       final dx = (rawDx / scale).round();
