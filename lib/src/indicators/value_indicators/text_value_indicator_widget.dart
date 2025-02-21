@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
+import 'package:hmi_widgets/src/core/conditional_parent_widget.dart';
 ///
 /// Показывает прямоугольник с индикатором и надпись
 /// Положение надписи можно определить в параметре [textPosition]
@@ -10,15 +11,18 @@ class TextIndicatorWidget extends StatelessWidget {
   final Alignment _alignment;
   final double? _width;
   final double? _height;
+  final bool _wrapWithCard;
   ///
   const TextIndicatorWidget({
     Key? key,
     required Widget indicator,
     required Widget caption,
     required Alignment alignment,
+    bool wrapWithCard = true,
     double? width,
     double? height,
-  }) : 
+  }) :
+    _wrapWithCard = wrapWithCard, 
     _indicator = indicator,
     _caption = caption,
     _alignment = alignment,
@@ -31,8 +35,12 @@ class TextIndicatorWidget extends StatelessWidget {
     return SizedBox(
       width: _width,
       height: _height,
-      child: Card(
-        margin: EdgeInsets.zero,
+      child: ConditionalParentWidget(
+        condition: _wrapWithCard,
+        parentBuilder: (context, child) => Card(
+          margin: EdgeInsets.zero,
+          child: child,
+        ),
         child: Padding(
           padding: EdgeInsets.all(
             const Setting('padding').toDouble

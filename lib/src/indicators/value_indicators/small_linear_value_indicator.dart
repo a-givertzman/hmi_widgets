@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
+import 'package:hmi_widgets/src/core/conditional_parent_widget.dart';
 import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 import 'pointer_progress_indicator.dart';
 import 'text_value_indicator.dart';
@@ -23,6 +24,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
   final IndicationStyle _indicationStyle;
   final Color? _defaultColor;
   final Color? _alarmColor;
+  final bool _wrapWithCard;
   ///
   const SmallLinearValueIndicator({
     super.key,
@@ -37,6 +39,7 @@ class SmallLinearValueIndicator extends StatelessWidget {
     IndicationStyle indicationStyle = IndicationStyle.pointer,
     Color? defaultColor,
     Color? alarmColor,
+    bool wrapWithCard = true,
   }) : _indicationStyle = indicationStyle, 
     _stream = stream,
     _min = min,
@@ -47,7 +50,8 @@ class SmallLinearValueIndicator extends StatelessWidget {
     _valueUnit = valueUnit,
     _textIndicatorWidth = textIndicatorWidth,
     _defaultColor = defaultColor,
-    _alarmColor = alarmColor;
+    _alarmColor = alarmColor,
+    _wrapWithCard = wrapWithCard;
   //
   @override
   Widget build(BuildContext context) {
@@ -57,72 +61,79 @@ class SmallLinearValueIndicator extends StatelessWidget {
     final smallPadding = const Setting('smallPadding').toDouble;
     final theme = Theme.of(context);
     final alarmColor = _alarmColor ?? theme.stateColors.alarm;
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: smallPadding, 
-        horizontal: padding,
+    return ConditionalParentWidget(
+      condition: _wrapWithCard,
+      parentBuilder:(_, child) => Card(
+        margin: EdgeInsets.zero,
+        child: child,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if(caption != null)
-            ...[
-              caption, 
-              SizedBox(height: smallPadding),
-            ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: StreamBuilder<DsDataPoint<num>>(
-                  stream: _stream,
-                  builder:(context, snapshot) {
-                    final indicatorHeight = smallPadding * 3;
-                    final snapshotValue = min(
-                      max(
-                        snapshot.data?.value.toDouble() ?? _min,
-                        _min,
-                      ), 
-                      _max,
-                    );
-                    final percantage = (snapshotValue - _min) / delta;
-                    final isAlarm = _isAlarm(snapshotValue);
-                    switch(_indicationStyle) {
-                      case IndicationStyle.bar:
-                        return LinearProgressIndicator(
-                          value: percantage,
-                          minHeight: indicatorHeight,
-                          color: isAlarm ? alarmColor : _defaultColor,
-                        );
-                      case IndicationStyle.pointer:
-                        return PointerProgressIndicator(
-                          value: percantage,
-                          minHeight: indicatorHeight,
-                          color: isAlarm ? alarmColor : _defaultColor,
-                        );
-                    }
-                  },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: smallPadding, 
+          horizontal: padding,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if(caption != null)
+              ...[
+                caption, 
+                SizedBox(height: smallPadding),
+              ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: StreamBuilder<DsDataPoint<num>>(
+                    stream: _stream,
+                    builder:(context, snapshot) {
+                      final indicatorHeight = smallPadding * 3;
+                      final snapshotValue = min(
+                        max(
+                          snapshot.data?.value.toDouble() ?? _min,
+                          _min,
+                        ), 
+                        _max,
+                      );
+                      final percantage = (snapshotValue - _min) / delta;
+                      final isAlarm = _isAlarm(snapshotValue);
+                      switch(_indicationStyle) {
+                        case IndicationStyle.bar:
+                          return LinearProgressIndicator(
+                            value: percantage,
+                            minHeight: indicatorHeight,
+                            color: isAlarm ? alarmColor : _defaultColor,
+                          );
+                        case IndicationStyle.pointer:
+                          return PointerProgressIndicator(
+                            value: percantage,
+                            minHeight: indicatorHeight,
+                            color: isAlarm ? alarmColor : _defaultColor,
+                          );
+                      }
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(width: smallPadding),
-              SizedBox(
-                width: _textIndicatorWidth,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    TextValueIndicator(
-                      stream: _stream,
-                      valueUnit: _valueUnit,
-                    ),
-                  ],
+                SizedBox(width: smallPadding),
+                SizedBox(
+                  width: _textIndicatorWidth,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      TextValueIndicator(
+                        stream: _stream,
+                        valueUnit: _valueUnit,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
