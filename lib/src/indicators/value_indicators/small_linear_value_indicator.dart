@@ -40,7 +40,8 @@ class SmallLinearValueIndicator extends StatelessWidget {
     Color? defaultColor,
     Color? alarmColor,
     bool wrapWithCard = true,
-  }) : _indicationStyle = indicationStyle, 
+  }) :
+    _indicationStyle = indicationStyle, 
     _stream = stream,
     _min = min,
     _max = max,
