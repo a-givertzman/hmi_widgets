@@ -88,3 +88,20 @@ export 'src/edit_field/network_dropdown_field/network_dropdown_field.dart';
 export 'src/edit_field/network_dropdown_field/oil_data.dart';
 export 'src/edit_field/network_field_authenticate.dart';
 export 'src/edit_field/show_unauthorized_editing_flushbar.dart';
+//
+// Canvas
+export 'src/canvas/canvas_item.dart';
+export 'src/canvas/canvas_item_dimension.dart';
+export 'src/canvas/canvas_items_painter.dart';
+export 'src/canvas/entities/canvas_point.dart';
+export 'src/canvas/entities/canvas_rect.dart';
+export 'src/canvas/entities/canvas_svg.dart';
+export 'src/canvas/transformations/canvas_centered_item.dart';
+export 'src/canvas/transformations/canvas_closed_item.dart';
+export 'src/canvas/transformations/canvas_combined_item.dart';
+export 'src/canvas/transformations/canvas_mirrored_item.dart';
+export 'src/canvas/transformations/canvas_rotated_item.dart';
+export 'src/canvas/transformations/canvas_scaled_item.dart';
+export 'src/canvas/transformations/canvas_translated_item.dart';
+export 'src/canvas/transformations/canvas_transformed_around_point_item.dart';
+export 'src/canvas/transformations/canvas_item_transformations.dart';
