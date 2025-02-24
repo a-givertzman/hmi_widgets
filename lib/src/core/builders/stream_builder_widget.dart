@@ -3,6 +3,7 @@ import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_widgets/src/core/builders/async_snapshot_builder_widget.dart';
 ///
 class StreamBuilderWidget<T> extends StatefulWidget {
+  final ResultF<T>? _initialData;
   final Widget Function(BuildContext, T, void Function()) _caseData;
   final Stream<ResultF<T>> Function() _onStream;
   final Widget Function(BuildContext)? _caseLoading;
@@ -11,12 +12,13 @@ class StreamBuilderWidget<T> extends StatefulWidget {
   final bool Function(T)? _validateData;
   ///
   const StreamBuilderWidget({
-    super.key, 
+    super.key,
     required Stream<ResultF<T>> Function() onStream,
     required Widget Function(BuildContext context, T data, void Function() retry) caseData,
     Widget Function(BuildContext context)? caseLoading,
     Widget Function(BuildContext context, Object error, void Function() retry)? caseError,
-    Widget Function(BuildContext context, void Function() retry)? caseNothing, 
+    Widget Function(BuildContext context, void Function() retry)? caseNothing,
+    ResultF<T>? initialData,
     bool Function(T data)? validateData,
   }) : 
     _validateData = validateData, 
@@ -24,7 +26,8 @@ class StreamBuilderWidget<T> extends StatefulWidget {
     _caseData = caseData,
     _caseError = caseError,
     _caseNothing = caseNothing,
-    _onStream = onStream;
+    _onStream = onStream,
+    _initialData = initialData;
   //
   @override
   State<StreamBuilderWidget<T>> createState() => _StreamBuilderWidgetState<T>();
@@ -48,6 +51,7 @@ class _StreamBuilderWidgetState<T> extends State<StreamBuilderWidget<T>> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
+      initialData: widget._initialData,
       stream: _stream, 
       builder: (context, snapshot) {
         return AsyncSnapshotBuilderWidget(
