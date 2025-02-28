@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/src/charts/live_chart/chart_action_button.dart';
+import 'package:hmi_widgets/src/charts/live_chart/show_buttons_switch.dart';
 import 'live_chart.dart';
 import 'live_axis.dart';
 import 'live_chart_legend.dart';
@@ -82,6 +83,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late final Timer _autoScrollDelayTimer;
   bool _isAutoScrollStarted = false;
   bool _showLegend = true;
+  bool _showControlButtons = true;
   ///
   _LiveChartWidgetState({
     required double? minY,
@@ -156,7 +158,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   ///
   double _getMaxX(DateTime now) => now.add(const Duration(seconds: 0))
     .millisecondsSinceEpoch.toDouble();
-    ///
+  ///
   void _pauseChart() {
     setState(() {
       if (_autoScrollDelayTimer.isActive) {
@@ -183,6 +185,18 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
       if (_subscription.isPaused) {
         _subscription.resume();
       }
+    });
+  }
+  ///
+  void _toggleLegend(bool value) {
+    setState(() {
+      _showLegend = value;
+    });
+  }
+  ///
+  void _toggleControlButtons(bool value) {
+    setState(() {
+      _showControlButtons = value;
     });
   }
   //
@@ -216,101 +230,122 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ShowDotsSwitch(
-                      isOn: _axesData.values.every((axisData) => axisData.showDots),
-                      onChanged: (showDots) {
-                        setState(() {
-                          for (final axisData in _axesData.values) {
-                            axisData.showDots = showDots;
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ShowLegendSwitch(
-                      isOn: _showLegend, 
-                      onChanged: (value) {
-                        setState(() {
-                          _showLegend = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ChartActionButton(
-                      tooltip: const Localized('Zoom out').v,
-                      icon: Icon(Icons.remove),
-                      onPressed: _maxX! - _minX! < _maxXDelta 
-                        ? () {
-                          final isChartWasActive = _ticker.isActive;
-                          _pauseChart();
+        if(_showControlButtons)
+          Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowDotsSwitch(
+                        isOn: _axesData.values.every((axisData) => axisData.showDots),
+                        onChanged: (showDots) {
                           setState(() {
-                            double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
-                            final newXDelta = _maxX! - newMinX;
-                            newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
-                            _startMinX = newMinX;
-                            _minX = newMinX;
+                            for (final axisData in _axesData.values) {
+                              axisData.showDots = showDots;
+                            }
                           });
-                          if(isChartWasActive) {
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowLegendSwitch(
+                        isOn: _showLegend, 
+                        onChanged: _toggleLegend,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ChartActionButton(
+                        tooltip: const Localized('Zoom out').v,
+                        icon: Icon(Icons.remove),
+                        onPressed: _maxX! - _minX! < _maxXDelta 
+                          ? () {
+                            final isChartWasActive = _ticker.isActive;
+                            _pauseChart();
+                            setState(() {
+                              double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
+                              final newXDelta = _maxX! - newMinX;
+                              newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
+                              _startMinX = newMinX;
+                              _minX = newMinX;
+                            });
+                            if(isChartWasActive) {
+                              _playChart();
+                            }
+                          } 
+                          : null,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ChartActionButton(
+                        tooltip: const Localized('Zoom in').v,
+                        icon: Icon(Icons.add),
+                        onPressed: _maxX! - _minX! > _minXDelta 
+                          ? () {
+                            final isChartWasActive = _ticker.isActive;
+                            _pauseChart();
+                            setState(() {
+                              double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
+                              final newXDelta = _maxX! - newMinX;
+                              newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
+                              _startMinX = newMinX;
+                              _minX = newMinX;
+                            });
+                            if(isChartWasActive) {
+                              _playChart();
+                            }
+                          } 
+                          : null,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: PauseSwitch(
+                        isOn: !_ticker.isActive, 
+                        onChanged: (isPaused) {
+                          if (isPaused) {
+                            _pauseChart();
+                          } else {
                             _playChart();
                           }
-                        } 
-                        : null,
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ChartActionButton(
-                      tooltip: const Localized('Zoom in').v,
-                      icon: Icon(Icons.add),
-                      onPressed: _maxX! - _minX! > _minXDelta 
-                        ? () {
-                          final isChartWasActive = _ticker.isActive;
-                          _pauseChart();
-                          setState(() {
-                            double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
-                            final newXDelta = _maxX! - newMinX;
-                            newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
-                            _startMinX = newMinX;
-                            _minX = newMinX;
-                          });
-                          if(isChartWasActive) {
-                            _playChart();
-                          }
-                        } 
-                        : null,
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowButtonsSwitch(
+                        isOn: _showControlButtons, 
+                        onChanged: _toggleControlButtons,
+                      ),
                     ),
+                  ],
+                ),
+                if (_showLegend)
+                  LiveChartLegend(
+                    legendWidth: _legendWidth,
+                    axes: _axesData.values.toList(),
+                    onChanged: (signal, isVisible) {
+                      setState(() {
+                        _axesData[signal]!.isVisible = isVisible;
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: PauseSwitch(
-                      isOn: !_ticker.isActive, 
-                      onChanged: (isPaused) {
-                        if (isPaused) {
-                          _pauseChart();
-                        } else {
-                          _playChart();
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              if (_showLegend)
-                LiveChartLegend(
+              ],
+            ),
+          ),
+        if(!_showControlButtons)
+          ...[
+            if (_showLegend)
+              Align(
+                alignment: Alignment.topCenter,
+                child: LiveChartLegend(
                   legendWidth: _legendWidth,
                   axes: _axesData.values.toList(),
                   onChanged: (signal, isVisible) {
@@ -319,9 +354,15 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                     });
                   },
                 ),
-            ],
-          ),
-        ),
+              ),
+            Align(
+              alignment: Alignment.topRight,
+              child: ShowButtonsSwitch(
+                isOn: _showControlButtons,
+                onChanged: _toggleControlButtons,
+              ),
+            ),
+          ],
       ],
     );
   }
