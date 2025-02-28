@@ -16,6 +16,8 @@ class ShowButtonsSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 10,
+      width: 30,
       decoration: ShapeDecoration(
         color: Theme.of(context).colorScheme.primary,
         shape: StadiumBorder(),

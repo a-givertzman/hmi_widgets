@@ -356,7 +356,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
                 ),
               ),
             Align(
-              alignment: Alignment.topRight,
+              alignment: Alignment.bottomRight,
               child: ShowButtonsSwitch(
                 isOn: _showControlButtons,
                 onChanged: _toggleControlButtons,
