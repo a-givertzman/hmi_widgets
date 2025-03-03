@@ -238,11 +238,13 @@ class CircularValueIndicator extends StatelessWidget {
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             textAlign: TextAlign.center,
-            style: _isLow(value) 
-                ? textStyle.copyWith(color: _lowColor, fontWeight: FontWeight.w700,) 
-                : _isHigh(value) 
-                  ? textStyle.copyWith(color: _highColor, fontWeight: FontWeight.w700,) 
-                  : textStyle,
+            style: _isHighCritical(value) || _isLowCritical(value)
+                ? textStyle.copyWith(color: _criticalColor, fontWeight: FontWeight.w700,) 
+                : _isLow(value) 
+                  ? textStyle.copyWith(color: _lowColor, fontWeight: FontWeight.w700,)
+                  : _isHigh(value) 
+                    ? textStyle.copyWith(color: _highColor, fontWeight: FontWeight.w700,)
+                    : textStyle,
             child: Text(valueText,
               textAlign: TextAlign.center,
               textScaler: TextScaler.linear(1.5 * 0.01618 * _size),
