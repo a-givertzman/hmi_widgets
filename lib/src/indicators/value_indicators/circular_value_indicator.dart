@@ -121,6 +121,7 @@ class CircularValueIndicator extends StatelessWidget {
       builder: (context, snapshot) {
         // log(CircularBarIndicator._debug, '[$CircularBarIndicator.build] data: ${snapshot.data}');
         double value = 0;
+        double clampedValue = 0;
         String valueText = '';
         Color color = Theme.of(context).colorScheme.tertiaryFixedDim;
         final lowColor = _lowColor ?? Theme.of(context).alarmColors.class4;
@@ -136,7 +137,8 @@ class CircularValueIndicator extends StatelessWidget {
           if (dataPoint != null) {
             final nValue = dataPoint.value;
             _log.debug('[$CircularValueIndicator.build] dataPoint: $nValue');
-            value = _relativeValue.relative(nValue.toDouble(), limit: true);
+            value = _relativeValue.relative(nValue.toDouble(), limit: false);
+            clampedValue = _relativeValue.relative(nValue.toDouble(), limit: true);
             _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
             valueText = nValue.toStringAsFixed(_fractionDigits);
           }
@@ -149,7 +151,7 @@ class CircularValueIndicator extends StatelessWidget {
             _buildLowIndicatorWidget(context, value, _strokeWidth * 0.7, lowColor, criticalColor),
             _buildHighIndicatorWidget(context, value, _strokeWidth * 0.7, highColor, criticalColor),
             _buildIndicatorWidget(
-              value: value, 
+              value: clampedValue, 
               angle: _angle,
               color: color, 
               strokeWidth: _strokeWidth, 
