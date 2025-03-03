@@ -19,6 +19,8 @@ class CircularValueIndicator extends StatelessWidget {
   final double _angle;
   final double? _high;
   final double? _low;
+  final double? _highCritical;
+  final double? _lowCritical;
   final double _size;
   final double _scale;
   final double _strokeWidth;
@@ -28,6 +30,7 @@ class CircularValueIndicator extends StatelessWidget {
   final int _fractionDigits;
   final Color? _lowColor;
   final Color? _highColor;
+  final Color? _criticalColor;
   // final bool _disabled;
   /// 
   /// Builds home body using current user
@@ -41,6 +44,8 @@ class CircularValueIndicator extends StatelessWidget {
     double max = 100,
     double? low,
     double? high,
+    double? lowCritical,
+    double? highCritical,
     required Stream<DsDataPoint<num>>? stream,
     required double size,
     double angle = 0,
@@ -50,12 +55,15 @@ class CircularValueIndicator extends StatelessWidget {
     int fractionDigits = 0,
     Color? lowColor,
     Color? highColor,
+    Color? criticalColor,
     // bool? disabled,
   }) : 
     _relativeValue = RelativeValue(basis: _valueBasis, min: min, max: max),
     _angle = angle - 135,
     _high = high,
     _low = low,
+    _highCritical = highCritical,
+    _lowCritical = lowCritical,
     _stream = stream,
     _size = size,
     _scale = size / 1.618,
@@ -66,6 +74,7 @@ class CircularValueIndicator extends StatelessWidget {
     _fractionDigits = fractionDigits,
     _lowColor = lowColor,
     _highColor = highColor,
+    _criticalColor = criticalColor,
     // _disabled = disabled ?? false,
     super(key: key);
   //
@@ -113,9 +122,10 @@ class CircularValueIndicator extends StatelessWidget {
         // log(CircularBarIndicator._debug, '[$CircularBarIndicator.build] data: ${snapshot.data}');
         double value = 0;
         String valueText = '';
-        Color color = Theme.of(context).stateColors.on;
-        final lowColor = _lowColor ?? Theme.of(context).stateColors.alarm;
-        final highColor = _highColor ?? Theme.of(context).stateColors.alarm;
+        Color color = Theme.of(context).colorScheme.tertiaryFixedDim;
+        final lowColor = _lowColor ?? Theme.of(context).alarmColors.class4;
+        final highColor = _highColor ?? Theme.of(context).alarmColors.class4;
+        final criticalColor = _criticalColor ?? Theme.of(context).alarmColors.class1;
         final invalidValueColor = Theme.of(context).stateColors.invalid;
         if (snapshot.hasError) {
           color = invalidValueColor;
@@ -136,8 +146,8 @@ class CircularValueIndicator extends StatelessWidget {
           children: [
             _buildIndicatorValueText(context, _scale, value, valueText),
             _buildIndicatorValueUnitText(context, _scale, _valueUnit),
-            _buildLowIndicatorWidget(context, value, _strokeWidth * 0.7, lowColor),
-            _buildHighIndicatorWidget(context, value, _strokeWidth * 0.7, highColor),
+            _buildLowIndicatorWidget(context, value, _strokeWidth * 0.7, lowColor, criticalColor),
+            _buildHighIndicatorWidget(context, value, _strokeWidth * 0.7, highColor, criticalColor),
             _buildIndicatorWidget(
               value: value, 
               angle: _angle,
@@ -160,12 +170,32 @@ class CircularValueIndicator extends StatelessWidget {
     return false;  
   }
   ///
+  /// проверяет относительное значение с уставкой аварийного нижнего уровня в о.е
+  bool _isLowCritical(double value) {
+    final lowCritical = _lowCritical;
+    if (lowCritical != null) {
+      // final lowRelative = _k * low + _b;
+      return value <= _relativeValue.relative(lowCritical);
+    }
+    return false;
+  }
+  ///
   /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
   bool _isHigh(double value) {
     final high = _high;
     if (high != null) {
       // final highRelative = _k * high + _b;
       return value >= _relativeValue.relative(high);
+    }
+    return false;
+  }
+  ///
+  /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
+  bool _isHighCritical(double value) {
+    final highCritical = _highCritical;
+    if (highCritical != null) {
+      // final highRelative = _k * high + _b;
+      return value >= _relativeValue.relative(highCritical);
     }
     return false;
   }
@@ -225,6 +255,7 @@ class CircularValueIndicator extends StatelessWidget {
   Widget _buildLowIndicatorWidget(
     BuildContext context, double value, double strokeWidth,
     Color lowColor,
+    Color criticalColor,
   ) {
     if (_low != null) {
       final size = _size * 0.85;
@@ -235,7 +266,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _relativeValue.relative(_low),
           strokeWidth: strokeWidth,
           angle: _angle,
-          color: _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
+          color: _isLowCritical(value) ? criticalColor : _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
         ),
       );
     }
@@ -245,6 +276,7 @@ class CircularValueIndicator extends StatelessWidget {
   Widget _buildHighIndicatorWidget(
     BuildContext context, double value, double strokeWidth,
     Color highColor,
+    Color criticalColor,
   ) {
     if (_high != null) {
       final size = _size * 0.85;
@@ -256,7 +288,7 @@ class CircularValueIndicator extends StatelessWidget {
           value: _valueBasis - highRelative,
           strokeWidth: strokeWidth,
           angle: (_angle) + 360 * highRelative,
-          color: _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
+          color: _isHighCritical(value) ? criticalColor : _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
         ),
       );
     }
