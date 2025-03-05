@@ -118,9 +118,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
       children: [
         Text(
           value.toStringAsFixed(widget._fractionDigits),
-          style: widget._valueStyle?.apply(color: color)
-            ?? textTheme.bodyLarge
-            ?? const TextStyle(),
+          style: (widget._valueStyle ?? textTheme.bodyLarge ?? const TextStyle()).apply(color: color),
           textScaler: TextScaler.linear(1.3),
         ),
         ..._buildUnitText(textTheme, widget._valueUnit, color),
@@ -134,9 +132,7 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
         const SizedBox(width: 3,),
         Text(
           widget._valueUnit,
-          style: widget._unitStyle?.apply(color: color)
-            ?? textTheme.bodySmall
-            ?? const TextStyle(),
+          style: (widget._unitStyle ?? textTheme.bodySmall ?? const TextStyle()).apply(color: color),
           textScaler: TextScaler.linear(1.3),
         ),
       ];
