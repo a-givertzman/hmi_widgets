@@ -18,11 +18,17 @@ class CircularValueIndicator extends StatelessWidget {
   final Stream<DsDataPoint<num>>? _stream;
   final double _angle;
   final double? _high;
+  final double _highEnd;
   final double? _low;
+  final double _lowEnd;
   final double? _highCritical;
+  final double _highCriticalEnd;
   final double? _lowCritical;
+  final double _lowCriticalEnd;
   final double? _highCritical2;
+  final double _highCritical2End;
   final double? _lowCritical2;
+  final double _lowCritical2End;
   final double _size;
   final double _scale;
   final double _strokeWidth;
@@ -46,11 +52,17 @@ class CircularValueIndicator extends StatelessWidget {
     double min = 0,
     double max = 100,
     double? low,
+    double? lowEnd,
     double? high,
+    double? highEnd,
     double? lowCritical,
+    double? lowCriticalEnd,
     double? highCritical,
+    double? highCriticalEnd,
     double? lowCritical2,
+    double? lowCritical2End,
     double? highCritical2,
+    double? highCritical2End,
     required Stream<DsDataPoint<num>>? stream,
     required double size,
     double angle = 0,
@@ -66,12 +78,18 @@ class CircularValueIndicator extends StatelessWidget {
   }) : 
     _relativeValue = RelativeValue(basis: _valueBasis, min: min, max: max),
     _angle = angle - 135,
-    _high = high,
     _low = low,
-    _highCritical = highCritical,
+    _lowEnd = lowEnd ?? lowCritical ?? lowCritical2 ?? min,
     _lowCritical = lowCritical,
-    _highCritical2 = highCritical2,
+    _lowCriticalEnd = lowCriticalEnd ?? lowCritical2 ?? min,
     _lowCritical2 = lowCritical2,
+    _lowCritical2End = lowCritical2End ?? min,
+    _high = high,
+    _highEnd = highEnd ?? highCritical ?? highCritical2 ?? max,
+    _highCritical = highCritical,
+    _highCriticalEnd = highCriticalEnd ?? highCritical2 ?? max,
+    _highCritical2 = highCritical2,
+    _highCritical2End = highCritical2End ?? max,
     _stream = stream,
     _size = size,
     _scale = size / 1.618,
@@ -85,6 +103,30 @@ class CircularValueIndicator extends StatelessWidget {
     _criticalColor = criticalColor,
     _critical2Color = critical2Color,
     // _disabled = disabled ?? false,
+    assert(
+      lowEnd == null || (low != null && lowEnd < low),
+      "lowEnd must be less than low",
+    ),
+    assert(
+      lowCriticalEnd == null || (lowCritical != null && lowCriticalEnd < lowCritical),
+      "lowCriticalEnd must be less than lowCritical",
+    ),
+    assert(
+      lowCritical2End == null || (lowCritical2 != null && lowCritical2End < lowCritical2),
+      "lowCritical2End must be less than lowCritical2",
+    ),
+    assert(
+      highEnd == null || (high != null && highEnd > high),
+      "highEnd must be greater than high",
+    ),
+    assert(
+      highCriticalEnd == null || (highCritical != null && highCriticalEnd > highCritical),
+      "highCriticalEnd must be greater than highCritical",
+    ),
+    assert(
+      highCritical2End == null || (highCritical2 != null && highCritical2End > highCritical2),
+      "highCritical2End must be greater than highCritical2",
+    ),
     super(key: key);
   //
   @override
@@ -158,12 +200,64 @@ class CircularValueIndicator extends StatelessWidget {
           children: [
             _buildIndicatorValueText(context, _scale, value, valueText),
             _buildIndicatorValueUnitText(context, _scale, _valueUnit),
-            _buildLowIndicatorWidget(context, value, _strokeWidth * 0.7, lowColor),
-            _buildLowCriticalIndicatorWidget(context, value, _strokeWidth * 0.7, criticalColor),
-            _buildLowCritical2IndicatorWidget(context, value, _strokeWidth * 0.7, critical2Color),
-            _buildHighIndicatorWidget(context, value, _strokeWidth * 0.7, highColor),
-            _buildHighCriticalIndicatorWidget(context, value, _strokeWidth * 0.7, criticalColor),
-            _buildHighCritical2IndicatorWidget(context, value, _strokeWidth * 0.7, critical2Color),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isLessOrEqual(value, _low)
+                ? lowColor
+                : lowColor.withValues(alpha: 0.3),
+              ending: _low,
+              beginning: _lowEnd,
+            ),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isLessOrEqual(value, _lowCritical)
+                ? criticalColor
+                : criticalColor.withValues(alpha: 0.3),
+              ending: _lowCritical,
+              beginning: _lowCriticalEnd,
+              padding: _low != null ? 1 : 0,
+            ),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isLessOrEqual(value, _lowCritical2)
+                ? critical2Color
+                : critical2Color.withValues(alpha: 0.3),
+              ending: _lowCritical2,
+              beginning: _lowCritical2End,
+              padding: (_low != null || _lowCritical != null) ? 1 : 0,
+            ),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isGreaterOrEqual(value, _high)
+                ? highColor
+                : highColor.withValues(alpha: 0.3),
+              ending: _highEnd,
+              beginning: _high,
+              padding: (_highCritical != null || _highCritical2 != null) ? 1 : 0,
+            ),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isGreaterOrEqual(value, _highCritical)
+                ? criticalColor
+                : criticalColor.withValues(alpha: 0.3),
+              ending: _highCriticalEnd,
+              beginning: _highCritical,
+              padding: _highCritical2 != null ? 1 : 0,
+            ),
+            _buildSectorIndicatorWidget(
+              value,
+              _strokeWidth * 0.7,
+              _isGreaterOrEqual(value, _highCritical2) 
+                ? critical2Color
+                : critical2Color.withValues(alpha: 0.3),
+              ending: _highCritical2End,
+              beginning: _highCritical2,
+            ),
             _buildIndicatorWidget(
               value: clampedValue, 
               angle: _angle,
@@ -176,66 +270,16 @@ class CircularValueIndicator extends StatelessWidget {
     );
   }
   ///
-  /// проверяет относительное значение с уставкой аварийного нижнего уровня в о.е
-  bool _isLow(double value) {
-    final low = _low;
-    if (low != null) {
-      // final lowRelative = _k * low + _b;
-      final rightCondition = _lowCritical == null ? true : value > _relativeValue.relative(_lowCritical);
-      return value <= _relativeValue.relative(low) && rightCondition;
-    }
-    return false;  
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного нижнего уровня в о.е
-  bool _isLowCritical(double value) {
-    final lowCritical = _lowCritical;
-    if (lowCritical != null) {
-      // final lowRelative = _k * low + _b;
-      final rightCondition = _lowCritical2 == null ? true : value > _relativeValue.relative(_lowCritical2);
-      return value <= _relativeValue.relative(lowCritical) && rightCondition;
+  bool _isLessOrEqual(double value, double? threshold) {
+    if (threshold != null) {
+      return value <= _relativeValue.relative(threshold);
     }
     return false;
   }
   ///
-  /// проверяет относительное значение с уставкой аварийного нижнего уровня в о.е
-  bool _isLowCritical2(double value) {
-    final lowCritical2 = _lowCritical2;
-    if (lowCritical2 != null) {
-      // final lowRelative = _k * low + _b;
-      return value <= _relativeValue.relative(lowCritical2);
-    }
-    return false;
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
-  bool _isHigh(double value) {
-    final high = _high;
-    if (high != null) {
-      // final highRelative = _k * high + _b;
-      final rightCondition = _highCritical == null ? true : value < _relativeValue.relative(_highCritical);
-      return value >= _relativeValue.relative(high) && rightCondition;
-    }
-    return false;
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
-  bool _isHighCritical(double value) {
-    final highCritical = _highCritical;
-    if (highCritical != null) {
-      // final highRelative = _k * high + _b;
-      final rightCondition = _highCritical2 == null ? true : value < _relativeValue.relative(_highCritical2);
-      return value >= _relativeValue.relative(highCritical) && rightCondition;
-    }
-    return false;
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
-  bool _isHighCritical2(double value) {
-    final highCritical2 = _highCritical2;
-    if (highCritical2 != null) {
-      // final highRelative = _k * high + _b;
-      return value >= _relativeValue.relative(highCritical2);
+  bool _isGreaterOrEqual(double value, double? threshold) {
+    if (threshold != null) {
+      return value >= _relativeValue.relative(threshold);
     }
     return false;
   }
@@ -276,13 +320,13 @@ class CircularValueIndicator extends StatelessWidget {
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             textAlign: TextAlign.center,
-            style: _isHighCritical2(value) || _isLowCritical2(value)
+            style: _isGreaterOrEqual(value, _highCritical2) || _isLessOrEqual(value, _lowCritical2)
               ? textStyle.copyWith(color: _critical2Color, fontWeight: FontWeight.w700,) 
-              : _isHighCritical(value) || _isLowCritical(value)
+              : _isGreaterOrEqual(value, _highCritical) || _isLessOrEqual(value, _lowCritical)
                 ? textStyle.copyWith(color: _criticalColor, fontWeight: FontWeight.w700,) 
-                : _isLow(value) 
+                : _isLessOrEqual(value, _low) 
                   ? textStyle.copyWith(color: _lowColor, fontWeight: FontWeight.w700,)
-                  : _isHigh(value) 
+                  : _isGreaterOrEqual(value, _high) 
                     ? textStyle.copyWith(color: _highColor, fontWeight: FontWeight.w700,)
                     : textStyle,
             child: Text(valueText,
@@ -296,152 +340,27 @@ class CircularValueIndicator extends StatelessWidget {
     return const SizedBox.shrink();
   }
   ///
-  Widget _buildLowIndicatorWidget(
-    BuildContext context,
+  Widget _buildSectorIndicatorWidget(
     double value,
     double strokeWidth,
-    Color lowColor,
-  ) {
-    if (_low != null) {
+    Color color, {
+    double? beginning,
+    double? ending,
+    double? padding,
+  }) {
+    if (ending != null && beginning != null) {
       final size = _size * 0.85;
-      final lowRelative = _relativeValue.relative(_low);
-      final lowCriticalRelative = _relativeValue.relative(_lowCritical);
+      final endingRelative = _relativeValue.relative(ending);
+      final beginningRelative = _relativeValue.relative(beginning);
+      final paddingRelative = _relativeValue.relative(padding);
       return SizedBox(
           width: size,
           height: size,
         child: _buildIndicatorWidget(
-          value: lowRelative
-            - lowCriticalRelative,
+          value: endingRelative - beginningRelative - paddingRelative,
           strokeWidth: strokeWidth,
-          angle: _angle + 360 * lowCriticalRelative,
-          color: _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildLowCriticalIndicatorWidget(
-    BuildContext context,
-    double value,
-    double strokeWidth,
-    Color criticalColor,
-  ) {
-    if (_lowCritical != null) {
-      final size = _size * 0.85;
-      final lowCriticalRelative = _relativeValue.relative(_lowCritical);
-      final lowCritical2Relative = _relativeValue.relative(_lowCritical2);
-      return SizedBox(
-          width: size,
-          height: size,
-        child: _buildIndicatorWidget(
-          value: lowCriticalRelative
-            - lowCritical2Relative
-            - (_low == null ? 0 : _relativeValue.relative(1)),
-          strokeWidth: strokeWidth,
-          angle: _angle + 360 * lowCritical2Relative,
-          color: _isLowCritical(value) ? criticalColor : criticalColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildLowCritical2IndicatorWidget(
-    BuildContext context,
-    double value,
-    double strokeWidth,
-    Color criticalColor,
-  ) {
-    if (_lowCritical2 != null) {
-      final size = _size * 0.85;
-      return SizedBox(
-          width: size,
-          height: size,
-        child: _buildIndicatorWidget(
-          value: _relativeValue.relative(_lowCritical2)
-            - (_lowCritical == null ? 0 : _relativeValue.relative(1)),
-          strokeWidth: strokeWidth,
-          angle: _angle,
-          color: _isLowCritical2(value) ? criticalColor : criticalColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildHighIndicatorWidget(
-    BuildContext context,
-    double value,
-    double strokeWidth,
-    Color highColor,
-  ) {
-    if (_high != null) {
-      final size = _size * 0.85;
-      final highRelative = _relativeValue.relative(_high);
-      final criticalRelativeLength = _highCritical == null ? 0.0 : _valueBasis - _relativeValue.relative(_highCritical);
-      return SizedBox(
-        width: size,
-        height: size,
-        child: _buildIndicatorWidget(
-          value: 
-            _valueBasis
-              - highRelative
-              - criticalRelativeLength
-              - (_highCritical == null ? 0 : _relativeValue.relative(1)),
-          strokeWidth: strokeWidth,
-          angle: (_angle) + 360 * highRelative,
-          color: _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildHighCriticalIndicatorWidget(
-    BuildContext context,
-    double value,
-    double strokeWidth,
-    Color criticalColor,
-  ) {
-    if (_highCritical != null) {
-      final size = _size * 0.85;
-      final criticalRelative = _relativeValue.relative(_highCritical);
-      final critical2RelativeLength = _highCritical2 == null ? 0.0 : _valueBasis - _relativeValue.relative(_highCritical2);
-      return SizedBox(
-        width: size,
-        height: size,
-        child: _buildIndicatorWidget(
-          value: _valueBasis
-            - criticalRelative
-            - critical2RelativeLength
-            - (_highCritical2 == null ? 0 : _relativeValue.relative(1)),
-          strokeWidth: strokeWidth,
-          angle: (_angle) + 360 * criticalRelative,
-          color: _isHighCritical(value) ? criticalColor : criticalColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildHighCritical2IndicatorWidget(
-    BuildContext context,
-    double value,
-    double strokeWidth,
-    Color criticalColor,
-  ) {
-    if (_highCritical2 != null) {
-      final size = _size * 0.85;
-      final critical2Relative = _relativeValue.relative(_highCritical2);
-      return SizedBox(
-        width: size,
-        height: size,
-        child: _buildIndicatorWidget(
-          value: _valueBasis - critical2Relative,
-          strokeWidth: strokeWidth,
-          angle: (_angle) + 360 * critical2Relative,
-          color: _isHighCritical2(value) ? criticalColor : criticalColor.withValues(alpha: 0.3), 
+          angle: _angle + 360 * beginningRelative,
+          color: color,
         ),
       );
     }
