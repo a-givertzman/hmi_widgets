@@ -142,6 +142,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               beginning: _lowEnd,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SectorIndicatorWidget(
               strokeWidth: _strokeWidth * 0.7,
@@ -153,6 +154,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               padding: _low != null ? 1 : 0,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SectorIndicatorWidget(
               strokeWidth: _strokeWidth * 0.7,
@@ -164,6 +166,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               padding: (_low != null || _lowCritical != null) ? 1 : 0,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SectorIndicatorWidget(
               strokeWidth: _strokeWidth * 0.7,
@@ -175,6 +178,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               padding: (_highCritical != null || _highCritical2 != null) ? 1 : 0,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SectorIndicatorWidget(
               strokeWidth: _strokeWidth * 0.7,
@@ -186,6 +190,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               padding: _highCritical2 != null ? 1 : 0,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SectorIndicatorWidget(
               strokeWidth: _strokeWidth * 0.7,
@@ -196,6 +201,7 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               beginning: _highCritical2,
               parentSize: _size,
               relativeValue: _relativeValue,
+              angle: _angle,
             ),
             _SizedIndicatorWidget(
               value: clampedValue,
