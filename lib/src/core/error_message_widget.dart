@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
+/// Error text with an alarm icon before it.
 class ErrorMessageWidget extends StatelessWidget {
   final TextStyle? _style;
   final Color? _iconColor;
   final String _message;
   ///
+  /// Error text with an alarm icon before it.
   const ErrorMessageWidget({
     super.key, 
     TextStyle? style, 

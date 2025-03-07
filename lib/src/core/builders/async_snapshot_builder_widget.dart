@@ -20,6 +20,8 @@ Widget _defaultCaseNothing(BuildContext _, void Function() __) => ErrorMessageWi
   message: 'No data'.loc,
 );
 ///
+/// A builder to easily display widgets depending on a corresponding state of [AsyncSnapshot].
+/// Intended to use under [FutureBuilder], [StreamBuilder] or custom async builder.
 class AsyncSnapshotBuilderWidget<T> extends StatelessWidget {
   final void Function() _retry;
   final Widget Function(BuildContext) _caseLoading;
@@ -28,13 +30,37 @@ class AsyncSnapshotBuilderWidget<T> extends StatelessWidget {
   final Widget Function(BuildContext, void Function()) _caseNothing;
   late final _AsyncSnapshotState<T> _snapshotState;
   ///
+  /// A builder to easily display widgets depending on a corresponding state of [AsyncSnapshot].
+  /// Intended to use under [FutureBuilder], [StreamBuilder] or custom async builder.
+  /// 
+  /// - [snapshot] - async snapshot from parent builder;
+  /// - [caseData] - widget builder to be used if snapshot has any data;
+  /// - [caseLoading] - widget builder to be used if async operation is in progress;
+  /// - [caseError] - widget builder to be used if async operation ended with an error;
+  /// - [caseNothing] - widget builder to be used if there are no loading, data or error states, e.g. initial state;
+  /// - [retry] - a callback to trigger a restart of async operation, e.g. call future again or recreate stream. Will be provided to some builders for button action etc.;
+  /// - [validateData] - a callback to be used on data and to optionally traverse to error state if validation case is not satisfied.
+  /// 
+  /// Only data builder is required, other builders will use default indication of [AsyncSnapshot] state.
+  /// 
+  /// Minimal usage example (display aquired text, do nothing on retry):
+  /// ```dart
+  /// FutureBuilder(
+  ///   future: Future.delayed(Duration.zero, () => 1),
+  ///   builder: (context, snapshot) => AsyncSnapshotBuilderWidget(
+  ///     snapshot: snapshot,
+  ///     caseData: (context, data, retry) => Text(data.toString()),
+  ///     retry: () {},
+  ///   ),
+  /// );
+  /// ```
   AsyncSnapshotBuilderWidget({
     super.key,
     required AsyncSnapshot<ResultF<T>> snapshot,
-    required Widget Function(BuildContext, T, void Function()) caseData,
-    Widget Function(BuildContext)? caseLoading,
-    Widget Function(BuildContext, Object, void Function())? caseError,
-    Widget Function(BuildContext, void Function())? caseNothing,
+    required Widget Function(BuildContext context, T data, void Function() retry) caseData,
+    Widget Function(BuildContext context)? caseLoading,
+    Widget Function(BuildContext context, Object error, void Function() retry)? caseError,
+    Widget Function(BuildContext context, void Function() retry)? caseNothing,
     required void Function() retry,
     bool Function(T)? validateData,
   }) :

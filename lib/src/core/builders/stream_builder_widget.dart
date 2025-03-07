@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_widgets/src/core/builders/async_snapshot_builder_widget.dart';
 ///
+/// A builder to easily display widgets depending on a corresponding state of [AsyncSnapshot] from [StreamBuilder].
 class StreamBuilderWidget<T> extends StatefulWidget {
   final ResultF<T>? _initialData;
   final Widget Function(BuildContext, T, void Function()) _caseData;
@@ -11,6 +12,25 @@ class StreamBuilderWidget<T> extends StatefulWidget {
   final Widget Function(BuildContext, void Function())? _caseNothing;
   final bool Function(T)? _validateData;
   ///
+  /// A builder to easily display widgets depending on a corresponding state of [AsyncSnapshot] from [StreamBuilder].
+  /// 
+  /// - [onStream] - a callback to create stream, e.g. start loading of data;
+  /// - [caseData] - widget builder to be used if stream has event with data;
+  /// - [caseLoading] - widget builder to be used if stream is in progress (stream started, but there are no data events yet);
+  /// - [caseError] - widget builder to be used if stream completed with error;
+  /// - [caseNothing] - widget builder to be used if there are no loading, data or error states, e.g. initial state;
+  /// - [validateData] - a callback to be used on data and to optionally traverse to error state if validation case is not satisfied;
+  /// - [initialData] - optional first event of the stream.
+  /// 
+  /// Only data builder is required, other builders will use default indication of [AsyncSnapshot] state.
+  /// 
+  /// Minimal usage example (displays aquired data as text):
+  /// ```dart
+  /// StreamBuilderWidget(
+  ///   onStream: () => Stream.periodic(Duration.zero, (i) => i),
+  ///   caseData: (context, data, retry) => Text(data.toString()),
+  /// );
+  /// ```
   const StreamBuilderWidget({
     super.key,
     required Stream<ResultF<T>> Function() onStream,
