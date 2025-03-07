@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_entities.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
+part '_text/_value_text_widget.dart';
 ///
 /// Simple text field, indicates state of streamed [DsDataPoint] value, 
 class TextValueIndicator extends StatefulWidget {
@@ -81,147 +82,71 @@ class _TextValueIndicatorState extends State<TextValueIndicator> {
       stream: widget._stream,
       builder: (context, snapshot) {
         final theme = Theme.of(context);
-        return _buildValueText(
-          theme.textTheme,
-          snapshot,
-          invalidColor: theme.stateColors.invalid,
+        Color? color;
+        num value = _value;
+        if (snapshot.hasError) {
+          color = theme.stateColors.invalid;
+          _log.debug('[._buildValueText] snapshot.error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          final point = snapshot.data;
+          if (point != null) {
+            value = point.value;
+            _value = value;
+            color = _buildColor(color, value);
+          } else {
+            _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
+          }
+        } else {
+          _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
+        }
+        return _ValueTextWidget(
+          value: value,
+          fractionDigits: widget._fractionDigits,
+          valueUnit: widget._valueUnit,
+          valueStyle: widget._valueStyle,
+          unitStyle: widget._unitStyle,
+          color: color,
         );
       },
     );
   }
   ///
-  Widget _buildValueText(
-    TextTheme textTheme,
-    AsyncSnapshot<DsDataPoint<num>> snapshot, {
-    Color? invalidColor,
-  }) {
-    Color? color;
-    num value = _value;
-    if (snapshot.hasError) {
-      color = invalidColor;
-      _log.debug('[._buildValueText] snapshot.error: ${snapshot.error}');
-    } else if (snapshot.hasData) {
-      final point = snapshot.data;
-      if (point != null) {
-        value = point.value;
-        _value = value;
-        color = _buildColor(color, value);
-      } else {
-        _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
-      }
-    } else {
-      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          value.toStringAsFixed(widget._fractionDigits),
-          style: (widget._valueStyle ?? textTheme.bodyLarge ?? const TextStyle()).apply(color: color),
-          textScaler: TextScaler.linear(1.3),
-        ),
-        ..._buildUnitText(textTheme, widget._valueUnit, color),
-      ],
-    );
-  }
-  ///
-  List<Widget> _buildUnitText(TextTheme textTheme, String valueUnit, Color? color) {
-    if (valueUnit.isNotEmpty) {
-      return [
-        const SizedBox(width: 3,),
-        Text(
-          widget._valueUnit,
-          style: (widget._unitStyle ?? textTheme.bodySmall ?? const TextStyle()).apply(color: color),
-          textScaler: TextScaler.linear(1.3),
-        ),
-      ];
-    }
-    return [];
-  }
-  ///
   /// корректирует цвет с учетом проверки нижнего и верхнего аврийных уровней
   Color? _buildColor(Color? defaultColor, num value) {
-    if (_isHigh()) {
+    if (_isGreaterOrEqual(value, widget._highCritical2)) {
+      return widget._critical2Color;
+    }
+    if (_isGreaterOrEqual(value, widget._highCritical)) {
+      return widget._criticalColor;
+    }
+    if (_isGreaterOrEqual(value, widget._high)) {
       return widget._highColor;
     }
-    if (_isHighCritical()) {
-      return widget._criticalColor;
-    }
-    if (_isHighCritical2()) {
+    if (_isLessOrEqual(value, widget._lowCritical2)) {
       return widget._critical2Color;
     }
-    if (_isLow()) {
+    if (_isLessOrEqual(value, widget._lowCritical)) {
+      return widget._criticalColor;
+    }
+    if (_isLessOrEqual(value, widget._low)) {
       return widget._lowColor;
-    }
-    if (_isLowCritical()) {
-      return widget._criticalColor;
-    }
-    if (_isLowCritical2()) {
-      return widget._critical2Color;
     }
     return defaultColor;
   }
   ///
-  /// проверяет абсолютное значение с уставкой аварийного нижнего уровня
-  bool _isLow() {
-    final low = widget._low;
-    if (low != null) {
-      final lowCritical = widget._lowCritical;
-      final rightCondition = lowCritical == null ? true : _value > lowCritical;
-      return _value <= low && rightCondition;
+  /// проверяет значение с уставкой аварийного нижнего уровня
+  bool _isLessOrEqual(num value, num? threshold) {
+    if (threshold != null) {
+      return value <= threshold;
     }
-    return false;  
+    return false;
   }
   ///
-  /// проверяет абсолютное значение с уставкой аварийного нижнего уровня
-  bool _isLowCritical() {
-    final lowCritical = widget._lowCritical;
-    if (lowCritical != null) {
-      final lowCritical2 = widget._lowCritical2;
-      final rightCondition = lowCritical2 == null ? true : _value > lowCritical2;
-      return _value <= lowCritical && rightCondition;
+  /// проверяет значение с уставкой аварийного верхнего уровня
+  bool _isGreaterOrEqual(num value, num? threshold) {
+    if (threshold != null) {
+      return value >= threshold;
     }
-    return false;  
-  }
-  ///
-  /// проверяет абсолютное значение с уставкой аварийного нижнего уровня
-  bool _isLowCritical2() {
-    final lowCritical2 = widget._lowCritical2;
-    if (lowCritical2 != null) {
-      return _value <= lowCritical2;
-    }
-    return false;  
-  }
-  ///
-  /// проверяет абсолютное значение с уставкой аварийного верхнего уровня
-  bool _isHigh() {
-    final high = widget._high;
-    if (high != null) {
-      final highCritical = widget._highCritical;
-      final rightCondition = highCritical == null ? true : _value < highCritical;
-      return _value >= high && rightCondition;
-    }
-    return false;  
-  }
-  ///
-  /// проверяет абсолютное значение с уставкой аварийного верхнего уровня
-  bool _isHighCritical() {
-    final highCritical = widget._highCritical;
-    if (highCritical != null) {
-      final highCritical2 = widget._highCritical2;
-      final rightCondition = highCritical2 == null ? true : _value < highCritical2;
-      return _value >= highCritical && rightCondition;
-    }
-    return false;  
-  }
-  ///
-  /// проверяет абсолютное значение с уставкой аварийного верхнего уровня
-  bool _isHighCritical2() {
-    final highCritical2 = widget._highCritical2;
-    if (highCritical2 != null) {
-      return _value >= highCritical2;
-    }
-    return false;  
+    return false;
   }
 }
