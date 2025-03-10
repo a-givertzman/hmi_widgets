@@ -4,6 +4,11 @@ import 'package:hmi_core/hmi_core_entities.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_relative_value.dart';
 import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
+part '_circular/_value_text_widget.dart';
+part '_circular/_unit_text_widget.dart';
+part '_circular/_sector_indicator_widget.dart';
+part '_circular/_sized_indicator_widget.dart';
+part '_circular/_circular_indicator_stream_builder.dart';
 ///
 /// Круговой индикатор значения из потока [stream] <DsDataPoint<double>.
 /// Значение в потоке может изменяться в диапазоне [min]...[max].
@@ -12,15 +17,23 @@ import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class CircularValueIndicator extends StatelessWidget {
-  static const _log = Log('CircularValueIndicator');
   static const double _valueBasis = 270 / 360;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<num>>? _stream;
   final double _angle;
   final double? _high;
+  final double _highEnd;
   final double? _low;
+  final double _lowEnd;
+  final double? _highCritical;
+  final double _highCriticalEnd;
+  final double? _lowCritical;
+  final double _lowCriticalEnd;
+  final double? _highCritical2;
+  final double _highCritical2End;
+  final double? _lowCritical2;
+  final double _lowCritical2End;
   final double _size;
-  final double _scale;
   final double _strokeWidth;
   final String? _title;
   final bool _showValueText;
@@ -28,6 +41,8 @@ class CircularValueIndicator extends StatelessWidget {
   final int _fractionDigits;
   final Color? _lowColor;
   final Color? _highColor;
+  final Color? _criticalColor;
+  final Color? _critical2Color;
   // final bool _disabled;
   /// 
   /// Builds home body using current user
@@ -40,7 +55,17 @@ class CircularValueIndicator extends StatelessWidget {
     double min = 0,
     double max = 100,
     double? low,
+    double? lowEnd,
     double? high,
+    double? highEnd,
+    double? lowCritical,
+    double? lowCriticalEnd,
+    double? highCritical,
+    double? highCriticalEnd,
+    double? lowCritical2,
+    double? lowCritical2End,
+    double? highCritical2,
+    double? highCritical2End,
     required Stream<DsDataPoint<num>>? stream,
     required double size,
     double angle = 0,
@@ -50,15 +75,25 @@ class CircularValueIndicator extends StatelessWidget {
     int fractionDigits = 0,
     Color? lowColor,
     Color? highColor,
-    // bool? disabled,
+    Color? criticalColor,
+    Color? critical2Color,
   }) : 
     _relativeValue = RelativeValue(basis: _valueBasis, min: min, max: max),
     _angle = angle - 135,
-    _high = high,
     _low = low,
+    _lowEnd = lowEnd ?? lowCritical ?? lowCritical2 ?? min,
+    _lowCritical = lowCritical,
+    _lowCriticalEnd = lowCriticalEnd ?? lowCritical2 ?? min,
+    _lowCritical2 = lowCritical2,
+    _lowCritical2End = lowCritical2End ?? min,
+    _high = high,
+    _highEnd = highEnd ?? highCritical ?? highCritical2 ?? max,
+    _highCritical = highCritical,
+    _highCriticalEnd = highCriticalEnd ?? highCritical2 ?? max,
+    _highCritical2 = highCritical2,
+    _highCritical2End = highCritical2End ?? max,
     _stream = stream,
     _size = size,
-    _scale = size / 1.618,
     _strokeWidth = 0.12 * (size / 1.618),
     _title = title,
     _showValueText = showValueText,
@@ -66,12 +101,36 @@ class CircularValueIndicator extends StatelessWidget {
     _fractionDigits = fractionDigits,
     _lowColor = lowColor,
     _highColor = highColor,
-    // _disabled = disabled ?? false,
+    _criticalColor = criticalColor,
+    _critical2Color = critical2Color,
+    assert(
+      lowEnd == null || (low != null && lowEnd < low),
+      "lowEnd must be less than low",
+    ),
+    assert(
+      lowCriticalEnd == null || (lowCritical != null && lowCriticalEnd < lowCritical),
+      "lowCriticalEnd must be less than lowCritical",
+    ),
+    assert(
+      lowCritical2End == null || (lowCritical2 != null && lowCritical2End < lowCritical2),
+      "lowCritical2End must be less than lowCritical2",
+    ),
+    assert(
+      highEnd == null || (high != null && highEnd > high),
+      "highEnd must be greater than high",
+    ),
+    assert(
+      highCriticalEnd == null || (highCritical != null && highCriticalEnd > highCritical),
+      "highCriticalEnd must be greater than highCritical",
+    ),
+    assert(
+      highCritical2End == null || (highCritical2 != null && highCritical2End > highCritical2),
+      "highCritical2End must be greater than highCritical2",
+    ),
     super(key: key);
   //
   @override
   Widget build(BuildContext context) {
-    // log(CircularBarIndicator._debug, '[$CircularBarIndicator.build]');
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -83,222 +142,49 @@ class CircularValueIndicator extends StatelessWidget {
               child: Text('$_title'),
             )
             : null,
-          // child: Text('$_title',
-          //   textScaleFactor: 0.4 * _scale,
-          // ),
         ),
         Padding(
           padding: EdgeInsets.all(_strokeWidth * 0.5),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              _buildIndicatorWidget(
-                value: _valueBasis, 
+              _SizedIndicatorWidget(
+                value: _valueBasis,
                 strokeWidth: _strokeWidth,
                 angle: _angle,
                 color: Theme.of(context).colorScheme.surface, 
+                size: _size,
               ),
-              valueBuilder(context, _stream),
+              _CircularIndicatorStreamBuilder(
+                low: _low,
+                lowEnd: _lowEnd,
+                high: _high,
+                highEnd: _highEnd,
+                lowCritical: _lowCritical,
+                lowCriticalEnd: _lowCriticalEnd,
+                highCritical: _highCritical,
+                highCriticalEnd: _highCriticalEnd,
+                lowCritical2: _lowCritical2,
+                lowCritical2End: _lowCritical2End,
+                highCritical2: _highCritical2,
+                highCritical2End: _highCritical2End,
+                stream: _stream,
+                size: _size,
+                angle: _angle,
+                showValueText: _showValueText,
+                valueUnit: _valueUnit,
+                fractionDigits: _fractionDigits,
+                lowColor: _lowColor,
+                highColor: _highColor,
+                criticalColor: _criticalColor,
+                critical2Color: _critical2Color,
+                strokeWidth: _strokeWidth,
+                relativeValue: _relativeValue,
+              ),
             ],
           ),
         ),
       ],
-    );
-  }
-  ///
-  Widget valueBuilder(BuildContext context, Stream<DsDataPoint<num>>? dataStream) {
-    return StreamBuilder<DsDataPoint<num>>(
-      stream: dataStream,
-      builder: (context, snapshot) {
-        // log(CircularBarIndicator._debug, '[$CircularBarIndicator.build] data: ${snapshot.data}');
-        double value = 0;
-        String valueText = '';
-        Color color = Theme.of(context).stateColors.on;
-        final lowColor = _lowColor ?? Theme.of(context).stateColors.alarm;
-        final highColor = _highColor ?? Theme.of(context).stateColors.alarm;
-        final invalidValueColor = Theme.of(context).stateColors.invalid;
-        if (snapshot.hasError) {
-          color = invalidValueColor;
-          _log.debug('[$CircularValueIndicator.build] error: ${snapshot.error}');
-        } else if (snapshot.hasData) {
-          final dataPoint = snapshot.data;
-          _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
-          if (dataPoint != null) {
-            final nValue = dataPoint.value;
-            _log.debug('[$CircularValueIndicator.build] dataPoint: $nValue');
-            value = _relativeValue.relative(nValue.toDouble(), limit: true);
-            _log.debug('[$CircularValueIndicator.build] dataPoint: $dataPoint');
-            valueText = nValue.toStringAsFixed(_fractionDigits);
-          }
-        }
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            _buildIndicatorValueText(context, _scale, value, valueText),
-            _buildIndicatorValueUnitText(context, _scale, _valueUnit),
-            _buildLowIndicatorWidget(context, value, _strokeWidth * 0.7, lowColor),
-            _buildHighIndicatorWidget(context, value, _strokeWidth * 0.7, highColor),
-            _buildIndicatorWidget(
-              value: value, 
-              angle: _angle,
-              color: color, 
-              strokeWidth: _strokeWidth, 
-            ),
-          ],
-        );
-      },
-    );
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного нижнего уровня в о.е
-  bool _isLow(double value) {
-    final low = _low;
-    if (low != null) {
-      // final lowRelative = _k * low + _b;
-      return value <= _relativeValue.relative(low);
-    }
-    return false;  
-  }
-  ///
-  /// проверяет относительное значение с уставкой аварийного верхнего уровня в о.е
-  bool _isHigh(double value) {
-    final high = _high;
-    if (high != null) {
-      // final highRelative = _k * high + _b;
-      return value >= _relativeValue.relative(high);
-    }
-    return false;
-  }
-  ///
-  Widget _buildIndicatorValueUnitText(
-    BuildContext context, 
-    double scale, 
-    String valueUnit,
-  ) {
-    if (_showValueText) {
-      final textStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
-      return Positioned(
-        bottom: 0.18 * _size,
-        child: Text(valueUnit,
-          textAlign: TextAlign.center,
-          style: textStyle.copyWith(
-            color: textStyle.color!.withValues(alpha: 0.7),
-          ),
-          textScaler: TextScaler.linear(0.8 * 0.0168 * _size),
-        ),
-      );
-    }
-    return const SizedBox();
-  }
-  ///
-  Widget _buildIndicatorValueText(
-    BuildContext context, 
-    double scale, 
-    double value,
-    String valueText,
-  ) {
-    if (_showValueText) {
-      final textStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
-      return Positioned(
-        top: (_valueUnit.isNotEmpty ? 0.19 : 0.25) * _size,
-        child: RepaintBoundary(
-          key: UniqueKey(),
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            textAlign: TextAlign.center,
-            style: _isLow(value) 
-                ? textStyle.copyWith(color: _lowColor, fontWeight: FontWeight.w700,) 
-                : _isHigh(value) 
-                  ? textStyle.copyWith(color: _highColor, fontWeight: FontWeight.w700,) 
-                  : textStyle,
-            child: Text(valueText,
-              textAlign: TextAlign.center,
-              textScaler: TextScaler.linear(1.5 * 0.01618 * _size),
-            ),
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildLowIndicatorWidget(
-    BuildContext context, double value, double strokeWidth,
-    Color lowColor,
-  ) {
-    if (_low != null) {
-      final size = _size * 0.85;
-      return SizedBox(
-          width: size,
-          height: size,
-        child: _buildIndicatorWidget(
-          value: _relativeValue.relative(_low),
-          strokeWidth: strokeWidth,
-          angle: _angle,
-          color: _isLow(value) ? lowColor : lowColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildHighIndicatorWidget(
-    BuildContext context, double value, double strokeWidth,
-    Color highColor,
-  ) {
-    if (_high != null) {
-      final size = _size * 0.85;
-      final highRelative = _relativeValue.relative(_high);
-      return SizedBox(
-        width: size,
-        height: size,
-        child: _buildIndicatorWidget(
-          value: _valueBasis - highRelative,
-          strokeWidth: strokeWidth,
-          angle: (_angle) + 360 * highRelative,
-          color: _isHigh(value) ? highColor : highColor.withValues(alpha: 0.3), 
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-  ///
-  Widget _buildIndicatorWidget({
-    required double value, 
-    required double strokeWidth,
-    required double angle,
-    Color? color, 
-    Color? backgroundColor,
-  }) {
-    return Transform.rotate(
-      angle: 2 * pi * angle / 360,
-      child: _buildSizedIndicatorWidget(
-        value: value,
-        color: color,
-        backgroundColor: backgroundColor,
-        strokeWidth: strokeWidth,
-      ),
-    );
-  }
-  ///
-  Widget _buildSizedIndicatorWidget({
-    required double value, 
-    required double strokeWidth,
-    Color? color, 
-    Color? backgroundColor,
-  }) {
-    return RepaintBoundary(
-      key: UniqueKey(),
-      child: SizedBox(
-        width: _size,
-        height: _size,
-          child: CircularProgressIndicator(
-            backgroundColor: backgroundColor,
-            color: color,
-            value: value,
-            strokeWidth: strokeWidth,
-          ),
-      ),
     );
   }
 }

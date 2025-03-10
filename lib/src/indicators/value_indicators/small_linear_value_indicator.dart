@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_core/hmi_core_app_settings.dart';
+import 'package:hmi_widgets/src/core/conditional_parent_widget.dart';
 import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
 import 'pointer_progress_indicator.dart';
 import 'text_value_indicator.dart';
@@ -22,6 +23,8 @@ class SmallLinearValueIndicator extends StatelessWidget {
   final Stream<DsDataPoint<num>> _stream;
   final IndicationStyle _indicationStyle;
   final Color? _defaultColor;
+  final Color? _alarmColor;
+  final bool _wrapWithCard;
   ///
   const SmallLinearValueIndicator({
     super.key,
@@ -35,7 +38,10 @@ class SmallLinearValueIndicator extends StatelessWidget {
     double textIndicatorWidth = 55, 
     IndicationStyle indicationStyle = IndicationStyle.pointer,
     Color? defaultColor,
-  }) : _indicationStyle = indicationStyle, 
+    Color? alarmColor,
+    bool wrapWithCard = true,
+  }) :
+    _indicationStyle = indicationStyle, 
     _stream = stream,
     _min = min,
     _max = max,
@@ -44,7 +50,9 @@ class SmallLinearValueIndicator extends StatelessWidget {
     _caption = caption,
     _valueUnit = valueUnit,
     _textIndicatorWidth = textIndicatorWidth,
-    _defaultColor = defaultColor;
+    _defaultColor = defaultColor,
+    _alarmColor = alarmColor,
+    _wrapWithCard = wrapWithCard;
   //
   @override
   Widget build(BuildContext context) {
@@ -53,9 +61,13 @@ class SmallLinearValueIndicator extends StatelessWidget {
     final padding = const Setting('padding').toDouble;
     final smallPadding = const Setting('smallPadding').toDouble;
     final theme = Theme.of(context);
-    final alarmColor = theme.stateColors.alarm;
-    return Card(
-      margin: EdgeInsets.zero,
+    final alarmColor = _alarmColor ?? theme.stateColors.alarm;
+    return ConditionalParentWidget(
+      condition: _wrapWithCard,
+      parentBuilder:(_, child) => Card(
+        margin: EdgeInsets.zero,
+        child: child,
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: smallPadding, 

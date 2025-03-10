@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_entities.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_widgets/src/core/colors/state_colors.dart';
 import 'package:hmi_widgets/src/theme/app_theme_colors_extension.dart';
+part '_text/_value_text_widget.dart';
 ///
 /// Simple text field, indicates state of streamed [DsDataPoint] value, 
 class TextValueIndicator extends StatefulWidget {
@@ -11,155 +11,142 @@ class TextValueIndicator extends StatefulWidget {
   final String _valueUnit;
   final double? _high;
   final double? _low;
+  final double? _lowCritical;
+  final double? _highCritical;
+  final double? _lowCritical2;
+  final double? _highCritical2;
+  final TextStyle? _valueStyle;
+  final TextStyle? _unitStyle;
+  final Color? _highColor;
+  final Color? _lowColor;
+  final Color? _criticalColor;
+  final Color? _critical2Color;
+
   ///
   const TextValueIndicator({
-      Key? key,
-      Stream<DsDataPoint<num>>? stream,
-      int fractionDigits = 0,
-      String valueUnit = '',
-      double? high,
-      double? low,
+    Key? key,
+    Stream<DsDataPoint<num>>? stream,
+    int fractionDigits = 0,
+    String valueUnit = '',
+    double? high,
+    double? low,
+    double? lowCritical,
+    double? highCritical,
+    double? lowCritical2,
+    double? highCritical2,
+    TextStyle? valueStyle,
+    TextStyle? unitStyle,
+    Color? highColor,
+    Color? lowColor,
+    Color? criticalColor,
+    Color? critical2Color,
   }) : 
     _stream = stream,
     _fractionDigits = fractionDigits,
     _valueUnit = valueUnit,
     _high = high,
     _low = low,
+    _highCritical = highCritical,
+    _lowCritical = lowCritical,
+    _highCritical2 = highCritical2,
+    _lowCritical2 = lowCritical2,
+    _valueStyle = valueStyle,
+    _unitStyle = unitStyle,
+    _highColor = highColor,
+    _lowColor = lowColor,
+    _criticalColor = criticalColor,
+    _critical2Color = critical2Color,
     super(key: key);
   //
   @override
   // ignore: no_logic_in_create_state
-  State<TextValueIndicator> createState() => _TextValueIndicatorState(
-      stream: _stream,
-      fractionDigits: _fractionDigits,
-      valueUnit: _valueUnit,
-      high: _high,
-      low: _low,
-  );
+  State<TextValueIndicator> createState() => _TextValueIndicatorState();
 }
 ///
 class _TextValueIndicatorState extends State<TextValueIndicator> {
   static const _log = Log('_TextValueIndicatorState');
-  final Stream<DsDataPoint<num>>? _stream;
-  final int _fractionDigits;
-  final String _valueUnit;
-  final double? _low;
-  final double? _high;
-  late TextStyle _textStyle;
-  late TextStyle _unitTextStyle;
-  late StateColors _stateColors;
-  num _value = 0;
-  ///
-  _TextValueIndicatorState({
-    required Stream<DsDataPoint<num>>? stream,
-    required int fractionDigits,
-    required String valueUnit,
-    double? high,
-    double? low,
-  }) :
-    _stream = stream,
-    _fractionDigits = fractionDigits,
-    _valueUnit = valueUnit,
-    _high = high,
-    _low = low,
-    super();
+  late num _value;
   //
   @override
   void initState() {
+    _value = 0;
     super.initState();
   }
   //
   @override
   Widget build(BuildContext context) {
-    _stateColors = Theme.of(context).stateColors;
-    _textStyle = Theme.of(context).textTheme.bodyLarge ?? const TextStyle();
-    _unitTextStyle = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
     return StreamBuilder<DsDataPoint<num>>(
       initialData: DsDataPoint<num>(
         type: DsDataType.bool, name: DsPointName('/test'), value: 0.0, status: DsStatus.obsolete, cot: DsCot.inf, timestamp: '',
       ),
-      stream: _stream,
+      stream: widget._stream,
       builder: (context, snapshot) {
-        return _buildValueText(
-          context,
-          snapshot, 
+        final theme = Theme.of(context);
+        Color? color;
+        num value = _value;
+        if (snapshot.hasError) {
+          color = theme.stateColors.invalid;
+          _log.debug('[._buildValueText] snapshot.error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          final point = snapshot.data;
+          if (point != null) {
+            value = point.value;
+            _value = value;
+            color = _buildColor(color, value);
+          } else {
+            _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
+          }
+        } else {
+          _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
+        }
+        return _ValueTextWidget(
+          value: value,
+          fractionDigits: widget._fractionDigits,
+          valueUnit: widget._valueUnit,
+          valueStyle: widget._valueStyle,
+          unitStyle: widget._unitStyle,
+          color: color,
         );
       },
     );
   }
   ///
-  Widget _buildValueText(BuildContext context, AsyncSnapshot<DsDataPoint<num>> snapshot) {
-    Color? color;
-    num value = _value;
-    if (snapshot.hasError) {
-      color = _stateColors.invalid;
-      _log.debug('[._buildValueText] snapshot.error: ${snapshot.error}');
-    } else if (snapshot.hasData) {
-      final point = snapshot.data;
-      if (point != null) {
-        value = point.value;
-        _value = value;
-        color = _buildColor(color, value);
-      } else {
-        _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
-      }
-    } else {
-      _log.debug('[._build] snapshot.connectionState: ${snapshot.connectionState}');
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          value.toStringAsFixed(_fractionDigits),
-          style: _textStyle.apply(color: color),
-          textScaler: TextScaler.linear(1.3),
-        ),
-        ..._buildUnitText(_valueUnit, color),
-      ],
-    );
-  }
-  ///
-  List<Widget> _buildUnitText(String valueUnit, Color? color) {
-    if (valueUnit.isNotEmpty) {
-      return [
-        const SizedBox(width: 3,),
-        Text(
-          _valueUnit,
-          style: _unitTextStyle.apply(color: color),
-          textScaler: TextScaler.linear(1.3),
-        ),
-      ];
-    }
-    return [];
-  }
-  ///
   /// корректирует цвет с учетом проверки нижнего и верхнего аврийных уровней
-  Color? _buildColor(Color? color, num value) {
-    if (_isHigh()) {
-      return _stateColors.highLevel;
+  Color? _buildColor(Color? defaultColor, num value) {
+    if (_isGreaterOrEqual(value, widget._highCritical2)) {
+      return widget._critical2Color;
     }
-    if (_isLow()) {
-      return _stateColors.lowLevel;
+    if (_isGreaterOrEqual(value, widget._highCritical)) {
+      return widget._criticalColor;
     }
-    return color;
+    if (_isGreaterOrEqual(value, widget._high)) {
+      return widget._highColor;
+    }
+    if (_isLessOrEqual(value, widget._lowCritical2)) {
+      return widget._critical2Color;
+    }
+    if (_isLessOrEqual(value, widget._lowCritical)) {
+      return widget._criticalColor;
+    }
+    if (_isLessOrEqual(value, widget._low)) {
+      return widget._lowColor;
+    }
+    return defaultColor;
   }
   ///
-  /// проверяет абсолютное значение с уставкой аварийного нижнего уровня
-  bool _isLow() {
-    final low = _low;
-    if (low != null) {
-      return _value <= low;
+  /// проверяет значение с уставкой аварийного нижнего уровня
+  bool _isLessOrEqual(num value, num? threshold) {
+    if (threshold != null) {
+      return value <= threshold;
     }
-    return false;  
+    return false;
   }
   ///
-  /// проверяет абсолютное значение с уставкой аварийного верхнего уровня
-  bool _isHigh() {
-    final high = _high;
-    if (high != null) {
-      return _value >= high;
+  /// проверяет значение с уставкой аварийного верхнего уровня
+  bool _isGreaterOrEqual(num value, num? threshold) {
+    if (threshold != null) {
+      return value >= threshold;
     }
-    return false;  
+    return false;
   }
 }
