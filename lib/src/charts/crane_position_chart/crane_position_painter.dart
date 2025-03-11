@@ -60,11 +60,11 @@ class CranePositionPainter extends CustomPainter {
     }
     _drawLine(
       canvas, 
-      Offset(0, _drawingController.point.dy),
-      Offset(size.width, _drawingController.point.dy),
+      Offset(0, size.height - _drawingController.point.dy),
+      Offset(size.width, size.height - _drawingController.point.dy),
       horizontalLineColor,
     );
-    final pointLocation = Offset(_drawingController.point.dx, _drawingController.point.dy);
+    final pointLocation = Offset(_drawingController.point.dx, size.height - _drawingController.point.dy);
     if(_drawingController.swlProtection) {
       _drawPoint(
         canvas, 
