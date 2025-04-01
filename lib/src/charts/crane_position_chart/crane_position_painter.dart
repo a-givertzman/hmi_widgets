@@ -113,9 +113,10 @@ class CranePositionPainter extends CustomPainter {
     textPainter.layout();
     if(rotated) {
       canvas.save();
-      canvas.translate(-location.dx, -location.dy);
+      canvas.translate(location.dx, location.dy);
       canvas.rotate(pi/2);
-      textPainter.paint(canvas, Offset.zero);
+      canvas.translate(-location.dx, -location.dy);
+      textPainter.paint(canvas, location);
       canvas.restore();
     } else {
       textPainter.paint(canvas, location);

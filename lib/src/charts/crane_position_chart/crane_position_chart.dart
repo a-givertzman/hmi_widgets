@@ -10,8 +10,8 @@ class CranePositionChart extends StatefulWidget {
   final Color _color;
   final double _width;
   final double _height;
-  final double rawWidth;
-  final double rawHeight;
+  final double _rawWidth;
+  final double _rawHeight;
   final double _xScale;
   final double _yScale;
   final double _positionPointDiameter;
@@ -27,9 +27,11 @@ class CranePositionChart extends StatefulWidget {
     required Color color,
     required double positionPointDiameter,
     required double indicationStrokeWidth,
-    required this.rawWidth,
-    required this.rawHeight,
-  }) : 
+    required double rawWidth,
+    required double rawHeight,
+  }) :
+    _rawHeight = rawHeight,
+    _rawWidth = rawWidth, 
     _xStream = xStream,
     _yStream = yStream,
     _swlProtectionStream = swlProtectionStream,
@@ -64,7 +66,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
       _drawingController.isXValid = isPointValid;
     });
     widget._yStream.listen((event) {
-      final dy = (widget.rawHeight - event.value) / widget._yScale;
+      final dy = (widget._rawHeight - event.value) / widget._yScale;
       _drawingPoint = Offset(_drawingPoint.dx, dy);
       _actualPoint = Offset(_actualPoint.dx, event.value);
       final isPointValid = event.status != DsStatus.invalid;
