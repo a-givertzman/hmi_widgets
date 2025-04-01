@@ -89,24 +89,47 @@ class CranePositionPainter extends CustomPainter {
         : _invalidColor,
       _pointDiameter,
     );
-    _drawText(
-      canvas,
-      _drawingController.actualPoint.dx.toStringAsFixed(2),
-      Offset(_drawingController.drawingPoint.dx, size.height - 26),
-      true,
-    );
-    _drawText(
-      canvas,
-      _drawingController.actualPoint.dy.toStringAsFixed(2),
-      Offset(size.width - 26, _drawingController.drawingPoint.dy),
-      false,
-    );
+    if(_drawingController.drawingPoint.dy > size.height / 2) {
+      _drawText(
+        canvas,
+        _drawingController.actualPoint.dx.toStringAsFixed(2),
+        Offset(_drawingController.drawingPoint.dx, 0.0),
+        _labelsOffset,
+        true,
+      );
+    } else {
+      _drawText(
+        canvas,
+        _drawingController.actualPoint.dx.toStringAsFixed(2),
+        Offset(_drawingController.drawingPoint.dx, size.height),
+        -_labelsOffset,
+        true,
+      );
+    }
+    if(_drawingController.drawingPoint.dx < size.width / 2) {
+      _drawText(
+        canvas,
+        _drawingController.actualPoint.dy.toStringAsFixed(2),
+        Offset(size.width, _drawingController.drawingPoint.dy),
+        _labelsOffset,
+        false,
+      );
+    } else {
+      _drawText(
+        canvas,
+        _drawingController.actualPoint.dy.toStringAsFixed(2),
+        Offset(0.0, _drawingController.drawingPoint.dy),
+        -_labelsOffset,
+        false,
+      );
+    }
   }
   ///
   void _drawText(
     Canvas canvas,
     String text,
-    Offset location, [
+    Offset location,
+    double labelsOffset, [
     bool rotated = false,
   ]) {
     final textPainter = TextPainter(
@@ -126,10 +149,10 @@ class CranePositionPainter extends CustomPainter {
       canvas.translate(location.dx, location.dy);
       canvas.rotate(-pi/2);
       canvas.translate(-location.dx, -location.dy);
-      textPainter.paint(canvas, location + Offset(-verticalOffset, _labelsOffset));
+      textPainter.paint(canvas, location - Offset(labelsOffset, verticalOffset));
       canvas.restore();
     } else {
-      textPainter.paint(canvas, location - Offset(_labelsOffset, verticalOffset));
+      textPainter.paint(canvas, location - Offset(labelsOffset, verticalOffset));
     }
   }
   ///
