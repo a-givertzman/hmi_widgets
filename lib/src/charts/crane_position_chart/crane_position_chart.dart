@@ -49,29 +49,32 @@ class CranePositionChart extends StatefulWidget {
 class _CranePositionChartState extends State<CranePositionChart> {
   // static const _debug = true;
   final DrawingController _drawingController = DrawingController();
-  Offset _point = Offset.zero;
+  Offset _drawingPoint = Offset.zero;
+  Offset _actualPoint = Offset.zero;
   bool _swlProtection = false;
   //
   @override
   void initState() {
     widget._xStream.listen((event) {
       final dx = event.value / widget._xScale;
-      _point = Offset(dx, _point.dy);
+      _drawingPoint = Offset(dx, _drawingPoint.dy);
+      _actualPoint = Offset(event.value, _actualPoint.dy);
       final isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection);
+      _drawingController.add(_drawingPoint, _actualPoint, _swlProtection);
       _drawingController.isXValid = isPointValid;
     });
     widget._yStream.listen((event) {
-      final dy = event.value / widget._yScale;
-      _point = Offset(_point.dx, dy);
+      final dy = (widget.rawHeight - event.value) / widget._yScale;
+      _drawingPoint = Offset(_drawingPoint.dx, dy);
+      _actualPoint = Offset(_actualPoint.dx, event.value);
       final isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection);
+      _drawingController.add(_drawingPoint, _actualPoint, _swlProtection);
       _drawingController.isYValid = isPointValid;
     });
     widget._swlProtectionStream.listen((event) {
       _swlProtection = event.value;
       final isPointValid = event.status != DsStatus.invalid;
-      _drawingController.add(_point, _swlProtection);
+      _drawingController.add(_drawingPoint, _actualPoint, _swlProtection);
       _drawingController.isSwlProtectionValid = isPointValid;
     });
     super.initState();
@@ -105,14 +108,16 @@ class _CranePositionChartState extends State<CranePositionChart> {
 }
 ///
 class DrawingController extends ChangeNotifier {
-  Offset _point = Offset.zero;
+  Offset _drawingPoint = Offset.zero;
+  Offset _actualPoint = Offset.zero;
   bool _swlProtection = false;
   bool _isSwlProtectionValid = true;
   bool _isXValid = true;
   bool _isYValid = true;
   ///
-  void add(Offset point, bool swlProtection) {
-    _point = point;
+  void add(Offset drawingPoint, Offset actualPoint, bool swlProtection) {
+    _drawingPoint = drawingPoint;
+    _actualPoint = actualPoint;
     _swlProtection = swlProtection;
     notifyListeners();
   }
@@ -126,7 +131,9 @@ class DrawingController extends ChangeNotifier {
     _isYValid = value;
   }
   ///
-  Offset get point => _point;
+  Offset get drawingPoint => _drawingPoint;
+  ///
+  Offset get actualPoint => _actualPoint;
   ///
   bool get swlProtection => _swlProtection;
   ///

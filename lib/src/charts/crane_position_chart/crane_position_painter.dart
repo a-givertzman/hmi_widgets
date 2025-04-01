@@ -46,8 +46,8 @@ class CranePositionPainter extends CustomPainter {
     }
     _drawLine(
       canvas, 
-      Offset(_drawingController.point.dx, 0), 
-      Offset(_drawingController.point.dx, size.height),
+      Offset(_drawingController.drawingPoint.dx, 0), 
+      Offset(_drawingController.drawingPoint.dx, size.height),
       verticalLineColor,
     );
     final Color horizontalLineColor;
@@ -60,11 +60,11 @@ class CranePositionPainter extends CustomPainter {
     }
     _drawLine(
       canvas, 
-      Offset(0, _drawingController.point.dy),
-      Offset(size.width, _drawingController.point.dy),
+      Offset(0, _drawingController.drawingPoint.dy),
+      Offset(size.width, _drawingController.drawingPoint.dy),
       horizontalLineColor,
     );
-    final pointLocation = Offset(_drawingController.point.dx, _drawingController.point.dy);
+    final pointLocation = Offset(_drawingController.drawingPoint.dx, _drawingController.drawingPoint.dy);
     if(_drawingController.swlProtection) {
       _drawPoint(
         canvas, 
@@ -83,6 +83,43 @@ class CranePositionPainter extends CustomPainter {
         : _invalidColor,
       _pointDiameter,
     );
+    _drawText(
+      canvas,
+      _drawingController.actualPoint.dx.toStringAsFixed(2),
+      Offset(_drawingController.drawingPoint.dx, size.height - 26),
+      true,
+    );
+    _drawText(
+      canvas,
+      _drawingController.actualPoint.dy.toStringAsFixed(2),
+      Offset(size.width - 26, _drawingController.drawingPoint.dy),
+      false,
+    );
+  }
+  ///
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset location, [
+    bool rotated = false,
+  ]) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    if(rotated) {
+      canvas.save();
+      canvas.translate(-location.dx, -location.dy);
+      canvas.rotate(pi/2);
+      textPainter.paint(canvas, Offset.zero);
+      canvas.restore();
+    } else {
+      textPainter.paint(canvas, location);
+    }
   }
   ///
   void _drawLine(Canvas canvas, Offset start, Offset end, Color color) {
