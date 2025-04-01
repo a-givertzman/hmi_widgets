@@ -8,13 +8,14 @@ class CranePositionPainter extends CustomPainter {
   static const _log = Log('CranePositionPainter');
   final DrawingController _drawingController;
   final int code;
-  final Size size;
+  final Size _size;
   final Color _indicatorColor;
   final Color _alarmIndicatorColor;
   final Color _invalidColor;
   final double _pointDiameter;
   final double _indicationStrokeWidth;
   final double _labelsOffset;
+  final bool _preventLabelOverlap;
   final TextStyle _labelsStyle;
   ///
   CranePositionPainter({
@@ -26,8 +27,11 @@ class CranePositionPainter extends CustomPainter {
     required double indicationStrokeWidth,
     required double labelsOffset,
     required TextStyle labelsStyle,
-    required this.size,
-  }) : 
+    required Size size,
+    required bool preventLabelOverlap,
+  }) :
+    _size = size,
+    _preventLabelOverlap = preventLabelOverlap,
     _alarmIndicatorColor = alarmIndicatorColor, 
     _indicatorColor = indicatorColor,
     _invalidColor = invalidColor,
@@ -89,15 +93,7 @@ class CranePositionPainter extends CustomPainter {
         : _invalidColor,
       _pointDiameter,
     );
-    if(_drawingController.drawingPoint.dy > size.height / 2) {
-      _drawText(
-        canvas,
-        _drawingController.actualPoint.dx.toStringAsFixed(2),
-        Offset(_drawingController.drawingPoint.dx, 0.0),
-        _labelsOffset,
-        true,
-      );
-    } else {
+    if(_drawingController.drawingPoint.dy < size.height / 2 && _preventLabelOverlap) {
       _drawText(
         canvas,
         _drawingController.actualPoint.dx.toStringAsFixed(2),
@@ -105,21 +101,29 @@ class CranePositionPainter extends CustomPainter {
         -_labelsOffset,
         true,
       );
+    } else {
+      _drawText(
+        canvas,
+        _drawingController.actualPoint.dx.toStringAsFixed(2),
+        Offset(_drawingController.drawingPoint.dx, 0.0),
+        _labelsOffset,
+        true,
+      );
     }
-    if(_drawingController.drawingPoint.dx < size.width / 2) {
+    if(_drawingController.drawingPoint.dx > size.width / 2 && _preventLabelOverlap) {
       _drawText(
         canvas,
         _drawingController.actualPoint.dy.toStringAsFixed(2),
-        Offset(size.width, _drawingController.drawingPoint.dy),
-        _labelsOffset,
+        Offset(0.0, _drawingController.drawingPoint.dy),
+        -_labelsOffset,
         false,
       );
     } else {
       _drawText(
         canvas,
         _drawingController.actualPoint.dy.toStringAsFixed(2),
-        Offset(0.0, _drawingController.drawingPoint.dy),
-        -_labelsOffset,
+        Offset(size.width, _drawingController.drawingPoint.dy),
+        _labelsOffset,
         false,
       );
     }
@@ -177,6 +181,6 @@ class CranePositionPainter extends CustomPainter {
   //
   @override
   bool shouldRepaint(covariant CranePositionPainter oldDelegate) {
-    return (oldDelegate.code != code) || (oldDelegate.size != size);
+    return (oldDelegate.code != code) || (oldDelegate._size != _size);
   }
 }

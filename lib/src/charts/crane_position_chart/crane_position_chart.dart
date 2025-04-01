@@ -16,6 +16,7 @@ class CranePositionChart extends StatefulWidget {
   final double _indicationStrokeWidth;
   final TextStyle _labelsStyle;
   final double _labelsOffset;
+  final bool _preventLabelOverlap;
   ///
   CranePositionChart({
     super.key,
@@ -29,6 +30,7 @@ class CranePositionChart extends StatefulWidget {
     required double indicationStrokeWidth,
     required TextStyle labelsStyle,
     required double labelsOffset,
+    bool preventLabelOverlap = false,
   }) :
     _xStream = xStream,
     _yStream = yStream,
@@ -40,6 +42,7 @@ class CranePositionChart extends StatefulWidget {
     _indicationStrokeWidth = indicationStrokeWidth,
     _labelsStyle = labelsStyle,
     _labelsOffset = labelsOffset,
+    _preventLabelOverlap = preventLabelOverlap,
     _xScale = rawSize.width / size.width,
     _yScale = rawSize.height / size.height;
   //
@@ -90,6 +93,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
       child: CustomPaint(
           size: widget._size,
           foregroundPainter: CranePositionPainter(
+            preventLabelOverlap: widget._preventLabelOverlap,
             drawingController: _drawingController,
             size: widget._size,
             indicatorColor: widget._color,
