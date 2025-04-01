@@ -8,40 +8,40 @@ class CranePositionChart extends StatefulWidget {
   final Stream<DsDataPoint<double>> _yStream;
   final Stream<DsDataPoint<bool>> _swlProtectionStream;
   final Color _color;
-  final double _width;
-  final double _height;
-  final double _rawWidth;
-  final double _rawHeight;
+  final Size _size;
+  final Size _rawSize;
   final double _xScale;
   final double _yScale;
   final double _positionPointDiameter;
   final double _indicationStrokeWidth;
+  final TextStyle _labelsStyle;
+  final double _labelsOffset;
   ///
-  const CranePositionChart({
+  CranePositionChart({
     super.key,
     required Stream<DsDataPoint<double>> xStream,
     required Stream<DsDataPoint<double>> yStream,
     required Stream<DsDataPoint<bool>> swlProtectionStream,
-    required double width,
-    required double height,
+    required Size size,
+    required Size rawSize,
     required Color color,
     required double positionPointDiameter,
     required double indicationStrokeWidth,
-    required double rawWidth,
-    required double rawHeight,
+    required TextStyle labelsStyle,
+    required double labelsOffset,
   }) :
-    _rawHeight = rawHeight,
-    _rawWidth = rawWidth, 
     _xStream = xStream,
     _yStream = yStream,
+    _size = size,
+    _rawSize = rawSize,
     _swlProtectionStream = swlProtectionStream,
-    _width = width,
-    _height = height,
     _color = color,
     _positionPointDiameter = positionPointDiameter,
     _indicationStrokeWidth = indicationStrokeWidth,
-    _xScale = rawWidth / width,
-    _yScale = rawHeight / height;
+    _labelsStyle = labelsStyle,
+    _labelsOffset = labelsOffset,
+    _xScale = rawSize.width / size.width,
+    _yScale = rawSize.height / size.height;
   //
   @override
   State<CranePositionChart> createState() => _CranePositionChartState();
@@ -49,7 +49,6 @@ class CranePositionChart extends StatefulWidget {
 
 ///
 class _CranePositionChartState extends State<CranePositionChart> {
-  // static const _debug = true;
   final DrawingController _drawingController = DrawingController();
   Offset _drawingPoint = Offset.zero;
   Offset _actualPoint = Offset.zero;
@@ -66,7 +65,7 @@ class _CranePositionChartState extends State<CranePositionChart> {
       _drawingController.isXValid = isPointValid;
     });
     widget._yStream.listen((event) {
-      final dy = (widget._rawHeight - event.value) / widget._yScale;
+      final dy = (widget._rawSize.height - event.value) / widget._yScale;
       _drawingPoint = Offset(_drawingPoint.dx, dy);
       _actualPoint = Offset(_actualPoint.dx, event.value);
       final isPointValid = event.status != DsStatus.invalid;
@@ -84,27 +83,24 @@ class _CranePositionChartState extends State<CranePositionChart> {
   //
   @override
   Widget build(BuildContext context) {
-    final size = Size(widget._width, widget._height);
     final theme = Theme.of(context);
     return SizedBox(
-      width: widget._width,
-      height: widget._height,
+      width: widget._size.width,
+      height: widget._size.height,
       child: CustomPaint(
-          size: size,
+          size: widget._size,
           foregroundPainter: CranePositionPainter(
             drawingController: _drawingController,
-            size: size,
+            size: widget._size,
             indicatorColor: widget._color,
             alarmIndicatorColor: theme.stateColors.alarm,
             invalidColor: theme.stateColors.invalid,
             pointDiameter: widget._positionPointDiameter,
             indicationStrokeWidth: widget._indicationStrokeWidth,
+            labelsStyle: widget._labelsStyle,
+            labelsOffset: widget._labelsOffset,
           ),
         ),
-      // RepaintBoundary(
-      //   key: Key('$hashCode'),
-      //   child: 
-      // ),
     );
   }
 }

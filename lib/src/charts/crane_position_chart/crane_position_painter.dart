@@ -14,6 +14,8 @@ class CranePositionPainter extends CustomPainter {
   final Color _invalidColor;
   final double _pointDiameter;
   final double _indicationStrokeWidth;
+  final double _labelsOffset;
+  final TextStyle _labelsStyle;
   ///
   CranePositionPainter({
     required DrawingController drawingController,
@@ -22,6 +24,8 @@ class CranePositionPainter extends CustomPainter {
     required Color invalidColor,
     required double pointDiameter,
     required double indicationStrokeWidth,
+    required double labelsOffset,
+    required TextStyle labelsStyle,
     required this.size,
   }) : 
     _alarmIndicatorColor = alarmIndicatorColor, 
@@ -31,6 +35,8 @@ class CranePositionPainter extends CustomPainter {
     code = Random().nextInt(1000),
     _pointDiameter = pointDiameter,
     _indicationStrokeWidth = indicationStrokeWidth,
+    _labelsStyle = labelsStyle,
+    _labelsOffset = labelsOffset,
     super(repaint: drawingController);
   //
   @override
@@ -106,20 +112,24 @@ class CranePositionPainter extends CustomPainter {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(),
+        style: _labelsStyle,
       ),
       textDirection: TextDirection.ltr,
     );
+    final verticalOffset = switch(_labelsStyle.fontSize) {
+      final double fontSize => fontSize / 2,
+      null => 10.0,
+    };
     textPainter.layout();
     if(rotated) {
       canvas.save();
       canvas.translate(location.dx, location.dy);
-      canvas.rotate(pi/2);
+      canvas.rotate(-pi/2);
       canvas.translate(-location.dx, -location.dy);
-      textPainter.paint(canvas, location);
+      textPainter.paint(canvas, location + Offset(-verticalOffset, _labelsOffset));
       canvas.restore();
     } else {
-      textPainter.paint(canvas, location);
+      textPainter.paint(canvas, location - Offset(_labelsOffset, verticalOffset));
     }
   }
   ///
