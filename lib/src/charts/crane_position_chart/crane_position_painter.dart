@@ -93,40 +93,32 @@ class CranePositionPainter extends CustomPainter {
         : _invalidColor,
       _pointDiameter,
     );
-    if(_drawingController.drawingPoint.dy < size.height / 2 && _preventLabelOverlap) {
-      _drawText(
-        canvas,
-        _drawingController.actualPoint.dx.toStringAsFixed(2),
-        Offset(_drawingController.drawingPoint.dx, size.height),
-        -_labelsOffset,
-        true,
-      );
-    } else {
-      _drawText(
-        canvas,
-        _drawingController.actualPoint.dx.toStringAsFixed(2),
-        Offset(_drawingController.drawingPoint.dx, 0.0),
-        _labelsOffset,
-        true,
-      );
-    }
-    if(_drawingController.drawingPoint.dx > size.width / 2 && _preventLabelOverlap) {
-      _drawText(
-        canvas,
-        _drawingController.actualPoint.dy.toStringAsFixed(2),
-        Offset(0.0, _drawingController.drawingPoint.dy),
-        -_labelsOffset,
-        false,
-      );
-    } else {
-      _drawText(
-        canvas,
-        _drawingController.actualPoint.dy.toStringAsFixed(2),
-        Offset(size.width, _drawingController.drawingPoint.dy),
-        _labelsOffset,
-        false,
-      );
-    }
+    final (xLabelPosition, xLabelOffset) = switch(
+      _drawingController.drawingPoint.dy < size.height / 2 && _preventLabelOverlap
+    ) {
+      true => (Offset(_drawingController.drawingPoint.dx, size.height), -_labelsOffset),
+      false => (Offset(_drawingController.drawingPoint.dx, 0.0), _labelsOffset),
+    };
+    _drawText(
+      canvas,
+      _drawingController.actualPoint.dx.toStringAsFixed(2),
+      xLabelPosition,
+      xLabelOffset,
+      true,
+    );
+    final (yLabelPosition, yLabelOffset) = switch(
+      _drawingController.drawingPoint.dx > size.width / 2 && _preventLabelOverlap
+    ) {
+      true => (Offset(0.0, _drawingController.drawingPoint.dy), -_labelsOffset),
+      false => (Offset(size.width, _drawingController.drawingPoint.dy), _labelsOffset),
+    };
+    _drawText(
+      canvas,
+      _drawingController.actualPoint.dy.toStringAsFixed(2),
+      yLabelPosition,
+      yLabelOffset,
+      false,
+    );
   }
   ///
   void _drawText(
