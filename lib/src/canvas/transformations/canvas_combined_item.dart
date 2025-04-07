@@ -2,12 +2,27 @@ import 'dart:ui';
 
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 ///
+/// Merges 2 paths together to appear as single object (by creating a common outline).
 class CanvasCombinedItem implements CanvasItem {
   final CanvasItem _item1;
   final CanvasItem _item2;
   final PathOperation _operation;
   final Paint? _paint;
   ///
+  /// Merges 2 paths together to appear as single object (by creating a common outline).
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasCombinedItem(
+  ///       CanvasRect(...),
+  ///       CanvasPoint(...)
+  ///       operation: PathOperation.union,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   const CanvasCombinedItem(
     CanvasItem item1, CanvasItem item2, {
     required PathOperation operation,

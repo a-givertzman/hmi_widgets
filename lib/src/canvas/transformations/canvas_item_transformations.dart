@@ -9,6 +9,15 @@ import 'package:hmi_widgets/src/canvas/transformations/canvas_scaled_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/canvas_transformed_around_point_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/canvas_translated_item.dart';
 ///
+/// Extensions for fast wrapping of canvas items
+/// 
+/// Example:
+/// ```dart
+/// CanvasPoint(...)
+///  .rotate(...)
+///  .transform(..)
+///  .scale(..)
+/// ```
 extension CanvasItemTransformations on CanvasItem {
   ///
   CanvasItem rotate(double rotationRadians) => CanvasRotatedItem(

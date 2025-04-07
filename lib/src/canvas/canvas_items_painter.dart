@@ -1,9 +1,21 @@
 import 'package:flutter/rendering.dart';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 ///
+/// [CustomPainter] that allows to define canvas items declaratively.
 class CanvasItemsPainter extends CustomPainter {
   final Iterable<CanvasItem> _items;
   ///
+  /// [CustomPainter] that allows to define canvas [items] declaratively.
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasPoint(...),
+  ///     CanvasRect(...),
+  ///   ],
+  /// );
+  /// ```
   const CanvasItemsPainter({
     super.repaint,
     required Iterable<CanvasItem> items,

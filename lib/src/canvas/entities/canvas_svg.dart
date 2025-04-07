@@ -2,11 +2,26 @@ import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 import 'package:svg_path_parser/svg_path_parser.dart';
 ///
+/// SVG-markup displayed on a canvas.
 class CanvasSvg implements CanvasItem {
   final String _svgMarkup;
   final Color _color;
   final PaintingStyle _style;
   ///
+  /// SVG-markup displayed on a canvas.
+  /// 
+  /// Example:
+  /// ```dart
+  /// final testSvg = await File('test.svg').readAsString();
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasRect(
+  ///        svgMarkup: testSvg,
+  ///        ...
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   CanvasSvg({
     required String svgMarkup,
     required Color color,

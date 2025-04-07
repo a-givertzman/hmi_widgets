@@ -3,11 +3,31 @@ import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/canvas_item_transformations.dart';
 import 'package:hmi_widgets/src/canvas/entities/canvas_rect.dart';
 ///
+/// Drawing, flipped around some axis.
 class CanvasMirroredItem implements CanvasItem {
   final CanvasItem _item;
   final CanvasLineDirection _direction;
-  
   ///
+  /// Drawing, flipped around some axis. You can select an axis with [direction].
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasMirroredItem(
+  ///       CanvasRect(...),
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
+  /// or
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///       CanvasRect(...).mirrored(),
+  ///   ],
+  /// );
+  /// ```
   const CanvasMirroredItem(
     CanvasItem item, {
     required CanvasLineDirection direction,

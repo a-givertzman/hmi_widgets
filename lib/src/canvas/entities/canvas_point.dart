@@ -1,11 +1,24 @@
 import 'package:flutter/rendering.dart';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 ///
+/// Filled circle on a canvas.
 class CanvasPoint implements CanvasItem {
   final Color _color;
   final double _width;
   final Offset _coord;
   ///
+  /// Filled circle on a canvas.
+  /// - [color] - filling color
+  /// - [width] - a diameter of point
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasPoint(...),
+  ///   ],
+  /// );
+  /// ```
   const CanvasPoint({
     required Color color,
     required double width,

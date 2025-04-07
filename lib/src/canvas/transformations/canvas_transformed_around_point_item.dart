@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 import 'package:vector_math/vector_math_64.dart';
-///
+/// 
+/// Scaled/rotated/translated drawing around specified point
 class CanvasTransformedAroundPointItem implements CanvasItem {
   final CanvasItem _item;
   final Offset _point;
@@ -9,6 +10,22 @@ class CanvasTransformedAroundPointItem implements CanvasItem {
   final double _rotatationAngleRadians;
   final Offset _translation;
   ///
+  /// Scaled/rotated/translated drawing around specified [point]
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasTransformedAroundPointItem(
+  ///       CanvasRect(...),
+  ///       Offset(10.3, 20.2),
+  ///       scale: Offset(2, 2),
+  ///       translation: Offset(10, 0),
+  ///       rotatationAngleRadians = -pi
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   const CanvasTransformedAroundPointItem(
     CanvasItem item,
     Offset point, {

@@ -2,16 +2,46 @@ import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
+/// On wich axis centering is done
 enum CenteringDirection {
+  ///
+  /// Center on OX axis
   horizontal,
+  ///
+  /// Center on OY axis
   vertical,
+  /// 
+  /// Absolute center
   both,
 }
-///
+/// 
+/// Canvas element with applied centering.
 class CanvasCenteredItem implements CanvasItem {
   final CenteringDirection _direction;
   final CanvasItem _item;
-  ///
+  /// 
+  /// Canvas element with applied centering.
+  /// 
+  /// Type of centering can be spesified with [direction].
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasPoint(...).center(),
+  ///   ],
+  /// );
+  /// ```
+  /// or
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasCenteredItem(
+  ///       item: CanvasRect(...),
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   const CanvasCenteredItem(
     CanvasItem item, {
     CenteringDirection direction = CenteringDirection.both,

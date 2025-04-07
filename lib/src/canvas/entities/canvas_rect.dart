@@ -2,18 +2,33 @@ import 'package:flutter/painting.dart';
 import 'package:hmi_widgets/src/canvas/canvas_item.dart';
 import 'package:hmi_widgets/src/canvas/canvas_item_dimension.dart';
 ///
+/// Line ([CanvasRect]) draw direction
 enum CanvasLineDirection {
+  /// Line will be drawn parallelry with OY
   vertical,
+  /// Line will be drawn parallelry with OX
   horizontal,
+  /// Neither of the rest.
   undefined,
 }
 ///
+/// Basically a rect, but can be used to draw a line.
 class CanvasRect implements CanvasItem {
   final Color _color;
   final double _strokeWidth;
   final CanvasItemDimension _width;
   final CanvasLineDirection _direction;
   ///
+  /// Basically a rect, but can be used to draw a line.
+  /// 
+  /// Example:
+  /// ```dart
+  /// CanvasItemsPainter(
+  ///   items: [
+  ///     CanvasRect(...),
+  ///   ],
+  /// );
+  /// ```
   const CanvasRect({
     required Color color,
     required double strokeWidth,
