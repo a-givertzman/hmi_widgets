@@ -1,10 +1,11 @@
 import 'dart:ui';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/hmi_widgets.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
 /// Drawing, scaled from its original size.
-class CanvasScaledItem implements CanvasItem {
-  final CanvasItem _item;
+class PaintScaled implements PaintItem {
+  final PaintItem _item;
   final Offset _scaling;
   ///
   /// Drawing, scaled from its original size.
@@ -13,30 +14,42 @@ class CanvasScaledItem implements CanvasItem {
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasPoint(...)
-  ///       .scale(2),
-  ///   ],
-  /// );
-  /// ```
-  /// or
-  /// ```dart
-  /// CanvasItemsPainter(
-  ///   items: [
-  ///     CanvasScaledItem(
-  ///       CanvasRect(...),
+  ///     PaintScaled(
+  ///       PaintRect(...),
   ///       2
   ///     ),
   ///   ],
   /// );
   /// ```
-  const CanvasScaledItem(
-    CanvasItem item, {
+  /// or
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintPoint(...)
+  ///       .scale(2),
+  ///   ],
+  /// );
+  /// ```
+  const PaintScaled(
+    PaintItem item, {
     required Offset scaling,
   }) :
     _scaling = scaling,
     _item = item;
+  ///
+  factory PaintScaled.many(
+    List<PaintItem> items, {
+    required Offset scaling,
+  }) => PaintScaled(
+    PaintJoined(
+      items
+        .map((item) => (item, Offset.zero))
+        .toList()
+    ),
+    scaling: scaling,
+  );
   //
   @override
   Path path(Size size) {
@@ -46,5 +59,5 @@ class CanvasScaledItem implements CanvasItem {
   }  
   //
   @override
-  Paint get paint => _item.paint;
+  Paint get brush => _item.brush;
 }

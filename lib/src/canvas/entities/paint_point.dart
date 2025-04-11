@@ -1,8 +1,8 @@
 import 'package:flutter/rendering.dart';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
 ///
 /// Filled circle on a canvas.
-class CanvasPoint implements CanvasItem {
+class PaintPoint implements PaintItem {
   final Color _color;
   final double _width;
   final Offset _coord;
@@ -13,13 +13,13 @@ class CanvasPoint implements CanvasItem {
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasPoint(...),
+  ///     PaintPoint(...),
   ///   ],
   /// );
   /// ```
-  const CanvasPoint({
+  const PaintPoint({
     required Color color,
     required double width,
     Offset coord = const Offset(0.0, 0.0),
@@ -38,7 +38,7 @@ class CanvasPoint implements CanvasItem {
     );
   //
   @override
-  Paint get paint => Paint()
+  Paint get brush => Paint()
     ..style = PaintingStyle.fill
     ..color = _color
     ..isAntiAlias = true;

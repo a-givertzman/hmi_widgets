@@ -1,28 +1,28 @@
 import 'dart:ui';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:svg_path_parser/svg_path_parser.dart';
 ///
-/// SVG-markup displayed on a canvas.
-class CanvasSvg implements CanvasItem {
+/// SVG drawing from its markup.
+class PaintSvg implements PaintItem {
   final String _svgMarkup;
   final Color _color;
   final PaintingStyle _style;
   ///
-  /// SVG-markup displayed on a canvas.
+  /// SVG drawing from its [svgMarkup].
   /// 
   /// Example:
   /// ```dart
   /// final testSvg = await File('test.svg').readAsString();
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasRect(
+  ///     PaintRect(
   ///        svgMarkup: testSvg,
   ///        ...
   ///     ),
   ///   ],
   /// );
   /// ```
-  CanvasSvg({
+  PaintSvg({
     required String svgMarkup,
     required Color color,
     required PaintingStyle style,
@@ -32,7 +32,7 @@ class CanvasSvg implements CanvasItem {
     _svgMarkup = svgMarkup;
   //
   @override
-  Paint get paint => Paint()
+  Paint get brush => Paint()
     ..style = _style
     ..color = _color
     ..isAntiAlias = true;

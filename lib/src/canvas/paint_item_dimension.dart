@@ -1,16 +1,16 @@
 ///
 /// Width or height of canvas item.
-sealed class CanvasItemDimension {
+sealed class PaintItemDimension {
   ///
   /// Item size provided by user.
-  const factory CanvasItemDimension.sizedFrom(double value) = ValueSizedDimension;
+  const factory PaintItemDimension.sizedFrom(double value) = ValueSizedDimension;
   ///
   /// Item size taken from canvas size.
-  const factory CanvasItemDimension.sizedFromCanvas() = CanvasSizedDimension;
+  const factory PaintItemDimension.sizedFromCanvas() = CanvasSizedDimension;
 }
 ///
 /// Canvas item size provided by user.
-class ValueSizedDimension implements CanvasItemDimension {
+class ValueSizedDimension implements PaintItemDimension {
   final double value;
   ///
   /// Canvas item size provided by user through [value].
@@ -18,7 +18,7 @@ class ValueSizedDimension implements CanvasItemDimension {
 }
 ///
 /// Canvas item size taken from canvas size.
-class CanvasSizedDimension implements CanvasItemDimension {
+class CanvasSizedDimension implements PaintItemDimension {
   ///
   /// Canvas item size taken from canvas size.
   const CanvasSizedDimension();

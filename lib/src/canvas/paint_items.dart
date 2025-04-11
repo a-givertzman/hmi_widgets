@@ -1,35 +1,35 @@
 import 'package:flutter/rendering.dart';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
 ///
 /// [CustomPainter] that allows to define canvas items declaratively.
-class CanvasItemsPainter extends CustomPainter {
-  final Iterable<CanvasItem> _items;
+class PaintItems extends CustomPainter {
+  final Iterable<PaintItem> _items;
   ///
   /// [CustomPainter] that allows to define canvas [items] declaratively.
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasPoint(...),
-  ///     CanvasRect(...),
+  ///     PaintPoint(...),
+  ///     PaintRect(...),
   ///   ],
   /// );
   /// ```
-  const CanvasItemsPainter({
+  const PaintItems({
     super.repaint,
-    required Iterable<CanvasItem> items,
+    required Iterable<PaintItem> items,
   }) : _items = items;
   //
   @override
   void paint(Canvas canvas, Size size) {
     for(final item in _items) {
-      canvas.drawPath(item.path(size), item.paint);
+      canvas.drawPath(item.path(size), item.brush);
     }
   }
   //
   @override
-  bool shouldRepaint(covariant CanvasItemsPainter oldDelegate) {
+  bool shouldRepaint(covariant PaintItems oldDelegate) {
     return !oldDelegate._items.toSet().containsAll(_items);
   }
 }

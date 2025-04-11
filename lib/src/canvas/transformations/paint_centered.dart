@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
 /// On wich axis centering is done
@@ -14,40 +15,52 @@ enum CenteringDirection {
   /// Absolute center
   both,
 }
-/// 
-/// Canvas element with applied centering.
-class CanvasCenteredItem implements CanvasItem {
+///
+/// Paint element with applied centering.
+class PaintCentered implements PaintItem {
   final CenteringDirection _direction;
-  final CanvasItem _item;
+  final PaintItem _item;
   /// 
-  /// Canvas element with applied centering.
+  /// Paint element with applied centering.
   /// 
   /// Type of centering can be spesified with [direction].
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasPoint(...).center(),
+  ///     PaintCentered(
+  ///       item: PaintPoint(...),
+  ///     ),
   ///   ],
   /// );
   /// ```
   /// or
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasCenteredItem(
-  ///       item: CanvasRect(...),
-  ///     ),
+  ///     PaintPoint(...).center(),
   ///   ],
   /// );
   /// ```
-  const CanvasCenteredItem(
-    CanvasItem item, {
+  const PaintCentered(
+    PaintItem item, {
     CenteringDirection direction = CenteringDirection.both,
   }) :
     _item = item,
     _direction = direction;
+  ///
+  factory PaintCentered.many(
+    List<PaintItem> items, {
+    required CenteringDirection direction,
+  }) => PaintCentered(
+    PaintJoined(
+      items
+        .map((item) => (item, Offset.zero))
+        .toList()
+    ),
+    direction: direction,
+  );
   //
   @override
   Path path(Size size) {
@@ -63,6 +76,6 @@ class CanvasCenteredItem implements CanvasItem {
   }
   //
   @override
-  Paint get paint => _item.paint;
+  Paint get brush => _item.brush;
 
 }

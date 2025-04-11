@@ -1,20 +1,20 @@
 import 'dart:ui';
-import 'package:hmi_widgets/src/canvas/canvas_item.dart';
+import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
-/// Canvas drawing, shifted from its original position.
-class CanvasTranslatedItem implements CanvasItem {
-  final CanvasItem _item;
+/// Drawing, shifted from its original position.
+class PaintTranslated implements PaintItem {
+  final PaintItem _item;
   final Offset _translation;
   ///
-  /// Canvas drawing, shifted from its original position.
+  /// Drawing, shifted from its original position.
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasTranslatedItem(
-  ///       CanvasRect(...),
+  ///     PaintTranslated(
+  ///       PaintRect(...),
   ///       translation: Offset(10, 0),
   ///     ),
   ///   ],
@@ -22,14 +22,14 @@ class CanvasTranslatedItem implements CanvasItem {
   /// ```
   /// or
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasRect(...).translate(Offset(10, 0)),
+  ///     PaintRect(...).translate(Offset(10, 0)),
   ///   ],
   /// );
   /// ```
-  const CanvasTranslatedItem(
-    CanvasItem item, {
+  const PaintTranslated(
+    PaintItem item, {
     required Offset translation,
   }) :
     _translation = translation,
@@ -43,5 +43,5 @@ class CanvasTranslatedItem implements CanvasItem {
   }  
   //
   @override
-  Paint get paint => _item.paint;
+  Paint get brush => _item.brush;
 }

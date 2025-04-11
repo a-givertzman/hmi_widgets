@@ -24,6 +24,10 @@ dependencies:
       url: https://github.com/a-givertzman/hmi_networking.git
       ref: 1.1.5
   svg_path_parser: ^1.1.2
+  cronosun_text_to_path_maker:
+    git:
+      url: https://github.com/cronosun/text-to-path-maker-for-flutter.git
+      ref: 58d713cc74bc0a84339ab3e6113c4c959a290c8c
 
 dev_dependencies:
   flutter_test:
