@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:hmi_widgets/hmi_widgets.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
 /// Drawing, scaled from its original size.
