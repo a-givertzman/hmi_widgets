@@ -22,6 +22,22 @@ class PaintClosed implements PaintItem {
   const PaintClosed(PaintItem item) :
     _item = item;
   ///
+  /// Group of drawings with closed path (first and last point are connected).
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintClosed.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintClosed.many(List<PaintItem> items) => PaintClosed(
     PaintJoined(
       items

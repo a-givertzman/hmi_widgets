@@ -11,7 +11,7 @@ enum CenteringDirection {
   ///
   /// Center on OY axis
   vertical,
-  /// 
+  ///
   /// Absolute center
   both,
 }
@@ -20,7 +20,7 @@ enum CenteringDirection {
 class PaintCentered implements PaintItem {
   final CenteringDirection _direction;
   final PaintItem _item;
-  /// 
+  ///
   /// Paint element with applied centering.
   /// 
   /// Type of centering can be spesified with [direction].
@@ -50,9 +50,27 @@ class PaintCentered implements PaintItem {
     _item = item,
     _direction = direction;
   ///
+  /// Paint a group of elements with applied centering.
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// Type of centering can be spesified with [direction].
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintCentered.many(
+  ///       [
+  ///         PaintPoint(...),
+  ///         PaintRect(...),
+  ///       ],
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintCentered.many(
     List<PaintItem> items, {
-    required CenteringDirection direction,
+    CenteringDirection direction = CenteringDirection.both,
   }) => PaintCentered(
     PaintJoined(
       items

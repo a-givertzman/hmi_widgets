@@ -17,7 +17,7 @@ class PaintRotated implements PaintItem {
   ///   items: [
   ///     PaintRotated(
   ///       PaintRect(...),
-  ///       pi/2
+  ///       rotationRadians: pi/2,
   ///     ),
   ///   ],
   /// );
@@ -38,6 +38,23 @@ class PaintRotated implements PaintItem {
     _rotationRadians = rotationRadians,
     _item = item;
   ///
+  /// Grouped drawings, rotated around its center.
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintRotated.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       rotationRadians: pi/2,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintRotated.many(
     List<PaintItem> items, {
     required double rotationRadians,

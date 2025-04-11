@@ -15,7 +15,7 @@ class PaintTargetScaled implements PaintItem {
   /// PaintItems(
   ///   items: [
   ///     PaintTargetScaled(
-  ///       item: PaintRect(...),
+  ///       PaintRect(...),
   ///       targetDimention: 100,
   ///     ),
   ///   ],
@@ -28,6 +28,25 @@ class PaintTargetScaled implements PaintItem {
     _targetDimention = targetDimention,
     _item = item;
   ///
+  /// Scales group of [items] to the desired [targetDimention].
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// - [targetDimention] - length of longest dimention of target size.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintTargetScaled.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       targetDimention: 100,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintTargetScaled.many(
     List<PaintItem> items, {
     required double targetDimention,

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:vector_math/vector_math_64.dart';
 /// 
 /// Scaled/rotated/translated drawing around specified point
@@ -21,7 +22,7 @@ class PaintTransformedAroundPoint implements PaintItem {
   ///       Offset(10.3, 20.2),
   ///       scale: Offset(2, 2),
   ///       translation: Offset(10, 0),
-  ///       rotatationAngleRadians = -pi
+  ///       rotatationAngleRadians: -pi,
   ///     ),
   ///   ],
   /// );
@@ -38,6 +39,44 @@ class PaintTransformedAroundPoint implements PaintItem {
     _translation = translation,
     _rotatationAngleRadians = rotatationAngleRadians,
     _item = item;
+  ///
+  /// Scaled/rotated/translated group of drawings around specified [point]
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintTransformedAroundPoint.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       Offset(10.3, 20.2),
+  ///       scale: Offset(2, 2),
+  ///       translation: Offset(10, 0),
+  ///       rotatationAngleRadians: -pi,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
+  factory PaintTransformedAroundPoint.many(
+    List<PaintItem> items,
+    Offset point, {
+      Offset scale = const Offset(1.0, 1.0),
+      Offset translation = const Offset(0.0, 0.0),
+      double rotatationAngleRadians = 0.0,
+  }) => PaintTransformedAroundPoint(
+    PaintJoined(
+      items
+        .map((item) => (item, Offset.zero))
+        .toList(),
+    ),
+    point,
+    scale: scale,
+    translation: translation,
+    rotatationAngleRadians: rotatationAngleRadians,
+  );
   //
   @override
   Path path(Size size) {

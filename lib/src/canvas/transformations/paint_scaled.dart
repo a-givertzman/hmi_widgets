@@ -18,7 +18,7 @@ class PaintScaled implements PaintItem {
   ///   items: [
   ///     PaintScaled(
   ///       PaintRect(...),
-  ///       2
+  ///       scaling: 2,
   ///     ),
   ///   ],
   /// );
@@ -39,6 +39,25 @@ class PaintScaled implements PaintItem {
     _scaling = scaling,
     _item = item;
   ///
+  /// Group of drawings, scaled from its original size.
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// -[scaling] - scale factors along OX and OY.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintScaled.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       scaling: 2,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintScaled.many(
     List<PaintItem> items, {
     required Offset scaling,

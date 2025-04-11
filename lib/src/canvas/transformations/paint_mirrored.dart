@@ -17,6 +17,7 @@ class PaintMirrored implements PaintItem {
   ///   items: [
   ///     PaintMirrored(
   ///       PaintRect(...),
+  ///       direction: PaintLineDirection.horizontal,
   ///     ),
   ///   ],
   /// );
@@ -25,7 +26,7 @@ class PaintMirrored implements PaintItem {
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///       PaintRect(...).mirror(),
+  ///       PaintRect(...).mirror(PaintLineDirection.horizontal),
   ///   ],
   /// );
   /// ```
@@ -36,6 +37,23 @@ class PaintMirrored implements PaintItem {
     _direction = direction,
     _item = item;
   ///
+  /// Grouped drawings, flipped around some axis. You can select an axis with [direction].
+  /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
+  /// 
+  /// Example:
+  /// ```dart
+  /// PaintItems(
+  ///   items: [
+  ///     PaintMirrored.many(
+  ///       [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       direction: PaintLineDirection.horizontal,
+  ///     ),
+  ///   ],
+  /// );
+  /// ```
   factory PaintMirrored.many(
     List<PaintItem> items, {
     required PaintLineDirection direction,
