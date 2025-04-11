@@ -110,6 +110,7 @@ export 'src/canvas/transformations/paint_logical.dart';
 export 'src/canvas/transformations/paint_mirrored.dart';
 export 'src/canvas/transformations/paint_rotated.dart';
 export 'src/canvas/transformations/paint_scaled.dart';
+export 'src/canvas/transformations/paint_target_scaled.dart';
 export 'src/canvas/transformations/paint_translated.dart';
 export 'src/canvas/transformations/paint_transformed_around_point.dart';
 export 'src/canvas/transformations/paint_item_transformations.dart';
