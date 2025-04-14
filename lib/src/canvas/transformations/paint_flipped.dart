@@ -1,21 +1,25 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_item_transformations.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 ///
 /// Drawing, flipped around some axis.
-class PaintMirrored implements PaintItem {
+class PaintFlipped implements PaintItem {
   final PaintItem _item;
   final PaintLineDirection _direction;
   ///
   /// Drawing, flipped around some axis. You can select an axis with [direction].
   /// 
+  ///  - [PaintLineDirection.horizontal] - horizontal flip
+  ///  - [PaintLineDirection.vertical] - vertical flip
+  ///  - [PaintLineDirection.undefined] - flip both vertically and horizontally
+  /// 
   /// Example:
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///     PaintMirrored(
+  ///     PaintFlipped(
   ///       PaintRect(...),
   ///       direction: PaintLineDirection.horizontal,
   ///     ),
@@ -30,7 +34,7 @@ class PaintMirrored implements PaintItem {
   ///   ],
   /// );
   /// ```
-  const PaintMirrored(
+  const PaintFlipped(
     PaintItem item, {
     required PaintLineDirection direction,
   }) :
@@ -40,11 +44,15 @@ class PaintMirrored implements PaintItem {
   /// Grouped drawings, flipped around some axis. You can select an axis with [direction].
   /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
   /// 
+  ///  - [PaintLineDirection.horizontal] - horizontal flip
+  ///  - [PaintLineDirection.vertical] - vertical flip
+  ///  - [PaintLineDirection.undefined] - flip both vertically and horizontally
+  /// 
   /// Example:
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///     PaintMirrored.many(
+  ///     PaintFlipped.many(
   ///       [
   ///         PaintRect(...),
   ///         PaintPoint(...),
@@ -54,10 +62,10 @@ class PaintMirrored implements PaintItem {
   ///   ],
   /// );
   /// ```
-  factory PaintMirrored.many(
+  factory PaintFlipped.many(
     List<PaintItem> items, {
     required PaintLineDirection direction,
-  }) => PaintMirrored(
+  }) => PaintFlipped(
     PaintJoined(
       items
         .map((item) => (item, Offset.zero))

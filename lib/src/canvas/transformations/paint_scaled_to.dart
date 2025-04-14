@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 /// Scales [PaintItem] to the desired length.
-class PaintTargetScaled implements PaintItem {
+class PaintScaledTo implements PaintItem {
   final PaintItem _item;
   final double _targetDimention;
   ///
@@ -14,14 +14,14 @@ class PaintTargetScaled implements PaintItem {
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///     PaintTargetScaled(
+  ///     PaintScaledTo(
   ///       PaintRect(...),
   ///       targetDimention: 100,
   ///     ),
   ///   ],
   /// );
   /// ```
-  PaintTargetScaled(
+  PaintScaledTo(
     PaintItem item, {
     required double targetDimention,
   }) :
@@ -37,7 +37,7 @@ class PaintTargetScaled implements PaintItem {
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///     PaintTargetScaled.many(
+  ///     PaintScaledTo.many(
   ///       [
   ///         PaintRect(...),
   ///         PaintPoint(...),
@@ -47,10 +47,10 @@ class PaintTargetScaled implements PaintItem {
   ///   ],
   /// );
   /// ```
-  factory PaintTargetScaled.many(
+  factory PaintScaledTo.many(
     List<PaintItem> items, {
     required double targetDimention,
-  }) => PaintTargetScaled(
+  }) => PaintScaledTo(
     PaintJoined(
       items
         .map((item) => (item, Offset.zero))

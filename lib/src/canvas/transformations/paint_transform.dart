@@ -1,8 +1,8 @@
 import 'package:flutter/painting.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_centered.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_logical.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_bool.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_mirrored.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_flipped.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_rotated.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_scaled.dart';
@@ -13,12 +13,15 @@ import 'package:hmi_widgets/src/canvas/transformations/paint_translated.dart';
 /// 
 /// Example:
 /// ```dart
-/// PaintPoint(...)
-///  .rotate(...)
-///  .transform(..)
-///  .scale(..)
-/// ```
-extension PaintItemTransformations on PaintItem {
+/// PaintItems(
+///   items: [
+///     PaintPoint(...)
+///       .rotate(...)
+///       .transform(..)
+///       .scale(..),
+///   ],
+/// );
+extension PaintTransform on PaintItem {
   ///
   PaintItem rotate(double rotationRadians) => PaintRotated(
     this,
@@ -54,7 +57,7 @@ extension PaintItemTransformations on PaintItem {
     rotatationAngleRadians: rotatationAngleRadians,
   );
   ///
-  PaintItem mirror(PaintLineDirection direction) => PaintMirrored(
+  PaintItem mirror(PaintLineDirection direction) => PaintFlipped(
     this,
     direction: direction,
   );
@@ -62,7 +65,7 @@ extension PaintItemTransformations on PaintItem {
   PaintItem combine(PaintItem other, {
     required PathOperation operation,
     Paint? paint,
-  }) => PaintLogical(
+  }) => PaintBool(
     [
       this,
       other,
@@ -72,7 +75,24 @@ extension PaintItemTransformations on PaintItem {
   );
 }
 ///
-extension PaintItemIterableTransformations on Iterable<PaintItem> {
+/// Extensions for fast chaining transformations of collections of [PaintItem]
+/// 
+/// Example:
+/// ```dart
+/// PaintItems(
+///   items: [
+///     PaintPoint(...),
+///     ...[
+///       PaintPoint(...),
+///       PaintRect(...),
+///     ]
+///       .rotate(...)
+///       .translate(...)
+///       .scale(...)
+///       .center(...),
+///   ],
+/// );
+extension PaintsTransform on Iterable<PaintItem> {
   ///
   Iterable<PaintItem> rotate(double rotationRadians) => map(
     (item) => item.rotate(rotationRadians),
@@ -86,6 +106,10 @@ extension PaintItemIterableTransformations on Iterable<PaintItem> {
   ///
   Iterable<PaintItem> translate(Offset translation) => map(
     (item) => item.translate(translation),
+  );
+  ///
+  Iterable<PaintItem> scale(Offset scaling) => map(
+    (item) => item.scale(scaling),
   );
   ///
   PaintItem combine(PathOperation operation, [Paint? paint]) => reduce(

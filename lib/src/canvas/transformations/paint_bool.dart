@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
 ///
 /// Merge paths together like a logical operation.
-class PaintLogical implements PaintItem {
+class PaintBool implements PaintItem {
   final List<PaintItem> _items;
   final PathOperation _operation;
   final Paint? _paint;
@@ -13,7 +13,7 @@ class PaintLogical implements PaintItem {
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///     PaintLogical(
+  ///     PaintBool(
   ///       [
   ///         PaintRect(...),
   ///         PaintPoint(...),
@@ -23,7 +23,7 @@ class PaintLogical implements PaintItem {
   ///   ],
   /// );
   /// ```
-  PaintLogical(
+  PaintBool(
     List<PaintItem> items, {
     required PathOperation operation,
     Paint? paint,
