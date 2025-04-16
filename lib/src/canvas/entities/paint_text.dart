@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:cronosun_text_to_path_maker/cronosun_text_to_path_maker.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_character.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_bool.dart';
 ///
 /// Declarative text drawing for [Canvas].

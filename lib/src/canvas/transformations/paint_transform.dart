@@ -1,122 +1,65 @@
 import 'package:flutter/painting.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_centered.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_bool.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_flipped.dart';
-import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_rotated.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_scaled.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transformed_around_point.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_translated.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
+import 'package:hmi_widgets/src/canvas/transformations/relative_offset.dart';
 ///
-/// Extensions for fast chaining of [PaintItem] transformations
-/// 
-/// Example:
-/// ```dart
-/// PaintItems(
-///   items: [
-///     PaintPoint(...)
-///       .rotate(...)
-///       .transform(..)
-///       .scale(..),
-///   ],
-/// );
-extension PaintTransform on PaintItem {
-  ///
-  PaintItem rotate(double rotationRadians) => PaintRotated(
-    this,
-    rotationRadians: rotationRadians,
-  );
-  ///
-  PaintItem center([
-    CenteringDirection direction = CenteringDirection.both,
-  ]) => PaintCentered(
-    this,
-    direction: direction,
-  );
-  ///
-  PaintItem translate(Offset translation) => PaintTranslated(
-    this,
-    translation: translation,
-  );
-  ///
-  PaintItem scale(Offset scaling) => PaintScaled(
-    this,
-    scaling: scaling,
-  );
-  ///
-  PaintItem transformAroundPoint(Offset point, {
-      Offset scale = const Offset(1.0, 1.0),
-      Offset translation = const Offset(0.0, 0.0),
-      double rotatationAngleRadians = 0.0,
-  }) => PaintTransformedAroundPoint(
-    this,
-    point,
-    scale: scale,
-    translation: translation,
-    rotatationAngleRadians: rotatationAngleRadians,
-  );
-  ///
-  PaintItem mirror(PaintLineDirection direction) => PaintFlipped(
-    this,
-    direction: direction,
-  );
-  ///
-  PaintItem combine(PaintItem other, {
-    required PathOperation operation,
-    Paint? paint,
-  }) => PaintBool(
-    [
-      this,
-      other,
-    ],
-    operation: operation,
-    paint: paint,
-  );
+///
+enum TransformRelativity {
+  canvas,
+  item
 }
 ///
-/// Extensions for fast chaining transformations of collections of [PaintItem]
-/// 
-/// Example:
-/// ```dart
-/// PaintItems(
-///   items: [
-///     PaintPoint(...),
-///     ...[
-///       PaintPoint(...),
-///       PaintRect(...),
-///     ]
-///       .rotate(...)
-///       .translate(...)
-///       .scale(...)
-///       .center(...),
-///   ],
-/// );
-extension PaintsTransform on Iterable<PaintItem> {
+///
+class PaintTransform implements PaintItem {
+  final TransformRelativity _relativity;
+  final RefOffset _refPoint;
+  final PaintItem _child;
+  final PaintItem Function(PaintItem child) _transform;
   ///
-  Iterable<PaintItem> rotate(double rotationRadians) => map(
-    (item) => item.rotate(rotationRadians),
-  );
   ///
-  Iterable<PaintItem> center({
-    CenteringDirection direction = CenteringDirection.both,
-  }) => map(
-    (item) => item.center(direction),
-  );
+  const PaintTransform({
+    required PaintItem child,
+    required PaintItem Function(PaintItem child) transform,
+    RefOffset refPoint = const RefOffset.topLeft(Offset.zero),
+    TransformRelativity relativity = TransformRelativity.item,
+  }) :
+    _relativity = relativity,
+    _refPoint = refPoint,
+    _child = child,
+    _transform = transform;
   ///
-  Iterable<PaintItem> translate(Offset translation) => map(
-    (item) => item.translate(translation),
-  );
   ///
-  Iterable<PaintItem> scale(Offset scaling) => map(
-    (item) => item.scale(scaling),
+  factory PaintTransform.many({
+    RefOffset refPoint = const RefOffset.topLeft(Offset.zero),
+    required List<(PaintItem, Offset)> children,
+    required PaintItem Function(PaintItem child) transform,
+    TransformRelativity relativity = TransformRelativity.item,
+  }) => PaintTransform(
+    refPoint: refPoint,
+    child: PaintJoined(children),
+    transform: transform,
   );
-  ///
-  PaintItem combine(PathOperation operation, [Paint? paint]) => reduce(
-    (combined, item) => combined.combine(
-      item,
-      operation: operation,
-      paint: paint,
-    ),
-  );
+  //
+  @override
+  Path path(Size size) {
+    final point = switch(_relativity) {
+      TransformRelativity.canvas => _refPoint.value(size),
+      TransformRelativity.item => _refPoint
+        .value(
+          _child
+            .path(size)
+            .getBounds()
+            .size,
+        ),
+    };
+    return _transform(
+        _child.translate(-point)
+      )
+      .translate(point)
+      .path(size);
+  }
+  //
+  @override
+  Paint get brush => _child.brush;
 }

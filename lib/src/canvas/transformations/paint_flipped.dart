@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 ///
