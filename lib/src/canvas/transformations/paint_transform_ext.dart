@@ -3,7 +3,6 @@ import 'package:hmi_widgets/src/canvas/transformations/paint_centered.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_bool.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_flipped.dart';
-import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_rotated.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_scaled.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
@@ -60,7 +59,7 @@ extension PaintTransformExt on PaintItem {
       .translate(translation),
   );
   ///
-  PaintItem flip(PaintLineDirection direction) => PaintFlipped(
+  PaintItem flip(PaintFlipDirection direction) => PaintFlipped(
     this,
     direction: direction,
   );

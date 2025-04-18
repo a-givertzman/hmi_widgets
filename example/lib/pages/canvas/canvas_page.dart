@@ -18,7 +18,7 @@ class CanvasPage extends StatelessWidget {
               height: 600,
             )
             .translate(const Offset(0, 600))
-            .flip(PaintLineDirection.vertical)
+            .flip(PaintFlipDirection.vertical)
           ],
         ),
       ),

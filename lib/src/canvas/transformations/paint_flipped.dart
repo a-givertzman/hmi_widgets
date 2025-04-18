@@ -2,20 +2,32 @@ import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
-import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:hmi_widgets/src/canvas/transformations/reference_point.dart';
+///
+/// Specifies axis, around which the flip will be performed.
+enum PaintFlipDirection {
+  ///
+  /// Flip along horizontal axis.
+  horizontal,
+  ///
+  /// Flip along vertical axis.
+  vertical,
+  ///
+  /// Flip along both vertical and horizontal axes.
+  both
+}
 ///
 /// Drawing, flipped around some axis.
 class PaintFlipped implements PaintItem {
   final PaintItem _item;
-  final PaintLineDirection _direction;
+  final PaintFlipDirection _direction;
   ///
   /// Drawing, flipped around some axis. You can select an axis with [direction].
   /// 
-  ///  - [PaintLineDirection.horizontal] - horizontal flip
-  ///  - [PaintLineDirection.vertical] - vertical flip
-  ///  - [PaintLineDirection.undefined] - flip both vertically and horizontally
+  ///  - [PaintFlipDirection.horizontal] - Flip along horizontal axis.
+  ///  - [PaintFlipDirection.vertical] - Flip along vertical axis.
+  ///  - [PaintFlipDirection.both] - Flip along both vertical and horizontal axes.
   /// 
   /// Example:
   /// ```dart
@@ -38,7 +50,7 @@ class PaintFlipped implements PaintItem {
   /// ```
   const PaintFlipped(
     PaintItem item, {
-    required PaintLineDirection direction,
+    required PaintFlipDirection direction,
   }) :
     _direction = direction,
     _item = item;
@@ -46,9 +58,9 @@ class PaintFlipped implements PaintItem {
   /// Grouped drawings, flipped around some axis. You can select an axis with [direction].
   /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
   /// 
-  ///  - [PaintLineDirection.horizontal] - horizontal flip
-  ///  - [PaintLineDirection.vertical] - vertical flip
-  ///  - [PaintLineDirection.undefined] - flip both vertically and horizontally
+  ///  - [PaintFlipDirection.horizontal] - Flip along horizontal axis.
+  ///  - [PaintFlipDirection.vertical] - Flip along vertical axis.
+  ///  - [PaintFlipDirection.both] - Flip along both vertical and horizontal axes.
   /// 
   /// Example:
   /// ```dart
@@ -66,7 +78,7 @@ class PaintFlipped implements PaintItem {
   /// ```
   factory PaintFlipped.many(
     List<PaintItem> items, {
-    required PaintLineDirection direction,
+    required PaintFlipDirection direction,
   }) => PaintFlipped(
     PaintJoined(
       items
@@ -79,9 +91,9 @@ class PaintFlipped implements PaintItem {
   @override
   Path path(Size size) {
     final scale = switch(_direction) {
-      PaintLineDirection.vertical => const Offset(1.0, -1.0),
-      PaintLineDirection.horizontal => const Offset(-1.0, 1.0),
-      PaintLineDirection.undefined => const Offset(-1.0, -1.0),
+      PaintFlipDirection.vertical => const Offset(1.0, -1.0),
+      PaintFlipDirection.horizontal => const Offset(-1.0, 1.0),
+      PaintFlipDirection.both => const Offset(-1.0, -1.0),
     };
     return PaintTransform(
       refPoint: ReferencePoint.center(),
