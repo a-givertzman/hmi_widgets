@@ -1,6 +1,6 @@
 import 'dart:ui';
 /// 
-/// Point, relative to some position inside a container.
+/// Point that is an offset from some position in a container.
 sealed class ReferencePoint {
   ///
   /// Point, translated by [offset] from center of container.
