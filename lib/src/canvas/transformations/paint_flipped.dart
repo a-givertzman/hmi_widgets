@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
+import 'package:hmi_widgets/src/canvas/transformations/reference_point.dart';
 ///
 /// Drawing, flipped around some axis.
 class PaintFlipped implements PaintItem {
@@ -30,7 +32,7 @@ class PaintFlipped implements PaintItem {
   /// ```dart
   /// PaintItems(
   ///   items: [
-  ///       PaintRect(...).mirror(PaintLineDirection.horizontal),
+  ///       PaintRect(...).flip(PaintLineDirection.horizontal),
   ///   ],
   /// );
   /// ```
@@ -76,19 +78,17 @@ class PaintFlipped implements PaintItem {
   //
   @override
   Path path(Size size) {
-    final center = size.center(Offset.zero);
     final scale = switch(_direction) {
       PaintLineDirection.vertical => const Offset(1.0, -1.0),
       PaintLineDirection.horizontal => const Offset(-1.0, 1.0),
       PaintLineDirection.undefined => const Offset(-1.0, -1.0),
     };
-    // final transformationMatrix =  Matrix4.identity()
-    //   ..translate(-center.dx, -center.dy)
-    //   ..scale(scale.dx, scale.dy)
-    //   ..translate(center.dx, center.dy);
-    return _item.transformAroundPoint(-center, scale: scale)
-      .path(size);
-    // return _item.path(size).transform(transformationMatrix.storage);
+    return PaintTransform(
+      refPoint: ReferencePoint.center(),
+      relativity: TransformRelativity.item,
+      child: _item,
+      transform: (child) => child.scale(scale),
+    ).path(size);
   }  
   //
   @override

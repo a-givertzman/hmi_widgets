@@ -1,4 +1,5 @@
 import 'package:example/pages/buttons/buttons_page.dart';
+import 'package:example/pages/canvas/canvas_page.dart';
 import 'package:example/pages/charts/charts_page.dart';
 import 'package:example/pages/edit_fields/edit_fields_page.dart';
 import 'package:example/pages/process/process_page.dart';
@@ -52,6 +53,14 @@ class HomePage extends StatelessWidget {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const EditFieldsPage(),
+              ),
+            ),
+          ),
+          HomeMenuButton(
+            text: 'Canvas',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const CanvasPage(),
               ),
             ),
           ),

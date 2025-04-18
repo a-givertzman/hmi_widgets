@@ -112,6 +112,7 @@ export 'src/canvas/transformations/paint_rotated.dart';
 export 'src/canvas/transformations/paint_scaled.dart';
 export 'src/canvas/transformations/paint_scaled_to.dart';
 export 'src/canvas/transformations/paint_translated.dart';
-export 'src/canvas/transformations/paint_transformed_around_point.dart';
+export 'src/canvas/transformations/paint_transform.dart';
+export 'src/canvas/transformations/reference_point.dart';
 export 'src/canvas/transformations/paint_transform_ext.dart';
 export 'src/canvas/transformations/paint_joined.dart';

@@ -6,8 +6,9 @@ import 'package:hmi_widgets/src/canvas/transformations/paint_flipped.dart';
 import 'package:hmi_widgets/src/canvas/entities/paint_rect.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_rotated.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_scaled.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transformed_around_point.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_translated.dart';
+import 'package:hmi_widgets/src/canvas/transformations/reference_point.dart';
 ///
 /// Extensions for fast chaining of [PaintItem] transformations
 /// 
@@ -49,15 +50,17 @@ extension PaintTransformExt on PaintItem {
       Offset scale = const Offset(1.0, 1.0),
       Offset translation = const Offset(0.0, 0.0),
       double rotatationAngleRadians = 0.0,
-  }) => PaintTransformedAroundPoint(
-    this,
-    point,
-    scale: scale,
-    translation: translation,
-    rotatationAngleRadians: rotatationAngleRadians,
+  }) => PaintTransform(
+    refPoint: ReferencePoint.topLeft(point),
+    relativity: TransformRelativity.item,
+    child: this,
+    transform: (child) => child
+      .scale(scale)
+      .rotate(rotatationAngleRadians)
+      .translate(translation),
   );
   ///
-  PaintItem mirror(PaintLineDirection direction) => PaintFlipped(
+  PaintItem flip(PaintLineDirection direction) => PaintFlipped(
     this,
     direction: direction,
   );

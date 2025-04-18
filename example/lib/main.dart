@@ -2,6 +2,7 @@ import 'package:example/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
 import 'package:hmi_networking/hmi_networking.dart';
+import 'package:hmi_widgets/hmi_widgets.dart';
 ///
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HMI Widgets Demo',
-      theme: ThemeData.dark(),
+      theme: appThemes[AppTheme.dark],
       home: const HomePage(),
     );
   }
