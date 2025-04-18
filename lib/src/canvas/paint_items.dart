@@ -9,11 +9,13 @@ class PaintItems extends CustomPainter {
   /// 
   /// Example:
   /// ```dart
-  /// PaintItems(
-  ///   items: [
-  ///     PaintPoint(...),
-  ///     PaintRect(...),
-  ///   ],
+  /// CustomPaint(
+  ///   painter: PaintItems(
+  ///     items: [
+  ///       PaintPoint(...),
+  ///       PaintRect(...),
+  ///     ],
+  ///   ),
   /// );
   /// ```
   const PaintItems({
