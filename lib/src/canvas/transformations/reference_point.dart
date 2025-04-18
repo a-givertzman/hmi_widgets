@@ -3,9 +3,6 @@ import 'dart:ui';
 /// Point, relative to some position inside a container.
 sealed class ReferencePoint {
   ///
-  /// Returns relative offset depending on [size] of container.
-  Offset value(Size size);
-  ///
   /// Point, translated by [offset] from center of container.
   const factory ReferencePoint.center([Offset offset]) = _CenterPoint;
   ///
@@ -32,6 +29,9 @@ sealed class ReferencePoint {
   ///
   /// Point, translated by [offset] from bottom right angle of container.
   const factory ReferencePoint.bottomRight([Offset offset]) = _BottomRightPoint;
+  ///
+  /// Returns relative offset depending on [size] of container.
+  Offset value(Size size);
 }
 //
 class _CenterPoint implements ReferencePoint {
