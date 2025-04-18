@@ -1,110 +1,91 @@
 import 'package:flutter/painting.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
-import 'package:hmi_widgets/src/canvas/transformations/reference_point.dart';
-///
-/// Each transformation can be applied relatively either to canvas or to item.
-enum TransformRelativity {
-  canvas,
-  item
-}
+import 'package:hmi_widgets/src/canvas/transformations/paint_transformation.dart';
 ///
 /// Transforms drawing around specified point
 class PaintTransformed implements PaintItem {
-  final TransformRelativity _relativity;
-  final ReferencePoint _refPoint;
   final PaintItem _child;
-  final PaintItem Function(PaintItem child) _transform;
+  final List<PaintTransformation> _transformations;
   ///
   /// Transforms drawing around specified [refPoint].
   /// 
   /// - [child] - item to be transformed
-  /// - [transform] - transformations to be applied to the [child]
-  /// - [refPoint] - point relative to which the [transform]ations will be applied
-  /// - [relativity] - relativity of the [refPoint]. It can be relative to canvas or to the [child] itself.
+  /// - [transformations] - transformations to be applied to the [child]
   /// 
   /// Example:
   /// ```dart
   /// PaintItems(
   ///   items: [
   ///     PaintTransform(
-  ///       refPoint: ReferencePoint.center(Offset(5, 10)),
-  ///       relativity: TransformRelativity.item,
   ///       child: PaintRect(...),
-  ///       transform: (child) => child
-  ///         .rotate(...)
-  ///         .scale(...)
-  ///         .translate(...),
+  ///       transformations: [
+  ///         TransformationAbsolute.translate(
+  ///           translation: Offset(10, 10),
+  ///           refPoint: ReferencePoint.center(),
+  ///         ),
+  ///         TransformationRelative.scale(
+  ///           scaling: Offset(6, 2),
+  ///           refPoint: ReferencePoint.topLeft(),
+  ///         ),
+  ///       ],
   ///     );
   ///   ],
   /// );
   /// ```
   const PaintTransformed({
     required PaintItem child,
-    required PaintItem Function(PaintItem child) transform,
-    ReferencePoint refPoint = const ReferencePoint.topLeft(Offset.zero),
-    TransformRelativity relativity = TransformRelativity.item,
+    required List<PaintTransformation> transformations,
   }) :
-    _relativity = relativity,
-    _refPoint = refPoint,
     _child = child,
-    _transform = transform;
+    _transformations = transformations;
   /// 
   /// Transforms drawing around specified [refPoint].
   /// 
   /// - [children] - items to be transformed. [children] will be placed on top of each other, so maybe you'll need to translate some of them first;
-  /// - [transform] - transformations to be applied to the [children];
-  /// - [refPoint] - point relative to which the [transform]ations will be applied;
-  /// - [relativity] - relativity of the [refPoint]. It can be relative to canvas or to the [children] themselves.
+  /// - [transformations] - transformations to be applied to the [children];
   /// 
   /// Example:
   /// ```dart
-  /// PaintTransform.many(
-  ///   refPoint: ReferencePoint.center(Offset(5, 10)),
-  ///   relativity: TransformRelativity.item,
-  ///   children: [
-  ///     PaintRect(...),
-  ///     PaintPoint(...),
+  /// PaintItems(
+  ///   items: [
+  ///     PaintTransform.many(
+  ///       children: [
+  ///         PaintRect(...),
+  ///         PaintPoint(...),
+  ///       ],
+  ///       transformations: [
+  ///         TransformationAbsolute.translate(
+  ///           translation: Offset(10, 10),
+  ///           refPoint: ReferencePoint.center(),
+  ///         ),
+  ///         TransformationRelative.scale(
+  ///           scaling: Offset(6, 2),
+  ///           refPoint: ReferencePoint.topLeft(),
+  ///         ),
+  ///       ],
+  ///     );
   ///   ],
-  ///   transform: (child) => child
-  ///     .rotate(...)
-  ///     .scale(...)
-  ///     .translate(...),
   /// );
   /// ```
   factory PaintTransformed.many({
-    ReferencePoint refPoint = const ReferencePoint.topLeft(Offset.zero),
     required List<PaintItem> children,
-    required PaintItem Function(PaintItem child) transform,
-    TransformRelativity relativity = TransformRelativity.item,
+    required List<PaintTransformation> transformations,
   }) => PaintTransformed(
-    refPoint: refPoint,
     child: PaintJoined(
       children
         .map((child) => (child, Offset.zero))
         .toList(),
     ),
-    transform: transform,
+    transformations: transformations,
   );
   //
   @override
   Path path(Size size) {
-    final point = switch(_relativity) {
-      TransformRelativity.canvas => _refPoint.value(size),
-      TransformRelativity.item => _refPoint
-        .value(
-          _child
-            .path(size)
-            .getBounds()
-            .size,
-        ),
-    };
-    return _transform(
-        _child.translate(-point)
-      )
-      .translate(point)
-      .path(size);
+    return _transformations.fold<PaintItem>(
+      _child,
+      (item, transformation) => transformation.transform(item, size)
+    ).path(size);
   }
   //
   @override
