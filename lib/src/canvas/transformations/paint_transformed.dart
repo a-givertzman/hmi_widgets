@@ -10,14 +10,14 @@ enum TransformRelativity {
   item
 }
 ///
-/// Transform drawing around specified point
-class PaintTransform implements PaintItem {
+/// Transforms drawing around specified point
+class PaintTransformed implements PaintItem {
   final TransformRelativity _relativity;
   final ReferencePoint _refPoint;
   final PaintItem _child;
   final PaintItem Function(PaintItem child) _transform;
   ///
-  /// Transform drawing around specified [refPoint].
+  /// Transforms drawing around specified [refPoint].
   /// 
   /// - [child] - item to be transformed
   /// - [transform] - transformations to be applied to the [child]
@@ -40,7 +40,7 @@ class PaintTransform implements PaintItem {
   ///   ],
   /// );
   /// ```
-  const PaintTransform({
+  const PaintTransformed({
     required PaintItem child,
     required PaintItem Function(PaintItem child) transform,
     ReferencePoint refPoint = const ReferencePoint.topLeft(Offset.zero),
@@ -51,7 +51,7 @@ class PaintTransform implements PaintItem {
     _child = child,
     _transform = transform;
   /// 
-  /// Transform drawing around specified [refPoint].
+  /// Transforms drawing around specified [refPoint].
   /// 
   /// - [children] - items to be transformed. [children] will be placed on top of each other, so maybe you'll need to translate some of them first;
   /// - [transform] - transformations to be applied to the [children];
@@ -73,12 +73,12 @@ class PaintTransform implements PaintItem {
   ///     .translate(...),
   /// );
   /// ```
-  factory PaintTransform.many({
+  factory PaintTransformed.many({
     ReferencePoint refPoint = const ReferencePoint.topLeft(Offset.zero),
     required List<PaintItem> children,
     required PaintItem Function(PaintItem child) transform,
     TransformRelativity relativity = TransformRelativity.item,
-  }) => PaintTransform(
+  }) => PaintTransformed(
     refPoint: refPoint,
     child: PaintJoined(
       children

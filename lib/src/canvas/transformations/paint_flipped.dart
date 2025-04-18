@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:hmi_widgets/src/canvas/transformations/paint_transform.dart';
+import 'package:hmi_widgets/src/canvas/transformations/paint_transformed.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_transform_ext.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:hmi_widgets/src/canvas/transformations/reference_point.dart';
@@ -95,7 +95,7 @@ class PaintFlipped implements PaintItem {
       PaintFlipDirection.horizontal => const Offset(-1.0, 1.0),
       PaintFlipDirection.both => const Offset(-1.0, -1.0),
     };
-    return PaintTransform(
+    return PaintTransformed(
       refPoint: ReferencePoint.center(),
       relativity: TransformRelativity.item,
       child: _item,
