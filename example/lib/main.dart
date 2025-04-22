@@ -21,7 +21,7 @@ Future<void> main() async {
     ),
   });
   await AppSettings.initialize(
-    jsonMap: JsonMap<String>.fromTextFile(
+    readOnly: JsonMap<String>.fromTextFile(
       const TextFile.asset('assets/configs/app_ui_settings_config.json'),
     ),
   );
