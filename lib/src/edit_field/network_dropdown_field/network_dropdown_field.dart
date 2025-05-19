@@ -170,7 +170,7 @@ class _NetworkDropdownFormFieldState extends State<NetworkDropdownFormField> {
               ),
               suffixIcon: _buildSufixIcon(),
               filled: true,
-              fillColor: Theme.of(context).colorScheme.surface,
+              fillColor: Colors.transparent,
             ),
             alignment: AlignmentDirectional.centerEnd,
             items: _buildDropdownMenuItems(context, _oilNames, _dropMenuItemWidth), 
