@@ -204,6 +204,13 @@ class _CircularIndicatorStreamBuilder extends StatelessWidget {
               angle: _angle,
             ),
             _SizedIndicatorWidget(
+              value: _relativeValue.basis,
+              angle: _angle,
+              color: Theme.of(context).stateColors.off,
+              strokeWidth: _strokeWidth,
+              size: _size,
+            ),
+            _SizedIndicatorWidget(
               value: clampedValue,
               angle: _angle,
               color: color,

@@ -216,7 +216,7 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
               ],
             ),
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surface,
+            fillColor: Colors.transparent,
           ),
           onChanged: (newValue) {
             _log.debug('[.build.onChanged] newValue: $newValue');
