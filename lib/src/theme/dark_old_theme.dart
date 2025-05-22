@@ -29,14 +29,14 @@ final darkOldTheme = ThemeData(
     error: const Color(0xFFF9A880),
     onError: Colors.white,
   ),
-  cardTheme: const CardTheme(
+  cardTheme: const CardThemeData(
     elevation: 6.0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: const Color(0xFF3B3B3B),
     foregroundColor: const Color(0xFF91B4F8),
   ),
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     indicatorColor: const Color(0xFF84E4B7),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
