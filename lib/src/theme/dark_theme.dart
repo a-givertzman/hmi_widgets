@@ -9,7 +9,7 @@ import 'package:hmi_widgets/src/theme/chart_colors_extension.dart';
 final darkTheme = ThemeData(
   typography: Typography.material2021(),
   scaffoldBackgroundColor: const Color(0xFF111318),
-  cardTheme:  CardTheme(
+  cardTheme:  CardThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(28),
     ),
