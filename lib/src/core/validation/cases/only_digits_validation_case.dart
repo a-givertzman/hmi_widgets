@@ -2,8 +2,19 @@ import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_widgets/src/core/validation/cases/validation_case.dart';
 ///
+/// Limit character set of valid text to only digits.
 class OnlyDigitsValidationCase implements ValidationCase {
-  ///
+  /// 
+  ///  Limit character set of valid text to only digits.
+  /// 
+  /// Usage:
+  /// ```
+  /// Validator(
+  ///   cases: [
+  ///     OnlyDigitsValidationCase(),
+  ///   ],
+  /// );
+  /// ```
   const OnlyDigitsValidationCase();
   //
   @override
