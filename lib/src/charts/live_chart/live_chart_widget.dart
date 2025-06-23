@@ -15,6 +15,7 @@ import 'show_legend_switch.dart';
 /// Displays [LiveChart] with [LiveChartLegend] and [ShowDotsSwitch].
 class LiveChartWidget extends StatefulWidget {
   final bool _showButtons;
+  final bool _showLegend;
   final bool _enableScroll;
   final bool _enablePlayOnDoubleTap;
   final bool _enableDotsOnLongPress;
@@ -37,6 +38,7 @@ class LiveChartWidget extends StatefulWidget {
     double? maxX,
     double? xInterval,
     double? yInterval,
+    bool showLegend = true,
     bool showButtons = true,
     bool enableScroll = true,
     bool enablePlayOnDoubleTap = false,
@@ -53,6 +55,7 @@ class LiveChartWidget extends StatefulWidget {
     _yInterval = yInterval,
     _legendWidth = legendWidth,
     _showButtons = showButtons,
+    _showLegend = showLegend,
     _enableScroll = enableScroll,
     _enablePlayOnDoubleTap = enablePlayOnDoubleTap,
     _enableDotsOnLongPress = enableDotsOnLongPress,
@@ -68,6 +71,7 @@ class LiveChartWidget extends StatefulWidget {
     xInterval: _xInterval,
     yInterval: _yInterval,
     legendWidth: _legendWidth,
+    showLegend: _showLegend,
     autoScrollDelay: _autoScrollDelay,
   );
 }
@@ -93,7 +97,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late final Ticker _ticker;
   late final Timer _autoScrollDelayTimer;
   bool _isAutoScrollStarted = false;
-  bool _showLegend = true;
+  bool _showLegend;
   ///
   _LiveChartWidgetState({
     required double? minY,
@@ -104,6 +108,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     required double? xInterval,
     required List<LiveAxis> axes,
     required double legendWidth,
+    required bool showLegend,
     required Duration autoScrollDelay,
   }) : 
     _minY = minY,
@@ -113,6 +118,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     _xInterval = xInterval,
     _yInterval = yInterval,
     _legendWidth = legendWidth,
+    _showLegend = showLegend,
     _autoScrollDelay = autoScrollDelay 
   {
     for (final axisData in axes) {
