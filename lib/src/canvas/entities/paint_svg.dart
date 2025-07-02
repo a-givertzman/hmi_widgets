@@ -15,7 +15,7 @@ class PaintSvg implements PaintItem {
   /// final testSvg = await File('test.svg').readAsString();
   /// PaintItems(
   ///   items: [
-  ///     PaintRect(
+  ///     PaintSvg(
   ///        svgMarkup: testSvg,
   ///        ...
   ///     ),
