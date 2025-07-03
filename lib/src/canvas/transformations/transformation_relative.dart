@@ -13,7 +13,7 @@ class TransformationRelative implements PaintTransformation {
     _refPoint = refPoint,
     _transformation = transformation;
   ///
-  /// Scalings with reference point based on [PaintItem] dimensions.
+  /// Scaling with reference point based on [PaintItem] dimensions.
   factory TransformationRelative.scale({
     required Offset scaling,
     required ReferencePoint refPoint,
