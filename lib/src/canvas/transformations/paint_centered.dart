@@ -3,7 +3,7 @@ import 'package:hmi_widgets/src/canvas/paint_item.dart';
 import 'package:hmi_widgets/src/canvas/transformations/paint_joined.dart';
 import 'package:vector_math/vector_math_64.dart';
 ///
-/// On wich axis centering is done
+/// On which axis centering is done
 enum CenteringDirection {
   ///
   /// Center on OX axis
@@ -23,7 +23,7 @@ class PaintCentered implements PaintItem {
   ///
   /// Paint element with applied centering.
   /// 
-  /// Type of centering can be spesified with [direction].
+  /// Type of centering can be specified with [direction].
   /// 
   /// Example:
   /// ```dart
@@ -53,7 +53,7 @@ class PaintCentered implements PaintItem {
   /// Paint a group of elements with applied centering.
   /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
   /// 
-  /// Type of centering can be spesified with [direction].
+  /// Type of centering can be specified with [direction].
   /// 
   /// Example:
   /// ```dart

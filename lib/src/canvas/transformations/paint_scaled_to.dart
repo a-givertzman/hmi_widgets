@@ -4,11 +4,11 @@ import 'package:hmi_widgets/hmi_widgets.dart';
 /// Scales [PaintItem] to the desired length.
 class PaintScaledTo implements PaintItem {
   final PaintItem _item;
-  final double _targetDimention;
+  final double _targetDimension;
   ///
-  /// Scales [item] to the desired [targetDimention].
+  /// Scales [item] to the desired [targetDimension].
   /// 
-  /// - [targetDimention] - length of longest dimention of target size.
+  /// - [targetDimension] - length of longest dimension of target size.
   /// 
   /// Example:
   /// ```dart
@@ -16,22 +16,22 @@ class PaintScaledTo implements PaintItem {
   ///   items: [
   ///     PaintScaledTo(
   ///       PaintRect(...),
-  ///       targetDimention: 100,
+  ///       targetDimension: 100,
   ///     ),
   ///   ],
   /// );
   /// ```
   PaintScaledTo(
     PaintItem item, {
-    required double targetDimention,
+    required double targetDimension,
   }) :
-    _targetDimention = targetDimention,
+    _targetDimension = targetDimension,
     _item = item;
   ///
-  /// Scales group of [items] to the desired [targetDimention].
+  /// Scales group of [items] to the desired [targetDimension].
   /// [items] will be placed on top of each other, so maybe you'll need to translate some of them first.
   /// 
-  /// - [targetDimention] - length of longest dimention of target size.
+  /// - [targetDimension] - length of longest dimension of target size.
   /// 
   /// Example:
   /// ```dart
@@ -42,27 +42,27 @@ class PaintScaledTo implements PaintItem {
   ///         PaintRect(...),
   ///         PaintPoint(...),
   ///       ],
-  ///       targetDimention: 100,
+  ///       targetDimension: 100,
   ///     ),
   ///   ],
   /// );
   /// ```
   factory PaintScaledTo.many(
     List<PaintItem> items, {
-    required double targetDimention,
+    required double targetDimension,
   }) => PaintScaledTo(
     PaintJoined(
       items
         .map((item) => (item, Offset.zero))
         .toList()
     ),
-    targetDimention: targetDimention,
+    targetDimension: targetDimension,
   );
   //
   @override
   Path path(Size size) {
     final pathLength = _item.path(size).getBounds().size.longestSide;
-    final scaleFactor = _targetDimention / pathLength;
+    final scaleFactor = _targetDimension / pathLength;
     return _item
       .scale(Offset(scaleFactor, scaleFactor))
       .path(size);
