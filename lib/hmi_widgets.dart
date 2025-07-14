@@ -67,6 +67,8 @@ export 'src/indicators/value_indicators/text_value_indicator.dart';
 export 'src/indicators/value_indicators/text_value_indicator_widget.dart';
 export 'src/indicators/value_indicators/pointer_progress_indicator.dart';
 export 'src/indicators/value_indicators/small_linear_value_indicator.dart';
+export 'src/indicators/value_indicators/date_time/date_time_indicator.dart';
+export 'src/indicators/value_indicators/date_time/localized_date_time_indicator.dart';
 //
 // Charts
 export 'src/charts/crane_load_chart/crane_load_chart.dart';
