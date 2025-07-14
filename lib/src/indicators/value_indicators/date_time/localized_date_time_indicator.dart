@@ -3,6 +3,7 @@ import 'package:hmi_core/hmi_core_translate.dart';
 import 'package:hmi_widgets/src/indicators/value_indicators/date_time/date_time_indicator.dart';
 ///
 class LocalizedDateTimeIndicator extends StatelessWidget {
+  final Map<AppLang, String Function(DateTime)> _langFormats;
   final Stream<DateTime>? _stream;
   final TextStyle? _style;
   ///
@@ -10,7 +11,13 @@ class LocalizedDateTimeIndicator extends StatelessWidget {
     super.key,
     Stream<DateTime>? stream,
     TextStyle? style,
-  }) : 
+    Map<AppLang, String Function(DateTime)> langFormats = const {
+      AppLang.ru: _ruFormat,
+      AppLang.en: _westFormat,
+      AppLang.de: _westFormat,
+      AppLang.fr: _westFormat,
+    },
+  }) : _langFormats = langFormats, 
     _style = style,
     _stream = stream;
   //
@@ -19,14 +26,11 @@ class LocalizedDateTimeIndicator extends StatelessWidget {
     return DateTimeIndicator(
       stream: _stream,
       style: _style,
-      format: switch(Localizations().appLang) {
-        AppLang.ru => _ruFormat,
-        _ => _westFormat,
-      },
+      format: _langFormats[Localizations().appLang] ?? _westFormat,
     );
   }
   //
-  String _westFormat(DateTime dateTime) {
+  static String _westFormat(DateTime dateTime) {
     final hour = _padLeftWithZeros(dateTime.hour, 2);
     final minute = _padLeftWithZeros(dateTime.minute, 2);
     final second = _padLeftWithZeros(dateTime.second, 2);
@@ -36,7 +40,7 @@ class LocalizedDateTimeIndicator extends StatelessWidget {
     return '$month/$day/$year $hour:$minute:$second';
   }
   //
-  String _ruFormat(DateTime dateTime) {
+  static String _ruFormat(DateTime dateTime) {
     final hour = _padLeftWithZeros(dateTime.hour, 2);
     final minute = _padLeftWithZeros(dateTime.minute, 2);
     final second = _padLeftWithZeros(dateTime.second, 2);
@@ -46,7 +50,7 @@ class LocalizedDateTimeIndicator extends StatelessWidget {
     return '$day.$month.$year $hour:$minute:$second';
   }
   //
-  String _padLeftWithZeros(int value, int width) {
+  static String _padLeftWithZeros(int value, int width) {
     return value.toString().padLeft(width, '0');
   }
 }
