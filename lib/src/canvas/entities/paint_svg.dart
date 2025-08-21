@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
-import 'package:svg_path_parser/svg_path_parser.dart';
+import 'package:hmi_widgets/src/core/svg_markup.dart';
 ///
 /// SVG drawing from its markup.
 class PaintSvg implements PaintItem {
@@ -38,5 +38,5 @@ class PaintSvg implements PaintItem {
     ..isAntiAlias = true;
   //
   @override
-  Path path(Size size) => parseSvgPath(_svgMarkup);
+  Path path(Size size) => SvgMarkup(svgMarkup: _svgMarkup).joinedPaths();
 }

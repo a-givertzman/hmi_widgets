@@ -14,8 +14,8 @@ class SvgMarkup {
   /// Multiple of paths parsed from `d` attributes of `<path>` tags read from svg markup.
   List<Path> paths() {
     final regex = RegExp(
-      r'\<\s*path.*d="([. \w]{10,})" .*\>',
-      multiLine: true,
+      r'\<path.+?d="([.,\-\s\w]{10,})".+?\>',
+      dotAll: true,
     );
     return regex
       .allMatches(_svgMarkup)
