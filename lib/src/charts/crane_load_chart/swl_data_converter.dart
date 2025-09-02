@@ -13,6 +13,8 @@ class SwlDataConverter implements CraneLoadChartData {
   final double _width;
   final double _rawHeight;
   final double _rawWidth;
+  final double _rawMinY;
+  final double _rawMinX;
   final SwlData _swlData;
   final CraneLoadChartLegendData _legendData;
   ///
@@ -22,6 +24,8 @@ class SwlDataConverter implements CraneLoadChartData {
   /// - height - height of the CraneLoadChart widget canvas, px
   /// - width - width of the CraneLoadChart widget canvas, px
   /// - legendData - data (limits, colors, names) for CraneLoadChart legend
+  /// - rawMinY - real minimum coordinate of the Crane load area on Y axis, m
+  /// - rawMinX - real minimum coordinate of the Crane load area on X axis, m
   const SwlDataConverter({
     required SwlData swlData,
     required double rawHeight,
@@ -29,12 +33,16 @@ class SwlDataConverter implements CraneLoadChartData {
     required double height,
     required double width,
     required CraneLoadChartLegendData legendData,
+    double rawMinY = 0.0,
+    double rawMinX = 0.0,
   }) : 
     _swlData = swlData,
     _height = height,
     _width = width,
     _rawHeight = rawHeight,
     _rawWidth = rawWidth,
+    _rawMinY = rawMinY,
+    _rawMinX = rawMinX,
     _xScale = rawWidth / width,
     _yScale = rawHeight / height,
     _legendData = legendData;
@@ -54,8 +62,8 @@ class SwlDataConverter implements CraneLoadChartData {
     // TODO remove max after dimensions checked in the SwlData
     final count = max(x.length, y.length);
     for (int i = 0; i < count; i++) {
-      final dx = x[i] / _xScale;
-      final dy = _height - y[i] / _yScale;
+      final dx = (x[i] - _rawMinX) / _xScale;
+      final dy = _height - (y[i] - _rawMinY) / _yScale;
       points.add(Offset(dx, dy));
     }
     return points;
@@ -105,6 +113,12 @@ class SwlDataConverter implements CraneLoadChartData {
   //
   @override
   double get rawWidth => _rawWidth;
+  //
+  @override
+  double get rawMinY => _rawMinY;
+  //
+  @override
+  double get rawMinX => _rawMinX;
   //
   @override
   CraneLoadChartLegendData get legendData => _legendData;

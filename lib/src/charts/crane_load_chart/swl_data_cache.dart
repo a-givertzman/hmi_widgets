@@ -39,5 +39,11 @@ class SwlDataCache implements CraneLoadChartData {
   double get rawWidth => _swlDataConverter.rawWidth;
   //
   @override
+  double get rawMinY => _swlDataConverter.rawMinY;
+  //
+  @override
+  double get rawMinX => _swlDataConverter.rawMinX;
+  //
+  @override
   CraneLoadChartLegendData get legendData => _swlDataConverter.legendData;
 }

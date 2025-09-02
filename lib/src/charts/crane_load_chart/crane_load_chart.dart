@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core.dart';
@@ -11,6 +12,7 @@ import 'crane_load_point_painter.dart';
 /// и нагрузочную способность swl из массивов
 /// width, height - размеры в пикселах
 /// rawWidth, rawHeight - размеры диаграммы в метрах
+/// skipFirstLabels, skipLastLabels - пропускать ли первые и последнии надписи на осях?
 class CraneLoadChart extends StatefulWidget {
   final Stream<DsDataPoint<int>>? _swlIndexStream;
   final double _xAxisValue;
@@ -23,6 +25,8 @@ class CraneLoadChart extends StatefulWidget {
   final GridStyle? _gridType;
   final double _pointSize;
   final double _legendWidth;
+  final bool _skipFirstLabels;
+  final bool _skipLastLabels;
   ///
   /// [swlLimitSet] Обязательно должен быть отсортирован по возрастанию
   const CraneLoadChart({
@@ -31,6 +35,8 @@ class CraneLoadChart extends StatefulWidget {
     required double xAxisValue,
     required double yAxisValue,
     bool showGrid = false,
+    bool skipFirstLabels = true,
+    bool skipLastLabels = false,
     required this.backgroundColor,
     double pointSize = 1.0,
     Color? axisColor,
@@ -43,6 +49,8 @@ class CraneLoadChart extends StatefulWidget {
     _xAxisValue = xAxisValue,
     _yAxisValue = yAxisValue,
     _showGrid = showGrid,
+    _skipFirstLabels = skipFirstLabels,
+    _skipLastLabels = skipLastLabels,
     _swlDataCache = swlDataCache,  
     _axisColor = axisColor,
     _gridColor = gridColor,
@@ -62,12 +70,16 @@ class CraneLoadChart extends StatefulWidget {
     pointSize: _pointSize,
     rawWidth: _swlDataCache.rawWidth,
     rawHeight: _swlDataCache.rawHeight,
+    rawMinX:  _swlDataCache.rawMinX,
+    rawMinY: _swlDataCache.rawMinY,
     xAxisValue: _xAxisValue,
     yAxisValue: _yAxisValue,
     xScale: _swlDataCache.rawWidth / _swlDataCache.width,
     yScale: _swlDataCache.rawHeight / _swlDataCache.height,
     legendWidth: _legendWidth,
     showGrid: _showGrid,
+    skipFirstLabels: _skipFirstLabels,
+    skipLastLabels: _skipLastLabels,
   );
 }
 ///
@@ -97,11 +109,15 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
     required double pointSize,
     required double rawWidth,
     required double rawHeight,
+    required double rawMinX,
+    required double rawMinY,
     required double xAxisValue,
     required double yAxisValue,
     required double xScale,
     required double yScale,
     required bool showGrid,
+    required bool skipFirstLabels,
+    required bool skipLastLabels,
     required double legendWidth,
   }) :
   _swlDataCache = swlDataCache,
@@ -110,8 +126,8 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   _gridColor = gridColor,
   _gridType = gridType,
   _pointSize = pointSize,
-  _xAxis = _buildAxisLabelTexts(rawWidth, xAxisValue, xScale),
-  _yAxis = _buildAxisLabelTexts(rawHeight, yAxisValue, yScale),
+  _xAxis = _buildAxisLabelTexts(rawWidth, rawMinX, xAxisValue, xScale, skipFirstLabels, skipLastLabels),
+  _yAxis = _buildAxisLabelTexts(rawHeight, rawMinY, yAxisValue, yScale, skipFirstLabels, skipLastLabels),
   _legendWidth = legendWidth,
   _showGrid = showGrid,
   super();
@@ -216,14 +232,25 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
   }
   ///
   /// Creates names of grid axis anchors  
-  static Map<int, String> _buildAxisLabelTexts(double rawSize, double axisValue, double scale) {
-    final axis = <int, String>{};
+  static Map<int, String> _buildAxisLabelTexts(
+    double rawSize,
+    double rawMinCoord,
+    double axisValue,
+    double scale,
+    bool skipFirst,
+    bool skipLast,
+  ) {
+    final axis = SplayTreeMap<int, String>();
     final count = (rawSize / axisValue).round() + 1;
-    for (int i = 0; i < count; i++) {
-      final rawDx = i * axisValue;
-      final dx = (rawDx / scale).round();
+    final startIndex = skipFirst ? 1 : 0;
+    final lastIndex = count - (skipLast ? 1 : 0); 
+    for (int i = startIndex; i < lastIndex; i++) {
+      final order = i * axisValue;
+      final rawDx = order + rawMinCoord;
+      final dx = (order / scale).round();
       axis[dx] = '${rawDx.round()}';
     }
+    _log.error(axis);
     return axis;
   }
   //

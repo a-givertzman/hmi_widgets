@@ -10,6 +10,8 @@ class ChartsPage extends StatelessWidget {
   final _height = 450.0;
   final _rawWidth = 20.0;
   final _rawHeight = 27.0;
+  final _rawMinX = -5.0;
+  final _rawMinY = -5.0;
   const ChartsPage({super.key});
   //
   @override
@@ -45,7 +47,9 @@ class ChartsPage extends StatelessWidget {
                         height: _height, 
                         width: _width,
                         rawWidth: _rawWidth, 
-                        rawHeight: _rawHeight, 
+                        rawHeight: _rawHeight,
+                        rawMinX: _rawMinX,
+                        rawMinY: _rawMinY,
                         legendData: DelayedCraneLoadChartLegendData(
                           delay: const Duration(milliseconds: 500),
                           legendJson: CraneLoadChartLegendJson(
