@@ -17,7 +17,7 @@ part '_circular/_circular_indicator_stream_builder.dart';
 /// - Сигнализация выхода за верхнюю границу допустимого уровня, 
 /// если [high] не null и при значении в [stream] больше [high]
 class CircularValueIndicator extends StatelessWidget {
-  static const double _valueBasis = 270 / 360;
+  final double _valueBasis;
   final RelativeValue _relativeValue;
   final Stream<DsDataPoint<num>>? _stream;
   final double _angle;
@@ -54,6 +54,7 @@ class CircularValueIndicator extends StatelessWidget {
     Key? key,
     double min = 0,
     double max = 100,
+    double valueBasis = 270/360,
     double? low,
     double? lowEnd,
     double? high,
@@ -77,8 +78,9 @@ class CircularValueIndicator extends StatelessWidget {
     Color? highColor,
     Color? criticalColor,
     Color? critical2Color,
-  }) : 
-    _relativeValue = RelativeValue(basis: _valueBasis, min: min, max: max),
+  }) :
+    _valueBasis = valueBasis,
+    _relativeValue = RelativeValue(basis: valueBasis, min: min, max: max),
     _angle = angle - 135,
     _low = low,
     _lowEnd = lowEnd ?? lowCritical ?? lowCritical2 ?? min,
