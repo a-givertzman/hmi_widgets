@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hmi_widgets/src/canvas/paint_item.dart';
 ///
@@ -32,6 +33,6 @@ class PaintItems extends CustomPainter {
   //
   @override
   bool shouldRepaint(covariant PaintItems oldDelegate) {
-    return !oldDelegate._items.toSet().containsAll(_items);
+    return !setEquals(oldDelegate._items.toSet(), _items.toSet());
   }
 }

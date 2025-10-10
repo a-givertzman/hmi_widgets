@@ -36,12 +36,12 @@ class PaintTrapezium implements PaintItem {
   /// 
   /// Example:
   /// ```dart
-  /// CanvasItemsPainter(
+  /// PaintItems(
   ///   items: [
-  ///     CanvasTrapezium(
+  ///     PaintTrapezium(
   ///       color: Colors.blue,
-  ///       startLength: 100,
-  ///       endLength: 60,
+  ///       startWidth: 100,
+  ///       endWidth: 60,
   ///       height: 50,
   ///     ),
   ///   ],

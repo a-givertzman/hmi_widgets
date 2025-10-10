@@ -4,11 +4,11 @@ import 'package:hmi_widgets/src/canvas/paint_item_dimension.dart';
 ///
 /// Line ([PaintRect]) draw direction
 enum PaintLineDirection {
-  /// Line will be drawn parallelry with OY
+  /// Line will be drawn parallel to OY
   vertical,
-  /// Line will be drawn parallelry with OX
+  /// Line will be drawn parallel to OX
   horizontal,
-  /// Neither of the rest.
+  /// Line will not be drawn parallel to OX or OY
   undefined,
 }
 ///

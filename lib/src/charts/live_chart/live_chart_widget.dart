@@ -14,6 +14,11 @@ import 'show_legend_switch.dart';
 
 /// Displays [LiveChart] with [LiveChartLegend] and [ShowDotsSwitch].
 class LiveChartWidget extends StatefulWidget {
+  final bool _showButtons;
+  final bool _showLegend;
+  final bool _enableScroll;
+  final bool _enablePlayOnDoubleTap;
+  final bool _enableDotsOnLongPress;
   final double _legendWidth;
   final double? _minY;
   final double? _maxY;
@@ -33,6 +38,11 @@ class LiveChartWidget extends StatefulWidget {
     double? maxX,
     double? xInterval,
     double? yInterval,
+    bool showLegend = true,
+    bool showButtons = true,
+    bool enableScroll = true,
+    bool enablePlayOnDoubleTap = false,
+    bool enableDotsOnLongPress = false,
     double legendWidth = 200,
     Duration autoScrollDelay = const Duration(seconds: 0),
   }) : 
@@ -44,6 +54,11 @@ class LiveChartWidget extends StatefulWidget {
     _xInterval = xInterval,
     _yInterval = yInterval,
     _legendWidth = legendWidth,
+    _showButtons = showButtons,
+    _showLegend = showLegend,
+    _enableScroll = enableScroll,
+    _enablePlayOnDoubleTap = enablePlayOnDoubleTap,
+    _enableDotsOnLongPress = enableDotsOnLongPress,
     _autoScrollDelay = autoScrollDelay;
   //
   @override
@@ -56,6 +71,7 @@ class LiveChartWidget extends StatefulWidget {
     xInterval: _xInterval,
     yInterval: _yInterval,
     legendWidth: _legendWidth,
+    showLegend: _showLegend,
     autoScrollDelay: _autoScrollDelay,
   );
 }
@@ -81,7 +97,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
   late final Ticker _ticker;
   late final Timer _autoScrollDelayTimer;
   bool _isAutoScrollStarted = false;
-  bool _showLegend = true;
+  bool _showLegend;
   ///
   _LiveChartWidgetState({
     required double? minY,
@@ -92,6 +108,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     required double? xInterval,
     required List<LiveAxis> axes,
     required double legendWidth,
+    required bool showLegend,
     required Duration autoScrollDelay,
   }) : 
     _minY = minY,
@@ -101,6 +118,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     _xInterval = xInterval,
     _yInterval = yInterval,
     _legendWidth = legendWidth,
+    _showLegend = showLegend,
     _autoScrollDelay = autoScrollDelay 
   {
     for (final axisData in axes) {
@@ -186,6 +204,19 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
     });
   }
   //
+  void _togglePlay(bool isPaused) => switch(isPaused) {
+    true => _pauseChart(),
+    false => _playChart(),
+  };
+  //
+  void _toggleDots(bool showDots) {
+    setState(() {
+      for (final axisData in _axesData.values) {
+        axisData.showDots = showDots;
+      }
+    });
+  }
+  //
   @override
   Widget build(BuildContext context) {
     final padding = const Setting('padding').toDouble;
@@ -193,7 +224,7 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
       children: [
         GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onHorizontalDragUpdate: (details) {
+          onHorizontalDragUpdate: widget._enableScroll ? (details) {
             _pauseChart();
             final delta = details.primaryDelta ?? 0;
             _log.debug('drag update: $delta');
@@ -202,7 +233,13 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
               _minX = _minX! - shift;
               _maxX = _maxX! - shift;
             });
-          },
+          } : null,
+          onDoubleTap: widget._enablePlayOnDoubleTap 
+            ? () => _togglePlay(_ticker.isActive)
+            : null,
+          onLongPress: widget._enableDotsOnLongPress
+            ? () => _toggleDots(!_axesData.values.every((axisData) => axisData.showDots))
+            : null,
           child: AbsorbPointer(
             child: LiveChart(
               minX: _minX,
@@ -221,94 +258,83 @@ class _LiveChartWidgetState extends State<LiveChartWidget> with SingleTickerProv
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ShowDotsSwitch(
-                      isOn: _axesData.values.every((axisData) => axisData.showDots),
-                      onChanged: (showDots) {
-                        setState(() {
-                          for (final axisData in _axesData.values) {
-                            axisData.showDots = showDots;
-                          }
-                        });
-                      },
+              if(widget._showButtons)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowDotsSwitch(
+                        isOn: _axesData.values.every((axisData) => axisData.showDots),
+                        onChanged: _toggleDots,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ShowLegendSwitch(
-                      isOn: _showLegend, 
-                      onChanged: (value) {
-                        setState(() {
-                          _showLegend = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ChartActionButton(
-                      tooltip: 'Zoom out'.loc,
-                      icon: Icon(Icons.remove),
-                      onPressed: _maxX! - _minX! < _maxXDelta 
-                        ? () {
-                          final isChartWasActive = _ticker.isActive;
-                          _pauseChart();
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ShowLegendSwitch(
+                        isOn: _showLegend, 
+                        onChanged: (value) {
                           setState(() {
-                            double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
-                            final newXDelta = _maxX! - newMinX;
-                            newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
-                            _startMinX = newMinX;
-                            _minX = newMinX;
+                            _showLegend = value;
                           });
-                          if(isChartWasActive) {
-                            _playChart();
-                          }
-                        } 
-                        : null,
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: ChartActionButton(
-                      tooltip: 'Zoom in'.loc,
-                      icon: Icon(Icons.add),
-                      onPressed: _maxX! - _minX! > _minXDelta 
-                        ? () {
-                          final isChartWasActive = _ticker.isActive;
-                          _pauseChart();
-                          setState(() {
-                            double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
-                            final newXDelta = _maxX! - newMinX;
-                            newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
-                            _startMinX = newMinX;
-                            _minX = newMinX;
-                          });
-                          if(isChartWasActive) {
-                            _playChart();
-                          }
-                        } 
-                        : null,
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ChartActionButton(
+                        tooltip: 'Zoom out'.loc,
+                        icon: Icon(Icons.remove),
+                        onPressed: _maxX! - _minX! < _maxXDelta 
+                          ? () {
+                            final isChartWasActive = _ticker.isActive;
+                            _pauseChart();
+                            setState(() {
+                              double newMinX = _minX! - _computeTimeRangeStep(_maxX! - _minX!);
+                              final newXDelta = _maxX! - newMinX;
+                              newMinX = newXDelta < _maxXDelta ? newMinX : _maxX! - _maxXDelta;
+                              _startMinX = newMinX;
+                              _minX = newMinX;
+                            });
+                            if(isChartWasActive) {
+                              _playChart();
+                            }
+                          } 
+                          : null,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: PauseSwitch(
-                      isOn: !_ticker.isActive, 
-                      onChanged: (isPaused) {
-                        if (isPaused) {
-                          _pauseChart();
-                        } else {
-                          _playChart();
-                        }
-                      },
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: ChartActionButton(
+                        tooltip: 'Zoom in'.loc,
+                        icon: Icon(Icons.add),
+                        onPressed: _maxX! - _minX! > _minXDelta 
+                          ? () {
+                            final isChartWasActive = _ticker.isActive;
+                            _pauseChart();
+                            setState(() {
+                              double newMinX = _minX! + _computeTimeRangeStep(_maxX! - _minX!);
+                              final newXDelta = _maxX! - newMinX;
+                              newMinX = newXDelta > _minXDelta ? newMinX : _maxX! - _minXDelta;
+                              _startMinX = newMinX;
+                              _minX = newMinX;
+                            });
+                            if(isChartWasActive) {
+                              _playChart();
+                            }
+                          } 
+                          : null,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Padding(
+                      padding: EdgeInsets.all(padding),
+                      child: PauseSwitch(
+                        isOn: !_ticker.isActive, 
+                        onChanged: _togglePlay,
+                      ),
+                    ),
+                  ],
+                ),
               if (_showLegend)
                 LiveChartLegend(
                   legendWidth: _legendWidth,

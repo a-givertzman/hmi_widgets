@@ -71,7 +71,7 @@ class CraneLoadPointPainter extends CustomPainter {
   void _drawXaxis(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = _gridColor;
-    for (final xItem in _xAxis.entries.skip(1)) {
+    for (final xItem in _xAxis.entries) {
       final textPainter = TextPainter(
         text: TextSpan(
           text: xItem.value,
@@ -109,7 +109,7 @@ class CraneLoadPointPainter extends CustomPainter {
   void _drawYaxis(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = _gridColor;
-    for (final yItem in _yAxis.entries.skip(1)) {
+    for (final yItem in _yAxis.entries) {
       final textPainter = TextPainter(
         text: TextSpan(
           text: yItem.value,
