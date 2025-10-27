@@ -14,10 +14,10 @@ class FakeSwlData implements SwlData {
     _swl = swl;
   //
   @override
-  Future<List<double>> get x => Future.value(_x);
+  Future<List<List<double>>> get x => Future.value([_x]);
   //
   @override
-  Future<List<double>> get y => Future.value(_y);
+  Future<List<List<double>>> get y => Future.value([_y]);
   //
   @override
   Future<List<List<double>>> get swl => Future.value(_swl);

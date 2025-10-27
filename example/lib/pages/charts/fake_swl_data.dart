@@ -24,20 +24,20 @@ class FakeSwlData implements SwlData {
     _dataDelay = dataDelay;
   //
   @override
-  Future<List<double>> get x {
+  Future<List<List<double>>> get x {
     final random = Random();
     return Future.delayed(
       _dataDelay,
-      () => List.generate(_pointsCount, (index) => random.nextDouble() * _rawWidth),
+      () => [List.generate(_pointsCount, (index) => random.nextDouble() * _rawWidth)],
     );
   }
   //
   @override
-  Future<List<double>> get y {
+  Future<List<List<double>>> get y {
     final random = Random();
     return Future.delayed(
       _dataDelay,
-      () => List.generate(_pointsCount, (index) => random.nextDouble() * _rawHeight),
+      () => [List.generate(_pointsCount, (index) => random.nextDouble() * _rawHeight)],
     );
   }
   //

@@ -48,8 +48,8 @@ void main() {
         final y = entry['y'] as List<double>;
         final swl = entry['swl'] as List<List<double>>;
         final swlData = SwlData(
-          xCsvFile: FakeTextFile(textX), 
-          yCsvFile: FakeTextFile(textY), 
+          xCsvFiles: [FakeTextFile(textX)], 
+          yCsvFiles: [FakeTextFile(textY)], 
           swlCsvFiles: textSwls.map((textSwl) => FakeTextFile(textSwl)).toList(),
         );
         final receivedX = await swlData.x;

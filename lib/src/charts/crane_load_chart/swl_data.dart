@@ -6,20 +6,20 @@ import 'package:hmi_core/hmi_core_text_file.dart';
 ///
 class SwlData {
   static final _log = const Log('SwlData')..level = LogLevel.debug;
-  final TextFile _xCsvFile;
-  final TextFile _yCsvFile;
+  final List<TextFile> _xCsvFiles;
+  final List<TextFile> _yCsvFiles;
   final List<TextFile> _swlCsvFiles;
   ///
   /// [xCsvFile] load from '$_assetPath/x.csv'
   /// [yCsvFile] load from '$_assetPath/y.csv'
   /// [swlCsvFiles] load from '$_assetPath/swl_$i.csv'
   SwlData({
-    required TextFile xCsvFile,
-    required TextFile yCsvFile,
+    required List<TextFile> xCsvFiles,
+    required List<TextFile> yCsvFiles,
     required List<TextFile> swlCsvFiles,
   }) :
-    _xCsvFile = xCsvFile,
-    _yCsvFile = yCsvFile,
+    _xCsvFiles = xCsvFiles,
+    _yCsvFiles = yCsvFiles,
     _swlCsvFiles = swlCsvFiles;
   ///
   List<double> _parseStringList(List<String> strings) {
@@ -58,9 +58,17 @@ class SwlData {
       });
   }
   ///
-  Future<List<double>> get x => _loadAsset(_xCsvFile);
+  Future<List<List<double>>> get x {
+    return Future.wait(
+      _xCsvFiles.map((xFile) => _loadAsset(xFile)),
+    );
+  }
   ///
-  Future<List<double>> get y => _loadAsset(_yCsvFile);
+  Future<List<List<double>>> get y {
+    return Future.wait(
+      _yCsvFiles.map((yFile) => _loadAsset(yFile)),
+    );
+  }
   ///
   Future<List<List<double>>> get swl {
     return Future.wait(

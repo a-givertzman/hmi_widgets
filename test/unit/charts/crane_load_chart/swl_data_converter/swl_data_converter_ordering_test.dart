@@ -30,12 +30,12 @@ void main() {
       final convertedPoints = await swlDataConverter.points;
       final convertedColors = await swlDataConverter.swlColors;
       expect(
-        convertedPoints[0].dx.toStringAsFixed(10), 
+        convertedPoints[0][0].dx.toStringAsFixed(10), 
         expectedPoint.dx.toStringAsFixed(10),
         reason: 'Wrong X coordinate. Received point: ${convertedPoints[0]}. Expected point: $expectedPoint'
       );
       expect(
-        convertedPoints[0].dy.toStringAsFixed(10), 
+        convertedPoints[0][0].dy.toStringAsFixed(10), 
         expectedPoint.dy.toStringAsFixed(10),
         reason: 'Wrong Y coordinate. Received point: ${convertedPoints[0]}. Expected point: $expectedPoint'
       );

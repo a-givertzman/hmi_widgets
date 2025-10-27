@@ -7,7 +7,7 @@ import 'package:hmi_widgets/src/charts/crane_load_chart/swl_data_converter.dart'
 /// Cached data for [CraneLoadChart] widget coming from SwlDataConverter
 class SwlDataCache implements CraneLoadChartData {
   final SwlDataConverter _swlDataConverter;
-  final LazyLoadable<List<Offset>> _pointsLazy;
+  final LazyLoadable<List<List<Offset>>> _pointsLazy;
   final LazyLoadable<List<List<Color>>> _swlColorsLazy;
   ///
   SwlDataCache({
@@ -21,7 +21,7 @@ class SwlDataCache implements CraneLoadChartData {
     _swlDataConverter = swlDataConverter;
   ///
   /// points (x, y) to be drawn on [CraneLoadChart]
-  Future<List<Offset>> get points  => _pointsLazy.value;
+  Future<List<List<Offset>>> get points  => _pointsLazy.value;
   /// 
   /// colors of points on the [CraneLoadChart]
   Future<List<List<Color>>> get swlColors => _swlColorsLazy.value;

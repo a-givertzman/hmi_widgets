@@ -47,14 +47,22 @@ class SwlDataConverter implements CraneLoadChartData {
     _yScale = rawHeight / height,
     _legendData = legendData;
   ///
-  Future<List<Offset>> get points async {
+  Future<List<List<Offset>>> get points async {
     final points = await Future.wait([_swlData.x, _swlData.y]);
-    return _convertPoints(points[0], points[1]);
+    return _convertPointsLists(points[0], points[1]);
   }
   ///
   Future<List<List<Color>>> get swlColors async {
     final swlColorValues = await _swlData.swl;
     return _convertSwlColors(swlColorValues);
+  }
+  ///
+  ///
+  List<List<Offset>> _convertPointsLists(List<List<double>> x, List<List<double>> y) {
+    return [
+      for(int i = 0; i < x.length; i++)
+        _convertPoints(x[i], y[i])
+    ];
   }
   ///
   List<Offset> _convertPoints(List<double> x, List<double> y) {

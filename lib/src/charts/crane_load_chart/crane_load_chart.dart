@@ -174,7 +174,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
               ]),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final points = snapshot.data![0] as List<Offset>;
+                  final points = snapshot.data![0] as List<List<Offset>>;
                   final colors = snapshot.data![1] as List<List<Color>>;
                   return StreamBuilder<int>(
                     stream: _swlIndexStream,
@@ -189,7 +189,7 @@ class _CraneLoadChartState extends State<CraneLoadChart> {
                           xAxis: _xAxis,
                           yAxis: _yAxis,
                           showGrid: _showGrid,
-                          points: points,
+                          points: points[_swlIndex],
                           colors: colors[_swlIndex],
                           size: size,
                           axisColor: _axisColor ?? onSurfaceColor,
