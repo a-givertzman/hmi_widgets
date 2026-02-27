@@ -19,10 +19,10 @@ dependencies:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
       ref: 2.2.0
-  hmi_networking:
-    git:
-      url: https://github.com/a-givertzman/hmi_networking.git
-      ref: 1.1.6
+  # hmi_networking:
+  #   git:
+  #     url: https://github.com/a-givertzman/hmi_networking.git
+  #     ref: 1.1.6
   svg_path_parser: ^1.1.2
   cronosun_text_to_path_maker:
     git:
