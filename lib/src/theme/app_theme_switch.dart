@@ -31,9 +31,8 @@ class AppThemeSwitch with ChangeNotifier {
   }
   ///
   Failure _unexpectedFailure() {
-    return Failure.unexpected(
-      message: '[$AppThemeSwitch] несуществующая тема $_themeMode',
-      stackTrace: StackTrace.current,
+    return Failure(
+      '[$AppThemeSwitch] несуществующая тема $_themeMode',
     );
   }
   ///

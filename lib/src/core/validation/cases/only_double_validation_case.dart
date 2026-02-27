@@ -39,8 +39,7 @@ class OnlyDoubleValidationCase implements ValidationCase {
     }
     return Err(
       Failure(
-        message: 'Only $onlyPos Double expected',
-        stackTrace: StackTrace.current,
+        'Only $onlyPos Double expected',
       ),
     );
   }

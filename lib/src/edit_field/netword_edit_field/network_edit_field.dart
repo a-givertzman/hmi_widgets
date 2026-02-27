@@ -287,9 +287,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       return _textToFixedDouble(value, fractionDigits);
     } else {
       return Err(
-        Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "${_editingController.text}" can`t be converted', 
-          stackTrace: StackTrace.current
+        Failure(
+          'Ошибка в методе $runtimeType._textToFixedDouble: value "${_editingController.text}" can`t be converted', 
         ),
       );
     }
@@ -300,9 +299,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
     return intValue != null 
       ? Ok(intValue as T) 
       : Err(
-          Failure.convertion(
-            message: 'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
-            stackTrace: StackTrace.current,
+          Failure(
+            'Ошибка в методе $runtimeType._textToInt: value "$value" can`t be converted into int', 
           ),
         );
   }
@@ -313,9 +311,8 @@ class _NetworkEditFieldState<T> extends State<NetworkEditField<T>> {
       return Ok(double.parse(doubleValue.toStringAsFixed(fractionDigits)) as T);
     } else {
       return Err(
-        Failure.convertion(
-          message: 'Ошибка в методе $runtimeType._textToFixedDouble: value "$value" can`t be converted into double', 
-          stackTrace: StackTrace.current,
+        Failure(
+          'Ошибка в методе $runtimeType._textToFixedDouble: value "$value" can`t be converted into double', 
         ),
       );
     }

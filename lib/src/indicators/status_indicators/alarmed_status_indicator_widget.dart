@@ -78,9 +78,8 @@ class AlarmedStatusIndicatorWidget extends StatelessWidget {
         ],
       );
     }
-    throw Failure.unexpected(
-      message: 'Ошибка в методе _buildIndicatorWidget класса $AlarmedStatusIndicatorWidget:\n unsupported alignment: $_alignment',
-      stackTrace: StackTrace.current,
+    throw Failure(
+      'Ошибка в методе _buildIndicatorWidget класса $AlarmedStatusIndicatorWidget:\n unsupported alignment: $_alignment',
     );    
   }
 }

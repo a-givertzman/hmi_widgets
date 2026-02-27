@@ -83,9 +83,8 @@ class TextIndicatorWidget extends StatelessWidget {
     if (_alignment == Alignment.bottomRight) {
       return _buildWidgetALignmentBottomRight();
     }
-    throw Failure.unexpected(
-      message: 'Ошибка в методе _buildWidget класса $TextIndicatorWidget:\n unsupported alignment: $_alignment',
-      stackTrace: StackTrace.current,
+    throw Failure(
+      'Ошибка в методе _buildWidget класса $TextIndicatorWidget:\n unsupported alignment: $_alignment',
     );
   }
   ///

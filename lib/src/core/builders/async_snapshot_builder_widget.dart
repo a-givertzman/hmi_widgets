@@ -104,8 +104,7 @@ sealed class _AsyncSnapshotState<T> {
           true => _DataState(value),
           false => _ErrorState(
             Failure(
-              message: 'Invalid data',
-              stackTrace: StackTrace.current,
+              'Invalid data',
             ),
           ) as _AsyncSnapshotState<T>,
         },
@@ -116,11 +115,9 @@ sealed class _AsyncSnapshotState<T> {
         hasData: false,
         hasError: true,
         :final error,
-        :final stackTrace,
       ) => _ErrorState(
         Failure(
-          message: error?.toString() ?? 'Something went wrong',
-          stackTrace: stackTrace ?? StackTrace.current,
+          error?.toString() ?? 'Something went wrong',
         ),
       ),
       _ => const _NothingState(),
