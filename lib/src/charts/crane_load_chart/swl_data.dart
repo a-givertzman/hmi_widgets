@@ -52,7 +52,7 @@ class SwlData {
       })
       .onError((error, stackTrace) {
         throw Failure.pass(
-          "SwlData._loadAsset | ",
+          "SwlData._loadAsset",
           error,
         );        
       });

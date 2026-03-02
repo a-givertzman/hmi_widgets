@@ -52,7 +52,7 @@ class CraneLoadChartLegendJson {
           },
         ),
       ).onError((error, stackTrace) => throw Failure.pass(
-        "CraneLoadChartLegendJson.decoded | ", 
+        "CraneLoadChartLegendJson.decoded", 
         error,
       ));
   }

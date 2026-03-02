@@ -29,7 +29,7 @@ class OilData {
       .then((value) => _data.addAll(value))
       .onError((error, stackTrace) {
         throw Failure.pass(
-          "OilData.names | ",
+          "OilData.names",
           error,
         );        
       });
