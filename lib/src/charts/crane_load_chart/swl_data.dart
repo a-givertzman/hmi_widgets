@@ -51,8 +51,9 @@ class SwlData {
         return doubleList;
       })
       .onError((error, stackTrace) {
-        throw Failure(
-          'Ошибка в методе _loadAsset класса $runtimeType:\n$error',
+        throw Failure.pass(
+          "SwlData._loadAsset | ",
+          error,
         );        
       });
   }

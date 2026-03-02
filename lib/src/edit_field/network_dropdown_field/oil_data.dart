@@ -28,8 +28,9 @@ class OilData {
       })
       .then((value) => _data.addAll(value))
       .onError((error, stackTrace) {
-        throw Failure(
-          'Ошибка в методе names класса $runtimeType:\n$error',
+        throw Failure.pass(
+          "OilData.names | ",
+          error,
         );        
       });
     }

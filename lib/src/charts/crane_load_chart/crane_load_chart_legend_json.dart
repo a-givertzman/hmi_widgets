@@ -51,8 +51,9 @@ class CraneLoadChartLegendJson {
             return craneLoadChartLegendMap;
           },
         ),
-      ).onError((error, stackTrace) => throw Failure(
-        'Ошибка в методе $runtimeType.decoded: $error; $stackTrace', 
+      ).onError((error, stackTrace) => throw Failure.pass(
+        "CraneLoadChartLegendJson.decoded | ", 
+        error,
       ));
   }
 }
