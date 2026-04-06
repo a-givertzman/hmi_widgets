@@ -27,8 +27,7 @@ class MinLengthValidationCase implements ValidationCase {
     }
     return Err(
       Failure(
-        message: 'Too few characters', 
-        stackTrace: StackTrace.current,
+        'Too few characters', 
       ),
     );
   }

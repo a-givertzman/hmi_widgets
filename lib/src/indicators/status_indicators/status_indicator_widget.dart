@@ -109,9 +109,8 @@ class StatusIndicatorWidget extends StatelessWidget {
         ],
       );
     }
-    throw Failure.unexpected(
-      message: 'Ошибка в методе _buildIndicatorWidget класса $StatusIndicatorWidget:\n unsupported alignment: $_alignment',
-      stackTrace: StackTrace.current,
+    throw Failure(
+      'Ошибка в методе _buildIndicatorWidget класса $StatusIndicatorWidget:\n unsupported alignment: $_alignment',
     );    
   }
 }
