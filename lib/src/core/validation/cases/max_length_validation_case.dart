@@ -27,8 +27,7 @@ class MaxLengthValidationCase implements ValidationCase {
     }
     return Err(
       Failure(
-        message: 'Too many characters', 
-        stackTrace: StackTrace.current,
+        'Too many characters', 
       ),
     );
   }

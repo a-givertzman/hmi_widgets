@@ -32,9 +32,8 @@ import 'package:hmi_widgets/src/dialogs/auth_dialog.dart';
         }
         return result;
       }
-      throw Failure.unexpected(
-        message: 'Authentication error, null returned instead of AuthResult ', 
-        stackTrace: StackTrace.current,
+      throw Failure(
+        'Authentication error, null returned instead of AuthResult ', 
       );
     });    
   }

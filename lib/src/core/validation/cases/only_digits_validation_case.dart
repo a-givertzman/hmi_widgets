@@ -28,8 +28,7 @@ class OnlyDigitsValidationCase implements ValidationCase {
     }
     return Err(
       Failure(
-        message: 'Only digits expected',
-        stackTrace: StackTrace.current,
+        'Only digits expected',
       ),
     );
   }
